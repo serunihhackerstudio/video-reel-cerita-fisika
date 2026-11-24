@@ -9,3 +9,5 @@
 .riwayat/
 .f.png
 node_modules/
+story/*.mp4
+story/prev_*.jpg

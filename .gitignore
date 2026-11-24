@@ -11,3 +11,4 @@
 node_modules/
 story/*.mp4
 story/prev_*.jpg
+post/*/f*.jpg

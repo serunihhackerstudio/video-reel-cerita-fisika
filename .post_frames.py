@@ -1,0 +1,30 @@
+import os, subprocess, shutil, sys, tempfile
+MF = 'C:/Users/ROG/.claude/skills/motion-format/scripts/mf.py'
+FFB = 'C:/Users/ROG/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-9.1-full_build/bin'
+env = dict(os.environ); env['PATH'] = env['PATH'] + os.pathsep + FFB
+T = {
+ 'nuklir': [8.4, 13.0, 21.0, 28.5, 33.0, 40.0],
+ 'bom-atom': [5.5, 9.8, 15.5, 24.8, 33.5, 41.5],
+ 'entanglement': [5.2, 9.5, 17.4, 26.5, 35.6, 49.5],
+ 'blackhole': [1.5, 9.4, 17.6, 31.5, 41.5, 48.6],
+ 'mariana': [5.6, 9.4, 19.5, 31.0, 41.0, 49.0],
+}
+os.makedirs('post', exist_ok=True)
+port = 9600
+for name, ts in T.items():
+    port += 1
+    tmp = os.path.join(tempfile.gettempdir(), 'pf-' + name)
+    shutil.rmtree(tmp, ignore_errors=True)
+    subprocess.run([sys.executable, MF, 'baru', tmp, '--dasar', 'isometrik-dibongkar', '--rasio', '9:16'], check=True, stdout=subprocess.DEVNULL, env=env)
+    s = open(f'{name}/scene.html', encoding='utf-8').read()
+    s = s.replace('<!--@BODY-->', '<style>#mfSub,.lt,.dot,#garis,#jejak,#tanda{display:none!important}</style><!--@BODY-->', 1)
+    open(os.path.join(tmp, 'scene.html'), 'w', encoding='utf-8').write(s)
+    shutil.copytree(f'{name}/assets', os.path.join(tmp, 'assets'), dirs_exist_ok=True)
+    e2 = dict(env); e2['MF_PORT'] = str(port)
+    for attempt in range(3):
+        r = subprocess.run([sys.executable, MF, 'potret', tmp, '--t', ','.join(str(x) for x in ts)], env=e2, capture_output=True, text=True)
+        if os.path.exists(os.path.join(tmp, '.potret', '05.jpg')): break
+    os.makedirs(f'post/{name}', exist_ok=True)
+    for i in range(6):
+        shutil.copy(os.path.join(tmp, '.potret', f'{i:02d}.jpg'), f'post/{name}/f{i}.jpg')
+    print(name, 'ok')

@@ -1,0 +1,11 @@
+# Gaya: Isometrik Dibongkar (mode ortho) — "Kenapa nuklir bisa menghasilkan listrik?"
+- Format: Shorts 9:16, ±40 dtk, VO Indonesia + SFX pelan (kecil saat label muncul & bagian terbuka)
+- Kamera: SATU ortografik, azimut 45°, elevasi 30°, tanpa perspektif; pelan mendekat (tinggi bingkai 118 → 38)
+- Palet natural: rumput #6f8f46, beton #c4bfb3, baja disikat #c3c8cb, laut #2f7690, langit #cfdfe3→#e4dcc5
+- Aksen tunggal hijau-biru neon #12f2c6 (teks aksen #9fffe8): hanya batang bahan bakar, bidang potong, label penting, aliran
+- Penampang: beton #e8a765, baja #dce6ec, tembaga #d9773a, air #8fcbe6
+- Bahan: tekstur canvas (rumput, beton, logam disikat, aspal, laut), bayangan lembut PCF 4096, ACES
+- Label: titik bercahaya + garis + teks 2 baris, tanpa kotak, muncul pas kata diucapkan; subtitle kata per kata 66px, kata kunci aksen
+- Tanda tangan gerak: bidang potong bercahaya menyapu dari depan ke tengah
+- Beda dari video lain: PLTN lengkap di lanskap pesisir, satu aksen neon untuk seluruh aliran energi
+- Font: Overpass + Overpass Mono

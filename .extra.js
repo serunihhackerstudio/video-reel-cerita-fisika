@@ -1,0 +1,22 @@
+/* ---------- tambahan: kabel transmisi, gelembung uap, inset fisi, angka suhu ---------- */
+{const km=bhn('#2f3438',{roughness:.6},false);[[22.5,-16,-30],[22.5,-30,-44]].forEach(([x,z0,z1])=>{[[-3.6,9.4],[3.6,9.4],[-3.2,11.4],[3.2,11.4]].forEach(([dx,y])=>batang([x+dx,y-.15,z0],[x+dx,y-.15,z1],.045,km,SD));});}
+const A_BALIK=stripAlir([[TX-1,2.0,ZC-1.3],[28.4,1.1,ZC-1.3],[20,1.1,ZC-1.3],[12.8,1.1,ZC-1.3]],.12);
+const BUB=new THREE.InstancedMesh(new THREE.SphereGeometry(.09,8,6),new THREE.MeshBasicMaterial({color:C('#ffffff'),transparent:true,opacity:.85,depthWrite:false,toneMapped:false,clippingPlanes:[POT]}),70);BUB.frustumCulled=false;SD.add(BUB);
+function gambarGelembung(t){const k=sstep(27.0,28.8,t);for(let i=0;i<70;i++){const y=2.3+((t*(.7+hash(i+2)*.6)+hash(i+9))%1)*4.4;_p.set(SX+(hash(i)*2-1)*.8,y,ZC+(hash(i+30)-.5)*.8);_s.setScalar(hash(i+50)<k?(.6+hash(i+4)*.8):1e-4);_m.compose(_p,_q,_s);BUB.setMatrixAt(i,_m);}BUB.instanceMatrix.needsUpdate=true;}
+const INS=mk('canvas','',$('#stage'));INS.width=INS.height=440;Object.assign(INS.style,{position:'absolute',left:'560px',top:'250px',width:'440px',height:'440px',borderRadius:'50%',zIndex:12,opacity:0,boxShadow:'0 0 0 5px rgba(255,255,255,.95),0 0 44px rgba(18,242,198,.5),0 10px 34px rgba(0,0,0,.5)'});
+const INT=mk('div','',$('#stage'),'URANIUM-235<small style="display:block;font:700 30px/1.2 var(--fm);color:#fff;margin-top:6px">dibelah neutron</small>');Object.assign(INT.style,{position:'absolute',left:'560px',top:'712px',width:'440px',textAlign:'center',zIndex:12,opacity:0,font:'800 40px/1 var(--fm)',color:PAL.aks,textShadow:'0 2px 3px rgba(0,0,0,.8),0 0 14px rgba(0,0,0,.6)'});
+const INC=INS.getContext('2d'),NK=Array.from({length:26},(_,i)=>{const a=hash(i+1)*6.283,r=Math.sqrt(hash(i+40))*38;return{x:Math.cos(a)*r,y:Math.sin(a)*r,p:hash(i+80)<.5};});
+function gambarInset(t){const vis=sstep(9.6,10.1,t)*(1-sstep(17.0,17.5,t));INS.style.opacity=INT.style.opacity=vis;if(vis<=0)return;
+  const c=INC;c.clearRect(0,0,440,440);const g=c.createRadialGradient(220,220,10,220,220,230);g.addColorStop(0,'#1d3d44');g.addColorStop(1,'#08161a');c.fillStyle=g;c.fillRect(0,0,440,440);
+  c.strokeStyle='rgba(255,255,255,.05)';c.lineWidth=2;for(let i=0;i<440;i+=44){c.beginPath();c.moveTo(i,0);c.lineTo(i,440);c.stroke();c.beginPath();c.moveTo(0,i);c.lineTo(440,i);c.stroke();}
+  const hit=11.45,sp=12.2,ks=seg(t,sp,sp+1.5),dx=135*E.out(ks),pecah=t>=sp;
+  const panas=sstep(15.6,16.6,t);if(panas>0){const gp=c.createRadialGradient(220,220,10,220,220,220);gp.addColorStop(0,'rgba(255,179,107,'+(.55*panas)+')');gp.addColorStop(1,'rgba(255,179,107,0)');c.fillStyle=gp;c.fillRect(0,0,440,440);
+    c.strokeStyle='rgba(255,179,107,'+(.7*panas)+')';c.lineWidth=4;for(let i=0;i<10;i++){const a=i/10*6.283+t*.4,r0=70+((t*80+i*23)%90);c.beginPath();c.arc(220+Math.cos(a)*r0*.6,220+Math.sin(a)*r0*.6,16,a,a+1.6);c.stroke();}}
+  const sh=t>hit&&t<sp?Math.sin(t*60)*3*seg(t,hit,sp):0,st=t>hit&&t<sp?1+.5*E.io(seg(t,hit,sp)):1;
+  NK.forEach(n=>{let x=n.x,y=n.y;if(pecah){const sg=x<0?-1:1;x=x*.8+sg*(dx+14);y=y*.8;}else{x=x*st+sh;y=y/Math.sqrt(st)+sh*.6;}
+    c.beginPath();c.arc(220+x,220+y,13,0,7);c.fillStyle=n.p?'#e9eef0':'#8ea5ae';c.shadowColor=PAL.aks;c.shadowBlur=t>hit?14:6;c.fill();c.shadowBlur=0;c.lineWidth=2;c.strokeStyle='rgba(0,0,0,.25)';c.stroke();});
+  const nx=lerp(-300,-60,E.in(seg(t,10.2,hit)));if(t>=10.2&&t<hit){c.beginPath();c.arc(220+nx,220,14,0,7);c.fillStyle=PAL.aks;c.shadowColor=PAL.aks;c.shadowBlur=26;c.fill();c.shadowBlur=0;}
+  if(pecah){[-70,100,200].forEach((ang)=>{const a=ang*DEG,r=30+300*E.out(seg(t,sp,sp+1.3)),al=1-sstep(14.2,15.4,t);if(al<=0)return;c.beginPath();c.arc(220+Math.cos(a)*r,220+Math.sin(a)*r,12,0,7);c.fillStyle='rgba(18,242,198,'+al+')';c.shadowColor=PAL.aks;c.shadowBlur=26;c.fill();c.shadowBlur=0;});
+    const f=seg(t,sp,sp+.8);if(f<1){c.beginPath();c.arc(220,220,230*E.out(f),0,7);c.lineWidth=10*(1-f)+1;c.strokeStyle='rgba(200,255,245,'+(1-f)+')';c.stroke();}}}
+const ANG=mk('div','',$('#stage'));Object.assign(ANG.style,{position:'absolute',left:'70px',top:'350px',zIndex:12,opacity:0,font:'900 70px/1 var(--fj)',color:PAL.ta,textShadow:'0 3px 3px rgba(0,0,0,.7),0 0 18px rgba(0,0,0,.5)'});
+function gambarAngka(t){const o=sstep(22.0,22.4,t)*(1-sstep(24.1,24.5,t));ANG.style.opacity=o;if(o>0)ANG.innerHTML='± 300 °C<small style="display:block;font:700 30px/1.15 var(--fm);color:rgba(255,255,255,.88);margin-top:8px">TEKANAN ± 150 ATM</small>';}

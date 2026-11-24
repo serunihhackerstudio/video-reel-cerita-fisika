@@ -1,0 +1,11 @@
+# video tidak diunggah ke repo
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.avi
+# berkas sementara
+.potret/
+.riwayat/
+.f.png
+node_modules/

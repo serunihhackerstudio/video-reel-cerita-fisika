@@ -1,0 +1,327 @@
+<!--@TITLE Kenapa nuklir bisa menghasilkan listrik?-->
+<!--@RASIO 9:16-->
+<!--@HEAD-->
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@600;800;900&family=Overpass+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* warna diisi dari PALET di script (bagian 0). Font: ganti link Google Fonts di atas + --fj (judul) / --fm (label) */
+:root{--fj:'Overpass',sans-serif;--fm:'Overpass Mono',monospace}
+#langit{position:absolute;inset:0;background:linear-gradient(180deg,var(--l1) 0%,var(--l2) 60%,var(--l3) 100%)}
+#dunia{position:absolute;inset:0}
+#dunia canvas,#makro canvas{position:absolute;left:0;top:0;display:block}
+#makro{position:absolute;inset:0;z-index:3;display:none}
+#studio{position:absolute;inset:0;background:radial-gradient(ellipse 95% 70% at 50% 44%,var(--s1) 0%,var(--s2) 55%,var(--s3) 100%)}
+#studio:after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.035) 2px,transparent 2px);background-size:72px 72px;background-position:36px 36px}
+#iris{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:visible}
+#vig{position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse 85% 70% at 50% 46%,rgba(0,0,0,0) 58%,rgba(20,16,10,.32) 100%)}
+#garis{position:absolute;inset:0;z-index:9;pointer-events:none;overflow:visible}
+#tanda{position:absolute;inset:0;z-index:10;pointer-events:none}
+.lt{position:absolute;white-space:nowrap;font:700 44px/1 var(--fm);letter-spacing:.03em;color:#fff;text-transform:uppercase;padding:0 2px 14px;
+  text-shadow:0 2px 2px rgba(0,0,0,.75),0 0 10px rgba(0,0,0,.55),0 0 26px rgba(0,0,0,.35)}
+.lt small{display:block;font:600 32px/1 var(--fj);letter-spacing:0;text-transform:none;margin-top:10px;color:#eef8ff}
+.lt i{position:absolute;left:0;right:0;bottom:0;height:4px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.7);transform-origin:0 50%}
+.lt.r i{transform-origin:100% 50%}
+.lt.big{font:900 64px/1 var(--fj);letter-spacing:.02em;padding-bottom:14px;color:var(--tb)}
+.lt.big small{font:700 34px/1 var(--fj);margin-top:10px}
+.lt.big i{height:5px;background:var(--alir)}
+.lt.am.big{color:var(--ta)}.lt.am.big i{background:var(--aks)}
+.dot{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.3),0 0 18px #fff,0 1px 3px rgba(0,0,0,.6)}
+.dot.am{background:var(--aks);box-shadow:0 0 0 5px color-mix(in srgb,var(--aks) 30%,transparent),0 0 18px var(--aks),0 1px 3px rgba(0,0,0,.6)}
+#jejak{position:absolute;left:70px;top:190px;z-index:12;font:700 30px/1.3 var(--fm);letter-spacing:.03em;color:#fff;text-transform:uppercase;
+  text-shadow:0 2px 3px rgba(0,0,0,.8),0 0 14px rgba(0,0,0,.6),0 0 30px rgba(0,0,0,.35)}
+#jejak b{color:var(--ta);font-weight:700}
+#jejak .z{display:block;margin-top:8px;font:900 76px/1 var(--fj);color:#fff}
+#jejak .z small{font:700 30px/1 var(--fm);color:rgba(255,255,255,.75);margin-left:12px;letter-spacing:.04em}
+#rpm{position:absolute;left:70px;top:350px;z-index:12;opacity:0;font:900 70px/1 var(--fj);color:var(--ta);
+  text-shadow:0 3px 3px rgba(0,0,0,.7),0 0 18px rgba(0,0,0,.5)}
+#rpm small{display:block;font:700 30px/1 var(--fm);color:rgba(255,255,255,.85);letter-spacing:.03em;margin-top:8px}
+#inset{position:absolute;right:160px;top:196px;width:220px;height:220px;border-radius:50%;z-index:12;opacity:0;
+  box-shadow:0 0 0 4px rgba(255,255,255,.95),0 8px 30px rgba(0,0,0,.55)}
+#insetT{position:absolute;right:150px;top:424px;width:240px;text-align:center;z-index:12;opacity:0;font:700 30px/1.1 var(--fm);letter-spacing:.02em;color:#fff;
+  text-transform:uppercase;text-shadow:0 2px 2px rgba(0,0,0,.7),0 0 10px rgba(0,0,0,.5)}
+#titikInset{position:absolute;right:259px;top:295px;width:22px;height:22px;border-radius:50%;z-index:13;opacity:0;background:var(--aks);
+  box-shadow:0 0 0 6px color-mix(in srgb,var(--aks) 35%,transparent),0 0 18px var(--aks)}
+</style>
+<!--@BODY-->
+<div id="langit"></div>
+<div id="dunia"></div>
+<div id="vig"></div>
+<svg id="garis" viewBox="0 0 1080 1920"></svg>
+<div id="tanda"></div>
+<div id="jejak"></div>
+<!--@SCRIPT-->
+/* PLTN pesisir · isometrik dibongkar · MODE ortho (satu kamera ortografik). Adegan 1: pembuka. 1 satuan ≈ 1 m (skala disederhanakan). Bidang simetri z = ZC. */
+const PAL={langit:['#cfdfe3','#e8e6d6','#e4dcc5'],aks:'#12f2c6',tb:'#9fffe8',ta:'#c9ffee'};
+{const s=document.documentElement.style;[['--l1',PAL.langit[0]],['--l2',PAL.langit[1]],['--l3',PAL.langit[2]],['--alir',PAL.aks],['--aks',PAL.aks],['--tb',PAL.tb],['--ta',PAL.ta]].forEach(([k,v])=>s.setProperty(k,v));}
+const WAKTU={potong:[3.6,5.6],kerja:[5.8,6.8],dur:45.6};
+const ZC=-8,ZP=-7.97;
+
+/* ---------- ALAT 3D ---------- */
+const C=h=>new THREE.Color(h).convertSRGBToLinear(),DEG=Math.PI/180;
+const POT=new THREE.Plane(new THREE.Vector3(0,0,-1),99);
+function bhn(hex,o={},klip=true){return new THREE.MeshStandardMaterial(Object.assign({color:C(hex),roughness:.6,metalness:0},o,klip?{clippingPlanes:[POT],clipShadows:true}:{}));}
+function tutupM(hex){return new THREE.MeshBasicMaterial({color:C(hex),side:THREE.BackSide,clippingPlanes:[POT],toneMapped:false});}
+function pasang(geo,m,par,pos,tutup){const o=new THREE.Mesh(geo,m);o.castShadow=o.receiveShadow=true;if(pos)o.position.set(...pos);if(tutup&&m.clippingPlanes)o.add(new THREE.Mesh(geo,tutupM(tutup)));par.add(o);return o;}
+function kotak(x0,x1,y0,y1,z0,z1,m,par,tutup){return pasang(new THREE.BoxGeometry(x1-x0,y1-y0,z1-z0),m,par,[(x0+x1)/2,(y0+y1)/2,(z0+z1)/2],tutup);}
+function bubut(prof,m,par,tutup,pos,n=72){const o=pasang(new THREE.LatheGeometry(prof.map(([r,y])=>new THREE.Vector2(r,y)),n),m,par,pos,tutup);return o;}
+function bubutX(prof,m,par,tutup,pos){const g=new THREE.LatheGeometry(prof.map(([r,y])=>new THREE.Vector2(r,y)),56);g.rotateZ(-Math.PI/2);return pasang(g,m,par,pos,tutup);}
+function silinder(r,y0,y1,m,par,tutup,pos){return pasang(new THREE.CylinderGeometry(r,r,y1-y0,40),m,par,pos||[0,(y0+y1)/2,0],tutup);}
+function silinderX(r,x0,x1,m,par,tutup,y,z){const o=pasang(new THREE.CylinderGeometry(r,r,x1-x0,40),m,par,[(x0+x1)/2,y,z],tutup);o.rotation.z=Math.PI/2;return o;}
+function batang(a,b,r,m,par,tutup){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A);const o=pasang(new THREE.CylinderGeometry(r,r,d.length(),14),m,par,null,tutup);o.position.copy(A).add(B).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return o;}
+function selang(titik,r,m,par,n=64){return pasang(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(titik.map(p=>new THREE.Vector3(...p)),false,'catmullrom',.15),n,r,10,false),m,par);}
+const busur=(rx,cy,ry,a0,a1,n=14)=>Array.from({length:n+1},(_,i)=>{const a=lerp(a0,a1,i/n)*DEG;return[rx*Math.cos(a),cy+ry*Math.sin(a)];});
+function dindingBox(par,[x0,x1,y0,y1,z0,z1],lapis,celah=.01){const g=new THREE.Group();par.add(g);let d=0;
+  lapis.forEach(([e,m,w])=>{const a=x0+d,b=x1-d,c=y0+d,f=y1-d,h=z0+d,zf=z1-d;
+    kotak(a,a+e,c,f,h,zf,m,g,w);kotak(b-e,b,c,f,h,zf,m,g,w);kotak(a+e,b-e,f-e,f,h,zf,m,g,w);kotak(a+e,b-e,c,c+e,h,zf,m,g,w);kotak(a+e,b-e,c+e,f-e,h,h+e,m,g,w);kotak(a+e,b-e,c+e,f-e,zf-e,zf,m,g,w);d+=e+celah;});return g;}
+function petaPantul(ren){const c=kanvas(1024,512),x=c.getContext('2d'),g=x.createLinearGradient(0,0,0,512);
+  g.addColorStop(0,'#f4f1ea');g.addColorStop(.47,'#c9c5bb');g.addColorStop(.55,'#8d8778');g.addColorStop(1,'#5b5446');x.fillStyle=g;x.fillRect(0,0,1024,512);
+  x.filter='blur(7px)';x.fillStyle='#fff';[[110,70,190,90],[600,110,240,60],[420,24,130,40]].forEach(r=>x.fillRect(...r));
+  const t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;t.encoding=THREE.sRGBEncoding;return new THREE.PMREMGenerator(ren).fromEquirectangular(t).texture;}
+
+/* ---------- TEKSTUR (canvas) ---------- */
+function teksturK(w,h,lukis,ul){const c=kanvas(w,h),x=c.getContext('2d');lukis(x,w,h,rng(w*7+h));const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;
+  t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;if(ul)t.repeat.set(...ul);return t;}
+function bintik(x,w,h,n,warna,a,b,r,y0=0,hh=h){for(let i=0;i<n;i++){x.fillStyle=warna[(r()*warna.length)|0];const s=a+r()*(b-a);x.fillRect(r()*w,y0+r()*hh,s,s*(.6+r()*.8));}}
+const salin=(t,a,b)=>{const c=t.clone();c.needsUpdate=true;c.repeat.set(a,b);return c;};
+const LAPIS=[[.5,'#6f8c46',['#5f7c3b','#809e55','#4f6a30']],[1.5,'#7a5c3e',['#6a4e33','#8c6c4a','#5a4029']],[1.4,'#b99a6a',['#a8895a','#cbae7e','#9a7c50']],[2.6,'#8f8b84',['#7a766f','#a29e96','#68645d','#b4b0a8']]];
+const TBL=LAPIS.reduce((s,l)=>s+l[0],0);
+const tLapis=teksturK(512,256,(x,w,h,r)=>{let y=0;LAPIS.forEach(([th,d,b],i)=>{const hh=th/TBL*h;x.fillStyle=d;x.fillRect(0,y,w,hh+1);bintik(x,w,h,w*hh/10,b,1,i==3?6:3,r,y,hh);x.fillStyle='rgba(0,0,0,.25)';x.fillRect(0,y+hh-1.5,w,2.5);y+=hh;});});
+const tRumput=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#6f8f46';x.fillRect(0,0,w,h);bintik(x,w,h,3500,['#5f7f3a','#7fa053','#6a8a42','#8aa95c','#557333'],1,3,r);
+  for(let i=0;i<1800;i++){x.strokeStyle=r()<.5?'rgba(40,70,20,.35)':'rgba(170,200,110,.35)';x.lineWidth=1;const a=r()*w,b=r()*h;x.beginPath();x.moveTo(a,b);x.lineTo(a+(r()-.5)*3,b-3-r()*4);x.stroke();}},[14,10]);
+const tBeton=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#b9b4a9';x.fillRect(0,0,w,h);bintik(x,w,h,2400,['#a8a398','#c8c3b8','#9b968b','#d3cec3'],1,3,r);
+  x.fillStyle='rgba(60,55,45,.22)';x.fillRect(0,0,w,2);x.fillRect(0,0,2,h);x.fillRect(0,128,w,1);},[3,2]);
+const tBetonB=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#c4bfb3';x.fillRect(0,0,w,h);bintik(x,w,h,2000,['#b3aea2','#d2cdc1','#a49f94'],1,3,r);
+  for(let i=0;i<4;i++){x.fillStyle='rgba(50,46,38,.2)';x.fillRect(0,i*64,w,2);}x.fillStyle='rgba(50,46,38,.14)';for(let i=0;i<4;i++)x.fillRect(i*64,0,2,h);},[5,2]);
+const tSikat=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#c3c8cb';x.fillRect(0,0,w,h);for(let i=0;i<240;i++){x.fillStyle=`rgba(${r()<.5?255:70},${r()<.5?255:75},${r()<.5?255:80},${.04+r()*.14})`;const y=r()*h;x.fillRect(r()*20,y,w,1+(r()<.2?1:0));}},[2,2]);
+const tSikatG=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#7d868d';x.fillRect(0,0,w,h);for(let i=0;i<240;i++){x.fillStyle=`rgba(${r()<.5?255:30},${r()<.5?255:35},${r()<.5?255:40},${.04+r()*.14})`;x.fillRect(r()*20,r()*h,w,1);}},[2,2]);
+const tAspal=teksturK(128,128,(x,w,h,r)=>{x.fillStyle='#4d5054';x.fillRect(0,0,w,h);bintik(x,w,h,900,['#43464a','#5a5d61','#3a3d41'],1,2,r);},[20,2]);
+const tLaut=teksturK(512,512,(x,w,h,r)=>{const g=x.createLinearGradient(0,0,w,h);g.addColorStop(0,'#2f7690');g.addColorStop(1,'#3f8ca3');x.fillStyle=g;x.fillRect(0,0,w,h);
+  for(let i=0;i<260;i++){x.strokeStyle=`rgba(255,255,255,${.06+r()*.22})`;x.lineWidth=1+r()*2;const a=r()*w,b=r()*h,l=12+r()*34;x.beginPath();x.moveTo(a,b);x.quadraticCurveTo(a+l/2,b-4,a+l,b);x.stroke();}
+  for(let i=0;i<120;i++){x.strokeStyle=`rgba(10,50,70,${.08+r()*.12})`;x.lineWidth=2;const a=r()*w,b=r()*h,l=16+r()*30;x.beginPath();x.moveTo(a,b);x.quadraticCurveTo(a+l/2,b+4,a+l,b);x.stroke();}},[6,5]);
+const tSisiLaut=teksturK(64,256,(x,w,h)=>{const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#4f9db3');g.addColorStop(.12,'#2b6f88');g.addColorStop(.45,'#1d4f66');g.addColorStop(.46,'#9b855f');g.addColorStop(1,'#6e6a64');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tPasir=teksturK(128,128,(x,w,h,r)=>{x.fillStyle='#d8c9a0';x.fillRect(0,0,w,h);bintik(x,w,h,900,['#cbbb90','#e4d6ae','#c2b184'],1,2,r);},[20,1]);
+const tBayang=teksturK(256,256,(x,w,h)=>{const g=x.createRadialGradient(128,128,10,128,128,128);g.addColorStop(0,'rgba(0,0,0,.5)');g.addColorStop(.6,'rgba(0,0,0,.15)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tAlir=teksturK(128,16,(x,w,h)=>{const g=x.createLinearGradient(0,0,w,0);g.addColorStop(0,'rgba(255,255,255,.35)');g.addColorStop(.5,'rgba(255,255,255,1)');g.addColorStop(.62,'rgba(255,255,255,.35)');g.addColorStop(1,'rgba(255,255,255,.35)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tJendela=teksturK(128,128,(x,w,h)=>{x.fillStyle='#cfc9bb';x.fillRect(0,0,w,h);for(let j=0;j<2;j++)for(let i=0;i<4;i++){x.fillStyle='#35596b';x.fillRect(8+i*30,22+j*52,22,34);x.fillStyle='rgba(255,255,255,.3)';x.fillRect(8+i*30,22+j*52,8,34);}},[3,1]);
+
+/* ---------- RENDERER, CAHAYA, LANGIT ---------- */
+const RD=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});RD.setPixelRatio(1);RD.setSize(W,H);RD.outputEncoding=THREE.sRGBEncoding;
+RD.toneMapping=THREE.ACESFilmicToneMapping;RD.toneMappingExposure=.88;RD.shadowMap.enabled=true;RD.shadowMap.type=THREE.PCFSoftShadowMap;RD.localClippingEnabled=true;RD.setClearColor(0,0);$('#dunia').appendChild(RD.domElement);
+const SD=new THREE.Scene();SD.environment=petaPantul(RD);
+const KD=new THREE.OrthographicCamera(-1,1,1,-1,-600,600);
+SD.add(new THREE.HemisphereLight(C('#eaf2f4'),C('#6a5a44'),.45));
+const matahari=new THREE.DirectionalLight(C('#ffeccf'),3.0);matahari.castShadow=true;matahari.shadow.mapSize.set(4096,4096);matahari.shadow.bias=-.0003;matahari.shadow.normalBias=.04;SD.add(matahari,matahari.target);
+const isiL=new THREE.DirectionalLight(C('#cfe0ff'),.28);isiL.position.set(-20,12,30);SD.add(isiL);
+const DM=(h,o)=>bhn(h,Object.assign({roughness:.9,envMapIntensity:.3},o),false);
+
+/* ---------- LANSKAP PESISIR: blok tanah berlapis + rumput + laut ---------- */
+const GX0=-34,GX1=48,GZ0=-46,GZ1=14,LZ1=48;
+{const sisi=(a)=>DM('#ffffff',{map:salin(tLapis,a,1),roughness:1});
+ const tanah=new THREE.Mesh(new THREE.BoxGeometry(GX1-GX0,TBL,GZ1-GZ0),[sisi(3),DM('#3a2e22'),DM('#ffffff',{map:tRumput,roughness:1}),DM('#3a2e22'),sisi(4),DM('#3a2e22')]);
+ tanah.position.set((GX0+GX1)/2,-TBL/2,(GZ0+GZ1)/2);tanah.receiveShadow=true;SD.add(tanah);
+ const dasar=new THREE.Mesh(new THREE.BoxGeometry(GX1-GX0,TBL-1.4,LZ1-GZ1),[sisi(2.4),DM('#3a2e22'),DM('#6e6a64'),DM('#3a2e22'),sisi(3),DM('#3a2e22')]);
+ dasar.position.set((GX0+GX1)/2,-1.4-(TBL-1.4)/2,(GZ1+LZ1)/2);dasar.receiveShadow=true;SD.add(dasar);
+ const sx=salin(tSisiLaut,1,1),air=new THREE.Mesh(new THREE.BoxGeometry(GX1-GX0,1.4,LZ1-GZ1),[DM('#ffffff',{map:sx,roughness:.3}),DM('#1d4f66'),DM('#ffffff',{map:tLaut,roughness:.12,metalness:.05,envMapIntensity:1.4}),DM('#1d4f66'),DM('#ffffff',{map:sx,roughness:.3}),DM('#1d4f66')]);
+ air.position.set((GX0+GX1)/2,-.7,(GZ1+LZ1)/2);air.receiveShadow=true;SD.add(air);window.LAUT=air.material[2].map;
+ kotak(GX0,GX1,-1.5,.35,12.4,14,DM('#ffffff',{map:salin(tBeton,12,1)}),SD);   // tanggul beton
+ const pasirG=kotak(GX0,GX1,-.02,.04,10.6,12.4,DM('#ffffff',{map:tPasir,roughness:1}),SD);
+ // dermaga + perahu
+ kotak(16,19,-.35,.1,14,34,DM('#ffffff',{map:salin(tBeton,1,5)}),SD);[18,24,30].forEach(z=>[16.2,18.8].forEach(x=>pasang(new THREE.CylinderGeometry(.25,.25,2.6,12),DM('#6b6a66'),SD,[x,-1.4,z])));
+ const hs=new THREE.Shape();hs.moveTo(-1.3,-3.4);hs.lineTo(1.3,-3.4);hs.lineTo(1.5,1.5);hs.lineTo(0,4.2);hs.lineTo(-1.5,1.5);hs.lineTo(-1.3,-3.4);
+ const hg=new THREE.ExtrudeGeometry(hs,{depth:1.1,bevelEnabled:false});hg.rotateX(-Math.PI/2);const kp=pasang(hg,DM('#d9503c',{roughness:.5}),SD,[22,-1.1,32]);
+ pasang(new THREE.BoxGeometry(1.8,1.2,1.8),DM('#f2f0ea',{roughness:.5}),SD,[22,.3,30.8]);kp.rotation.y=-.12;}
+// jalan + pelataran beton
+kotak(GX0,GX1,0,.05,3.4,8.6,DM('#ffffff',{map:tAspal,roughness:.85}),SD);
+for(let i=0;i<18;i++)kotak(GX0+2+i*4.6,GX0+4.4+i*4.6,.05,.07,5.9,6.1,DM('#e8dfb0'),SD);
+kotak(-17,23,0,.3,-15,.4,DM('#ffffff',{map:salin(tBeton,6,3),roughness:.9}),SD);
+// bayang tanah umum, pohon (instanced), bangunan pendukung
+{const r=rng(11),NP=70,tj=new THREE.InstancedMesh(new THREE.CylinderGeometry(.18,.25,1.2,6),DM('#5b4330'),NP),dn=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,1),DM('#ffffff',{flatShading:true,roughness:.95}),NP),M=new THREE.Matrix4(),Q=new THREE.Quaternion(),Pv=new THREE.Vector3(),Sv=new THREE.Vector3();let n=0;
+ for(let k=0;k<400&&n<NP;k++){const x=lerp(GX0+2,GX1-2,r()),z=lerp(GZ0+2,2,r());if(x>-19&&x<42&&z>-18&&z<10)continue;if(z>1.5&&z<9.4)continue;if((x>-33&&x<-19&&z>-33&&z<0)||(x>31&&x<45&&z>-29&&z<-16)||(x>14&&x<26&&z>13))continue;const s=1.1+r()*1.1;
+  Pv.set(x,.6,z);Sv.set(1,1,1);M.compose(Pv,Q,Sv);tj.setMatrixAt(n,M);Pv.set(x,1.5+s*.9,z);Sv.set(s*1.1,s*1.25,s*1.1);M.compose(Pv,Q,Sv);dn.setMatrixAt(n,M);
+  dn.setColorAt(n,C(['#4c7a3b','#5a8a43','#3f6c35','#6a944c'][(r()*4)|0]));n++;}
+ tj.count=dn.count=n;tj.castShadow=dn.castShadow=true;SD.add(tj,dn);}
+function rumah(x,z,w,d,h,warna){kotak(x,x+w,0,h,z,z+d,DM(warna,{roughness:.8}),SD);kotak(x-.3,x+w+.3,h,h+.35,z-.3,z+d+.3,DM('#7a7468',{roughness:.7}),SD);
+  const j=new THREE.Mesh(new THREE.PlaneGeometry(w,h*.8),DM('#ffffff',{map:salin(tJendela,w/6,1),roughness:.4}));j.position.set(x+w/2,h*.5,z+d+.02);SD.add(j);}
+rumah(-30,-9,8,6,3.6,'#d7cfbc');rumah(34,-26,9,7,3.2,'#cfd3d2');rumah(-30,-30,10,8,3.8,'#d9d0bd');
+const truk=new THREE.Group();SD.add(truk);kotak(-1.4,1.4,.5,1.8,-.8,.8,DM('#e9e5da'),truk);kotak(1.4,2.3,.5,1.5,-.8,.8,DM('#d7a83a'),truk);
+
+/* ---------- PLTN (semua bahan terpotong bidang POT) ---------- */
+const KPB='#e8a765',KBJ='#dce6ec',KTM='#d9773a',KAIR='#8fcbe6';   // warna penampang: beton hangat, baja terang, tembaga, air
+const beton=bhn('#ffffff',{map:tBeton,roughness:.92,envMapIntensity:.3}),betonB=bhn('#ffffff',{map:tBetonB,roughness:.92,envMapIntensity:.3});
+const baja=bhn('#ffffff',{map:tSikat,metalness:.85,roughness:.34}),bajaG=bhn('#ffffff',{map:tSikatG,metalness:.8,roughness:.4}),tembaga=bhn('#c46a32',{metalness:.7,roughness:.35});
+const kaca=bhn('#aeb9c0',{metalness:.5,roughness:.3,transparent:true,opacity:.3,depthWrite:false,side:THREE.DoubleSide}),airM=bhn('#6fb4d6',{transparent:true,opacity:.5,depthWrite:false,roughness:.1});
+const RX=-8,RY0=0;   // pusat gedung reaktor
+// --- gedung reaktor: dinding beton tebal + kubah ---
+{const luar=[[6.2,0],[6.2,9],...busur(6.2,9,5,0,90).slice(1)],dalam=[...busur(5.0,9,4,90,0).slice(0,-1),[5.0,9],[5.0,0]];
+ bubut([[5.0,0],...luar,[0,13],...dalam.slice(0)],betonB,SD,KPB,[RX,0,ZC]).geometry.computeVertexNormals();
+ silinder(5.0,0,.7,beton,SD,KPB,[RX,.35,ZC]);silinder(6.4,-.3,.5,beton,SD,KPB,[RX,.1,ZC]);
+ [3.2,6.4].forEach(y=>pasang(new THREE.TorusGeometry(6.22,.07,8,80),betonB,SD,[RX,y,ZC],null).rotation.x=Math.PI/2);}
+// --- bejana tekan + teras (batang bahan bakar) ---
+const VX=-9.4;
+{bubut([[1.55,.9],[1.9,.9],[1.9,6.2],...busur(1.9,6.2,1.9,0,90).slice(1),[0,8.1],[0,7.75],...busur(1.55,6.2,1.55,90,0).slice(1),[1.55,.9]].slice(0,-1).concat([[1.55,.9]]),baja,SD,KBJ,[VX,0,ZC]);
+ const air=silinder(1.55,1.25,6.2,airM,SD,KAIR,[VX,3.7,ZC]);
+ pasang(new THREE.SphereGeometry(1.55,32,16,0,Math.PI*2,0,Math.PI/2),airM,SD,[VX,6.2,ZC],KAIR);
+ // dudukan & penyangga
+ silinder(1.2,.4,.9,bajaG,SD,KBJ,[VX,.65,ZC]);
+ for(let i=0;i<5;i++){const a=i*Math.PI*2/5;batang([VX+Math.cos(a)*.3,8.1,ZC+Math.sin(a)*.3],[VX+Math.cos(a)*.3,9.9,ZC+Math.sin(a)*.3],.07,bajaG,SD,KBJ);pasang(new THREE.CylinderGeometry(.14,.14,.6,10),baja,SD,[VX+Math.cos(a)*.3,8.3,ZC+Math.sin(a)*.3],KBJ);}}
+const batangBB=[],matBB=new THREE.MeshStandardMaterial({color:C('#2a3a3a'),emissive:C(PAL.aks),emissiveIntensity:.3,roughness:.4,metalness:.4,clippingPlanes:[POT]});
+for(let i=-2;i<=2;i++)for(let j=-2;j<=2;j++){const x=i*.42,z=j*.42;if(Math.hypot(x,z)>1.2)continue;const o=pasang(new THREE.CylinderGeometry(.1,.1,3.8,12),matBB,SD,[VX+x,3.7,ZC+z],PAL.aks);batangBB.push(o);}
+const PL=new THREE.PointLight(C(PAL.aks),0,9,2);PL.position.set(VX,3.8,ZC+1.8);SD.add(PL);
+const NPT=70,PART=new THREE.InstancedMesh(new THREE.SphereGeometry(.07,8,6),new THREE.MeshBasicMaterial({color:C('#d6fff5'),toneMapped:false,clippingPlanes:[POT]}),NPT);PART.frustumCulled=false;SD.add(PART);
+// --- generator uap ---
+const SX=-4.7;
+{bubut([[1.0,.7],[1.2,.7],[1.2,6.9],...busur(1.2,6.9,.9,0,90).slice(1),[0,7.8],[0,7.6],...busur(1.0,6.9,.7,90,0).slice(1),[1.0,.7]],baja,SD,KBJ,[SX,0,ZC]);
+ silinder(1.0,1.5,6.9,airM,SD,KAIR,[SX,4.2,ZC]);
+ for(let k=0;k<3;k++)pasang(new THREE.TorusGeometry(1.22,.05,8,40),baja,SD,[SX,1.6+k*2.6,ZC]).rotation.x=Math.PI/2;
+ [[-.55,-.35],[.55,-.35],[0,.2],[.2,-.7]].forEach(([dx,dz])=>{});
+ // U-tube bundle (jalur primer) — digambar sebagai tabung tipis tembaga
+ for(let i=0;i<5;i++){const z=ZC+(i-2)*.2;[-.38,.38].forEach(dx=>batang([SX+dx,1.9,z],[SX+dx,6.4,z],.045,tembaga,SD,KTM));batang([SX-.38,6.4,z],[SX+.38,6.4,z],.045,tembaga,SD,KTM);}}
+// --- pipa: primer (panas -> generator uap), uap -> turbin ---
+const P_PANAS=[[VX+1.9,5.3,ZC],[-6.4,5.3,ZC],[-6.0,2.0,ZC],[SX-.38,2.0,ZC]],P_UBEND=[[SX-.38,2.0,ZC],[SX-.38,6.4,ZC],[SX+.38,6.4,ZC],[SX+.38,2.0,ZC]],P_DINGIN=[[SX+.38,2.0,ZC],[-3.0,1.4,ZC],[-6.6,1.2,ZC],[VX+1.7,1.6,ZC]];
+[P_PANAS,P_DINGIN].forEach(p=>selang(p,.32,kaca,SD,50));
+const P_UAP=[[SX+1.0,6.9,ZC],[-1.0,7.0,ZC],[2.4,7.0,ZC],[4.2,6.6,ZC],[4.7,4.9,ZC]];selang(P_UAP,.28,kaca,SD,60);
+// --- gedung turbin ---
+const HX0=.6,HX1=19;
+dindingBox(SD,[HX0,HX1,0,9,-12.6,-3.4],[[.14,bhn('#d6dcd8',{map:tSikat,metalness:.5,roughness:.45}),'#f2d9a6'],[.5,betonB,KPB]]);
+{const yA=3.4;
+ // poros + turbin tekanan tinggi (HP) + tekanan rendah (LP) + generator listrik
+ silinderX(.38,4.0,18.3,baja,SD,KBJ,yA,ZC);
+ bubutX([[1.0,4.3],[1.35,4.3],[1.35,8.1],[1.0,8.1],[1.0,4.3]],baja,SD,KBJ,[0,yA,ZC]);silinderX(.62,4.3,8.1,bajaG,SD,KBJ,yA,ZC);
+ bubutX([[1.55,8.7],[2.0,8.7],[2.0,13.7],[1.55,13.7],[1.55,8.7]],baja,SD,KBJ,[0,yA,ZC]);silinderX(.85,8.7,13.7,bajaG,SD,KBJ,yA,ZC);
+ window.ROTOR=[];const blade=bhn('#cfd4d8',{metalness:.9,roughness:.25});
+ [[4.9,.62,1.0],[5.6,.62,1.0],[6.3,.62,1.0],[7.0,.62,1.0],[7.7,.62,1.0],[9.4,.85,1.55],[10.3,.85,1.55],[11.2,.85,1.55],[12.1,.85,1.55],[13.0,.85,1.55]].forEach(([x,r0,r1])=>{const g=new THREE.Group();g.position.set(x,yA,ZC);SD.add(g);
+   const n=r1>1.2?16:14;for(let i=0;i<n;i++){const b=kotak(-.05,.05,r0,r1-.03,-.2,.2,blade,g,KBJ);b.rotation.x=i/n*Math.PI*2;b.position.set(0,0,0);b.geometry.translate(0,(r0+r1)/2-.0,0);}ROTOR.push(g);});
+ silinderX(1.55,13.9,18.2,bhn('#e8ecee',{metalness:.5,roughness:.4}),SD,null,yA,ZC);   // kulit generator (di luar bidang)
+ bubutX([[1.3,14.1],[1.55,14.1],[1.55,18.2],[1.3,18.2],[1.3,14.1]],baja,SD,KBJ,[0,yA,ZC]);bubutX([[1.0,14.3],[1.3,14.3],[1.3,18.0],[1.0,18.0],[1.0,14.3]],tembaga,SD,KTM,[0,yA,ZC]);
+ silinderX(.9,14.3,18.0,bajaG,SD,KBJ,yA,ZC);
+ pasang(new THREE.CylinderGeometry(1.58,1.58,.12,40),baja,SD,[14.05,yA,ZC],KBJ).rotation.z=Math.PI/2;
+ // kondensor, derek jembatan, kabel, penyangga
+ kotak(9.0,13.4,.7,1.45,-10,-6,bhn('#9aa6ae',{metalness:.7,roughness:.4}),SD,KBJ);kotak(9.2,13.2,.9,1.25,-9.8,-6.2,airM,SD,KAIR);
+ kotak(0.9,18.7,7.7,8.05,-12.3,-3.7,bajaG,SD,KBJ);kotak(6,7.4,7.5,8.2,-12.3,-3.7,bhn('#d7a83a',{roughness:.5}),SD,'#f2c14e');
+ [[4.4,6],[8.3,10.6],[14.9,17.6]].forEach(([a,b])=>[ZC-1.3,ZC+1.3].forEach(zz=>{}));
+ [5.5,11.2,16].forEach(x=>{kotak(x-.4,x+.4,.5,yA-1.0,ZC-.5,ZC+.5,bajaG,SD,KBJ);});}
+// --- transformator + tiang transmisi ---
+kotak(20.2,23,0,3.6,-9.6,-6.4,bhn('#9ba5ab',{metalness:.5,roughness:.45}),SD,KBJ);
+[-1,0,1].forEach(i=>{pasang(new THREE.CylinderGeometry(.18,.28,1.5,12),bhn('#e6e0d2',{roughness:.3}),SD,[21.6+i*.85,4.4,ZC]);});
+function tiang(x,z){const g=new THREE.Group();g.position.set(x,0,z);SD.add(g);const m=bhn('#8b9399',{metalness:.7,roughness:.45});
+  [[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([a,b])=>batang([a*1.4,0,b*1.4],[a*.35,12,b*.35],.09,m,g));
+  [3,6,9].forEach((y,k)=>{const s=lerp(1.4,.35,y/12);[[-1,-1,1,-1],[1,-1,1,1],[1,1,-1,1],[-1,1,-1,-1]].forEach(([a,b,c,d])=>batang([a*s,y,b*s],[c*s,y,d*s],.05,m,g));});
+  [9.4,11.4].forEach(y=>{kotak(-4,4,y,y+.2,-.2,.2,m,g);});[[-3.6,9.4],[3.6,9.4],[-3.2,11.4],[3.2,11.4]].forEach(([dx,y])=>pasang(new THREE.CylinderGeometry(.1,.1,.9,8),bhn('#d9d4c4'),g,[dx,y-.45,0]));return g;}
+const TIANG=[[22.5,-16],[22.5,-30],[22.5,-44]];TIANG.forEach(([x,z])=>tiang(x,z));
+// --- menara pendingin ---
+const TX=32;
+{const rr=y=>3.5+2.3*Math.pow((y-9.5)/9.5,2),N=26,luar=[],dalam=[];for(let i=0;i<=N;i++){const y=i/N*15;luar.push([rr(y),y]);dalam.push([rr(y)-.5,y]);}
+ bubut([[rr(0)-.5,0],...luar,...dalam.reverse()],betonB,SD,KPB,[TX,0,ZC]);
+ bubut([[0,.0],[rr(0)-.5,.0],[rr(0)-.5,.5],[0,.5]],beton,SD,KPB,[TX,0,ZC]);
+ [4,8,12].forEach(y=>pasang(new THREE.TorusGeometry(rr(y)+.03,.08,6,80),betonB,SD,[TX,y,ZC]).rotation.x=Math.PI/2);
+ // isi menara: kisi pengisi (air hujan buatan)
+ for(let i=0;i<3;i++)bubut([[0,0],[rr(3)-.6,0],[rr(3)-.6,.25],[0,.25]],bajaG,SD,KBJ,[TX,2.2+i*.4,ZC]);}
+const PLUM=new THREE.InstancedMesh(new THREE.SphereGeometry(1,12,10),new THREE.MeshStandardMaterial({color:C('#ffffff'),transparent:true,opacity:.62,roughness:1,depthWrite:false}),48);PLUM.frustumCulled=false;PLUM.castShadow=true;SD.add(PLUM);
+const _m=new THREE.Matrix4(),_q=new THREE.Quaternion(),_p=new THREE.Vector3(),_s=new THREE.Vector3(),_c=new THREE.Color();
+/* bayangan kontak */
+[[RX,ZC,16],[10,ZC,26],[TX,ZC,17]].forEach(([x,z,s])=>pasang(new THREE.PlaneGeometry(s,s),new THREE.MeshBasicMaterial({map:tBayang,transparent:true,depthWrite:false}),SD,[x,.32,z]).rotation.x=-Math.PI/2);
+
+/* ---------- ALIRAN: strip bercahaya (1 aksen neon) ---------- */
+const glowM=o=>new THREE.MeshBasicMaterial(Object.assign({color:C(PAL.aks),transparent:true,depthWrite:false,toneMapped:false,clippingPlanes:[POT]},o));
+function stripAlir(titik,r,kec=1.8){const g=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(titik.map(p=>new THREE.Vector3(...p)),false,'catmullrom',.15),80,r,8),tx=tAlir.clone();tx.needsUpdate=true;
+  const pj=titik.reduce((s,p,i)=>i?s+Math.hypot(p[0]-titik[i-1][0],p[1]-titik[i-1][1],p[2]-titik[i-1][2]):0,0);tx.repeat.set(pj/1.0,1);
+  const o=new THREE.Mesh(g,glowM({map:tx}));o.renderOrder=3;SD.add(o);return{atur(isi,t){g.setDrawRange(0,Math.floor(clamp(isi)*80)*8*6);o.visible=isi>0;tx.offset.x=-t*kec;}};}
+const A_PANAS=stripAlir(P_PANAS,.15),A_UBEND=stripAlir(P_UBEND,.1),A_DINGIN=stripAlir(P_DINGIN,.13);
+const A_UAP=stripAlir(P_UAP,.15),A_TURBIN=stripAlir([[4.7,4.9,ZC],[4.9,4.4,ZC],[8.1,4.4,ZC],[8.6,4.7,ZC],[9.0,4.95,ZC],[13.8,4.95,ZC],[13.9,2.0,ZC],[12.6,1.1,ZC]],.12);
+const A_LISTRIK=stripAlir([[17,3.4,ZC],[19.6,3.4,ZC],[20.9,3.7,ZC],[21.6,5,ZC],[22.4,9.6,ZC],[22.5,9.9,-14],[22.5,9.9,-46]],.12,3.2);
+const A_TOWER=stripAlir([[12.6,1.1,ZC],[20,1.1,ZC],[28.4,1.1,ZC],[TX,2.0,ZC],[TX,6.5,ZC]],.14);
+// bidang potong bercahaya
+const BPOT=new THREE.Group();SD.add(BPOT);
+{const s=new THREE.Shape();s.moveTo(-18,-.4);s.lineTo(40,-.4);s.lineTo(40,16.4);s.lineTo(-18,16.4);s.lineTo(-18,-.4);
+ BPOT.add(new THREE.Mesh(new THREE.ShapeGeometry(s),new THREE.MeshBasicMaterial({color:C(PAL.aks),transparent:true,opacity:.1,depthWrite:false,side:THREE.DoubleSide,toneMapped:false})));
+ BPOT.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(s.getPoints().map(p=>new THREE.Vector3(p.x,p.y,0))),new THREE.LineBasicMaterial({color:C(PAL.aks),transparent:true,toneMapped:false})));}
+
+/* ---------- KAMERA (satu, ortografik, isometrik ±45° / ±30°) ---------- */
+const AZ=45*DEG,EL=30*DEG,ARAH=new THREE.Vector3(Math.sin(AZ)*Math.cos(EL),Math.sin(EL),Math.cos(AZ)*Math.cos(EL));
+const KD_KUNCI=[[0,[9,2,-8],118],[3.4,[8,4,-8],92],[5.6,[0,6.5,-8],58],[8.2,[-6.3,7,-8],40],[11,[-8,6,-8],30],[16.5,[-8,6,-8],28],[18.5,[-7.5,5.8,-8],30],[24,[-6.5,5.5,-8],30],[26,[-5,5,-8],26],[29,[-3,6,-8],30],[30.4,[4,4.5,-8],34],[31.5,[9,4,-8],34],[33,[14,4,-8],34],[35,[18,6,-8],46],[36.8,[24.5,6,-14],56],[38.3,[26,6,-8],52],[41.5,[26,7,-8],50],[44,[12,6,-8],100],[45.6,[12,6,-8],105]];
+const halus=k=>k*k*k*(k*(k*6-15)+10),_v=new THREE.Vector3();
+function cariKunci(K,t){let i=0;while(i<K.length-2&&t>K[i+1][0])i++;return[K[i],K[i+1],halus(clamp((t-K[i][0])/(K[i+1][0]-K[i][0])))];}
+function kameraDunia(t){const[A,B,e]=cariKunci(KD_KUNCI,t),tg=A[1].map((v,j)=>lerp(v,B[1][j],e)),h=Math.exp(lerp(Math.log(A[2]),Math.log(B[2]),e));window.HC=h;
+  tg[0]+=nz(t*.35,1)*.05;tg[2]+=nz(t*.3,2)*.05;const w=h*W/H;Object.assign(KD,{left:-w/2,right:w/2,top:h/2,bottom:-h/2});KD.updateProjectionMatrix();
+  _v.set(...tg);KD.position.copy(_v).addScaledVector(ARAH,200);KD.lookAt(_v);matahari.position.copy(_v).add(new THREE.Vector3(30,50,22));matahari.target.position.copy(_v);
+  const sh=clamp(h*.62,18,78);Object.assign(matahari.shadow.camera,{left:-sh,right:sh,top:sh,bottom:-sh,near:1,far:260});matahari.shadow.camera.updateProjectionMatrix();}
+function keLayar(p){_v.set(p[0],p[1],p[2]).project(KD);return[(_v.x+1)/2*W,(1-_v.y)/2*H];}
+
+/* ---------- LABEL: titik + garis + teks, tanpa kotak ---------- */
+const DAFTAR=[];
+function tanda(o){o.el=mk('div','lt'+(o.o[0]<0?' r':'')+(o.big?' big':'')+(o.am?' am':''),$('#tanda'),o.t+(o.s?`<small>${o.s}</small>`:'')+'<i></i>');
+  o.dot=mk('div','dot'+(o.am?' am':''),$('#tanda'));o.ln=svgEl('polyline',{fill:'none',stroke:o.am?PAL.aks:'#fff','stroke-width':3,'stroke-linecap':'round',style:'filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))'},$('#garis'));DAFTAR.push(o);return o;}
+function gambarTanda(t){DAFTAR.forEach(L=>{const k=sstep(L.a,L.a+.4,t)*(1-sstep(L.b,L.b+.3,t)),on=k>.001;
+  L.el.style.display=L.dot.style.display=on?'block':'none';L.ln.style.display=on?'':'none';if(!on)return;
+  const[x,y]=keLayar(L.p);L.dot.style.left=x+'px';L.dot.style.top=y+'px';L.dot.style.opacity=k;L.dot.style.transform=`scale(${.4+.6*sstep(L.a,L.a+.25,t)})`;
+  const ew=L.el.offsetWidth,eh=L.el.offsetHeight,kn=L.o[0]<0;let tx=x+L.o[0],ty=y+L.o[1];
+  let kiri=clamp(kn?tx-ew:tx,AMAN.kiri-10,AMAN.kanan-ew);tx=kn?kiri+ew:kiri;const atas=clamp(ty-eh,300,1330-eh);ty=atas+eh;
+  L.el.style.left=kiri+'px';L.el.style.top=atas+'px';L.el.style.opacity=sstep(L.a+.12,L.a+.45,t)*(1-sstep(L.b,L.b+.3,t));
+  L.el.lastChild.style.transform=`scaleX(${sstep(L.a+.1,L.a+.5,t)})`;const g=sstep(L.a,L.a+.35,t);L.ln.setAttribute('points',`${x},${y} ${lerp(x,tx,g)},${lerp(y,ty,g)}`);L.ln.style.opacity=k;});}
+tanda({t:'Gedung reaktor',s:'tempat atom dibelah',p:[RX,14,ZC],o:[-60,-120],a:.7,b:3.5,am:1});
+tanda({t:'Gedung turbin',s:'tempat listrik dibuat',p:[10,9.2,ZC],o:[40,-170],a:1.3,b:3.5});
+tanda({t:'Menara pendingin',s:'melepas uap air',p:[TX+4,13,ZC],o:[40,-130],a:1.9,b:3.5});
+tanda({t:'Bejana reaktor',s:'baja tebal, penuh air',p:[VX-1.9,5.4,ZC],o:[-50,-200],a:6.2,b:9.8});
+tanda({t:'Batang bahan bakar',s:'berisi uranium',p:[VX+.42,3.9,ZC],o:[190,210],a:9.9,b:17.4,am:1});
+tanda({t:'Air bertekanan',s:'dalam bejana reaktor',p:[VX+.6,2.6,ZC],o:[190,160],a:19.0,b:24.4,am:1});
+tanda({t:'Bejana reaktor',s:'baja tebal, penuh air',p:[VX-1.9,5.4,ZC],o:[-50,-200],a:19.9,b:22.0});
+tanda({t:'Generator uap',s:'air panas ke air kedua',p:[SX+1.2,4.2,ZC],o:[170,-210],a:25.9,b:29.8,am:1});
+tanda({t:'Uap',s:'siap memutar turbin',p:[SX,7.6,ZC],o:[170,-90],a:29.0,b:30.7,big:1,am:1});
+tanda({t:'Turbin',s:'diputar oleh uap',p:[11.2,5.3,ZC],o:[-40,-220],a:30.5,b:36.0});
+tanda({t:'Generator listrik',s:'turbin memutar magnet',p:[16.2,4.9,ZC],o:[60,-190],a:32.0,b:36.0,am:1});
+tanda({t:'Tiang transmisi',s:'listrik menuju rumah',p:[22.5,11.4,-16],o:[-70,-150],a:36.2,b:43.8,am:1});
+tanda({t:'Menara pendingin',s:'uap jadi air lagi',p:[TX+3,8,ZC],o:[-60,-210],a:38.7,b:43.6,am:1});
+tanda({t:'Dipakai lagi',s:'air kembali ke pembangkit',p:[22,1.1,ZC-1.3],o:[-60,170],a:40.2,b:43.6});
+const JEJAK=[[0,'PLTN'],[3.6,'PLTN › <b>DIBELAH</b>'],[5.8,'PLTN › <b>REAKTOR</b>'],[9.6,'REAKTOR › <b>ATOM URANIUM</b>'],[17.8,'REAKTOR › <b>AIR PANAS</b>'],[24.7,'REAKTOR › <b>GENERATOR UAP</b>'],[29.9,'GENERATOR UAP › <b>TURBIN</b>'],[32.8,'TURBIN › <b>LISTRIK</b>'],[37.7,'PLTN › <b>PENDINGIN</b>'],[43.9,'PLTN']];
+const ZOOM=null;
+function nilaiTabel(T,t){let i=0;while(i<T.length-2&&t>T[i+1][0])i++;return lerp(T[i][1],T[i+1][1],clamp((t-T[i][0])/(T[i+1][0]-T[i][0])));}
+
+/* ---------- tambahan: kabel transmisi, gelembung uap, inset fisi, angka suhu ---------- */
+{const km=bhn('#2f3438',{roughness:.6},false);[[22.5,-16,-30],[22.5,-30,-44]].forEach(([x,z0,z1])=>{[[-3.6,9.4],[3.6,9.4],[-3.2,11.4],[3.2,11.4]].forEach(([dx,y])=>batang([x+dx,y-.15,z0],[x+dx,y-.15,z1],.045,km,SD));});}
+const A_BALIK=stripAlir([[TX-1,2.0,ZC-1.3],[28.4,1.1,ZC-1.3],[20,1.1,ZC-1.3],[12.8,1.1,ZC-1.3]],.12);
+const BUB=new THREE.InstancedMesh(new THREE.SphereGeometry(.09,8,6),new THREE.MeshBasicMaterial({color:C('#ffffff'),transparent:true,opacity:.85,depthWrite:false,toneMapped:false,clippingPlanes:[POT]}),70);BUB.frustumCulled=false;SD.add(BUB);
+function gambarGelembung(t){const k=sstep(27.0,28.8,t);for(let i=0;i<70;i++){const y=2.3+((t*(.7+hash(i+2)*.6)+hash(i+9))%1)*4.4;_p.set(SX+(hash(i)*2-1)*.8,y,ZC+(hash(i+30)-.5)*.8);_s.setScalar(hash(i+50)<k?(.6+hash(i+4)*.8):1e-4);_m.compose(_p,_q,_s);BUB.setMatrixAt(i,_m);}BUB.instanceMatrix.needsUpdate=true;}
+const INS=mk('canvas','',$('#stage'));INS.width=INS.height=440;Object.assign(INS.style,{position:'absolute',left:'560px',top:'190px',width:'440px',height:'440px',borderRadius:'50%',zIndex:12,opacity:0,boxShadow:'0 0 0 5px rgba(255,255,255,.95),0 0 44px rgba(18,242,198,.5),0 10px 34px rgba(0,0,0,.5)'});
+const INT=mk('div','',$('#stage'),'URANIUM-235<small style="display:block;font:700 30px/1.2 var(--fm);color:#fff;margin-top:6px">dibelah neutron</small>');Object.assign(INT.style,{position:'absolute',left:'560px',top:'652px',width:'440px',textAlign:'center',zIndex:12,opacity:0,font:'800 40px/1 var(--fm)',color:PAL.aks,textShadow:'0 2px 3px rgba(0,0,0,.8),0 0 14px rgba(0,0,0,.6)'});
+const INC=INS.getContext('2d'),NK=Array.from({length:26},(_,i)=>{const a=hash(i+1)*6.283,r=Math.sqrt(hash(i+40))*38;return{x:Math.cos(a)*r,y:Math.sin(a)*r,p:hash(i+80)<.5};});
+function gambarInset(t){const vis=sstep(9.6,10.1,t)*(1-sstep(17.0,17.5,t));INS.style.opacity=INT.style.opacity=vis;if(vis<=0)return;
+  const c=INC;c.clearRect(0,0,440,440);const g=c.createRadialGradient(220,220,10,220,220,230);g.addColorStop(0,'#1d3d44');g.addColorStop(1,'#08161a');c.fillStyle=g;c.fillRect(0,0,440,440);
+  c.strokeStyle='rgba(255,255,255,.05)';c.lineWidth=2;for(let i=0;i<440;i+=44){c.beginPath();c.moveTo(i,0);c.lineTo(i,440);c.stroke();c.beginPath();c.moveTo(0,i);c.lineTo(440,i);c.stroke();}
+  const hit=11.45,sp=12.2,ks=seg(t,sp,sp+1.5),dx=135*E.out(ks),pecah=t>=sp;
+  const panas=sstep(15.6,16.6,t);if(panas>0){const gp=c.createRadialGradient(220,220,10,220,220,220);gp.addColorStop(0,'rgba(255,179,107,'+(.55*panas)+')');gp.addColorStop(1,'rgba(255,179,107,0)');c.fillStyle=gp;c.fillRect(0,0,440,440);
+    c.strokeStyle='rgba(255,179,107,'+(.7*panas)+')';c.lineWidth=4;for(let i=0;i<10;i++){const a=i/10*6.283+t*.4,r0=70+((t*80+i*23)%90);c.beginPath();c.arc(220+Math.cos(a)*r0*.6,220+Math.sin(a)*r0*.6,16,a,a+1.6);c.stroke();}}
+  const sh=t>hit&&t<sp?Math.sin(t*60)*3*seg(t,hit,sp):0,st=t>hit&&t<sp?1+.5*E.io(seg(t,hit,sp)):1;
+  NK.forEach(n=>{let x=n.x,y=n.y;if(pecah){const sg=x<0?-1:1;x=x*.8+sg*(dx+14);y=y*.8;}else{x=x*st+sh;y=y/Math.sqrt(st)+sh*.6;}
+    c.beginPath();c.arc(220+x,220+y,13,0,7);c.fillStyle=n.p?'#e9eef0':'#8ea5ae';c.shadowColor=PAL.aks;c.shadowBlur=t>hit?14:6;c.fill();c.shadowBlur=0;c.lineWidth=2;c.strokeStyle='rgba(0,0,0,.25)';c.stroke();});
+  const nx=lerp(-300,-60,E.in(seg(t,10.2,hit)));if(t>=10.2&&t<hit){c.beginPath();c.arc(220+nx,220,14,0,7);c.fillStyle=PAL.aks;c.shadowColor=PAL.aks;c.shadowBlur=26;c.fill();c.shadowBlur=0;}
+  if(pecah){[-70,100,200].forEach((ang)=>{const a=ang*DEG,r=30+300*E.out(seg(t,sp,sp+1.3)),al=1-sstep(14.2,15.4,t);if(al<=0)return;c.beginPath();c.arc(220+Math.cos(a)*r,220+Math.sin(a)*r,12,0,7);c.fillStyle='rgba(18,242,198,'+al+')';c.shadowColor=PAL.aks;c.shadowBlur=26;c.fill();c.shadowBlur=0;});
+    const f=seg(t,sp,sp+.8);if(f<1){c.beginPath();c.arc(220,220,230*E.out(f),0,7);c.lineWidth=10*(1-f)+1;c.strokeStyle='rgba(200,255,245,'+(1-f)+')';c.stroke();}}}
+const ANG=mk('div','',$('#stage'));Object.assign(ANG.style,{position:'absolute',left:'70px',top:'350px',zIndex:12,opacity:0,font:'900 70px/1 var(--fj)',color:PAL.ta,textShadow:'0 3px 3px rgba(0,0,0,.7),0 0 18px rgba(0,0,0,.5)'});
+function gambarAngka(t){const o=sstep(22.0,22.4,t)*(1-sstep(24.1,24.5,t));ANG.style.opacity=o;if(o>0)ANG.innerHTML='± 300 °C<small style="display:block;font:700 30px/1.15 var(--fm);color:rgba(255,255,255,.88);margin-top:8px">TEKANAN ± 150 ATM</small>';}
+
+/* ---------- SCENE ---------- */
+const SCENE={dur:WAKTU.dur,
+  kata:[['Kenapa',0.4,0.738],['nuklir',0.738,1.125],['bisa',1.125,1.387],['menghasilkan',1.387,1.938],['listrik?',1.938,2.537],['Kita',3.375,3.637],['bongkar',3.637,3.975],['pembangkitnya',3.975,4.612],['dari',4.612,4.825],['dalam.',4.825,5.362],['Rahasianya',6.2,6.975],['ada',6.975,7.263],['di',7.263,7.35],['dalam',7.35,7.6],['reaktor.',7.6,8.213],['Di',8.713,8.888],['dalam',8.888,9.113],['reaktor,',9.113,9.65],['atom',9.963,10.213],['uranium',10.213,10.588],['ditabrak',10.588,11.0],['neutron',11.0,11.388],['lalu',11.388,11.613],['terbelah.',11.613,12.225],['Inilah',13.062,13.388],['pembelahan,',13.388,14.05],['atau',14.325,14.6],['fisi,',14.6,15.15],['dan',15.438,15.638],['ia',15.638,15.788],['melepas',15.788,16.1],['panas',16.1,16.45],['yang',16.45,16.575],['sangat',16.575,16.85],['besar.',16.85,17.375],['Panas',17.875,18.162],['itu',18.162,18.425],['memanaskan',18.425,18.962],['air',18.962,19.225],['bertekanan',19.225,19.8],['di',19.8,19.887],['bejana',19.887,20.262],['reaktor.',20.262,20.85],['Airnya',21.688,22.1],['sangat',22.1,22.375],['panas,',22.375,22.912],['tapi',23.15,23.412],['tidak',23.412,23.637],['mendidih.',23.637,24.25],['Air',24.762,24.987],['panas',24.987,25.262],['ini',25.262,25.5],['mengalir',25.5,25.862],['ke',25.862,25.962],['generator',25.962,26.375],['uap,',26.375,26.8],['dan',27.1,27.3],['memanaskan',27.3,27.8],['air',27.8,28.012],['kedua',28.012,28.375],['sampai',28.375,28.712],['menjadi',28.712,29.037],['uap.',29.037,29.487],['Uap',30.0,30.212],['memutar',30.212,30.525],['turbin,',30.525,31.087],['turbin',31.363,31.7],['memutar',31.7,32.038],['generator,',32.038,32.688],['dan',32.95,33.163],['listrik',33.163,33.475],['pun',33.475,33.638],['tercipta.',33.638,34.312],['Lalu',35.15,35.462],['dialirkan',35.462,36.0],['lewat',36.0,36.25],['tiang',36.25,36.487],['transmisi.',36.487,37.288],['Uapnya',37.8,38.163],['didinginkan',38.163,38.7],['di',38.7,38.775],['menara',38.775,39.013],['pendingin,',39.013,39.638],['lalu',39.913,40.2],['dipakai',40.2,40.562],['lagi.',40.562,41.05],['Begitu',41.888,42.237],['terus,',42.237,42.712],['tanpa',42.925,43.25],['henti.',43.25,43.788]].map(([w,t0,t1])=>({w,t0,t1})),
+  sub:{font:"900 66px 'Overpass'",warna:'#ffffff',aksen:PAL.tb,y:.755,maks:4,kunci:["nuklir", "listrik", "bongkar", "dalam", "uranium", "neutron", "terbelah", "fisi", "panas", "besar", "bertekanan", "uap", "turbin", "generator", "tercipta", "transmisi", "menara", "pendingin", "dipakai"]},
+  audio:{vo:[{src:'assets/audio/vo-01.mp3',at:0.30,teks:"Kenapa nuklir bisa menghasilkan listrik? Kita bongkar pembangkitnya dari dalam. Rahasianya ada di dalam reaktor."},{src:'assets/audio/vo-02.mp3',at:8.61,teks:"Di dalam reaktor, atom uranium ditabrak neutron lalu terbelah. Inilah pembelahan, atau fisi, dan ia melepas panas yang sangat besar."},{src:'assets/audio/vo-03.mp3',at:17.77,teks:"Panas itu memanaskan air bertekanan di bejana reaktor. Airnya sangat panas, tapi tidak mendidih."},{src:'assets/audio/vo-04.mp3',at:24.65,teks:"Air panas ini mengalir ke generator uap, dan memanaskan air kedua sampai menjadi uap."},{src:'assets/audio/vo-05.mp3',at:29.89,teks:"Uap memutar turbin, turbin memutar generator, dan listrik pun tercipta. Lalu dialirkan lewat tiang transmisi."},{src:'assets/audio/vo-06.mp3',at:37.69,teks:"Uapnya didinginkan di menara pendingin, lalu dipakai lagi. Begitu terus, tanpa henti."}],sfx:[{src:'assets/audio/sfx-whoosh.wav',at:3.45,vol:.4},{src:'assets/audio/sfx-tik.wav',at:.62,vol:.3},{src:'assets/audio/sfx-tik.wav',at:6.1,vol:.3},{src:'assets/audio/sfx-zap.wav',at:12.0,vol:.45},{src:'assets/audio/sfx-tik.wav',at:25.85,vol:.3},{src:'assets/audio/sfx-hum.wav',at:30.1,vol:.28},{src:'assets/audio/sfx-tik.wav',at:31.95,vol:.3},{src:'assets/audio/sfx-zing.wav',at:33.0,vol:.4},{src:'assets/audio/sfx-hiss.wav',at:38.3,vol:.3},{src:'assets/audio/sfx-tik.wav',at:38.65,vol:.3}],music:null},
+  frame(t){
+    kameraDunia(t);
+    // bidang potong menyapu dari depan ke tengah
+    const kp=E.io(seg(t,...WAKTU.potong)),zc=lerp(18,ZP,kp);POT.constant=zc;BPOT.position.z=zc+.01;
+    BPOT.visible=t>WAKTU.potong[0]-.05&&t<WAKTU.potong[1]+.5;BPOT.children.forEach((c,i)=>c.material.opacity=(i?1:.12)*Math.sin(Math.PI*clamp(seg(t,WAKTU.potong[0]-.05,WAKTU.potong[1]+.5))));
+    // laut, awan uap, truk
+    LAUT.offset.set(t*.012,t*.006);
+    const r=hash;PLUM.count=48;for(let i=0;i<48;i++){const u=(t*.09+r(i+1))%1,x=TX+nz(t*.2+i,i)*1.2+u*5.5,y=15.4+u*10,s=1.7+u*3.4;_p.set(x,y,ZC+nz(t*.15+i,i+9)*1.5);_s.setScalar(s);_m.compose(_p,_q,_s);PLUM.setMatrixAt(i,_m);}PLUM.instanceMatrix.needsUpdate=true;
+    truk.position.set(GX0+((t*3+10)%(GX1-GX0+8)),0,6.6);
+    // teras reaktor menyala setelah dibelah
+    const kj=sstep(...WAKTU.kerja,t),den=.65+.35*Math.sin(t*5),fis=sstep(11.4,12.2,t)*(1-sstep(16.5,17.5,t)),spike=t>12.2?Math.exp(-(t-12.2)*2.2):0;
+    matBB.emissiveIntensity=.25+kj*(2.2*den)+fis*1.4+spike*3;PL.intensity=kj*3.2*den+fis*3+spike*6;
+    for(let i=0;i<NPT;i++){const a=hash(i+3)*6.28+t*(1+hash(i)*2),rr=.2+hash(i+9)*1.0,y=2.0+((t*(.6+hash(i+5)*.8)+hash(i+7))%1)*3.6;_p.set(VX+Math.cos(a)*rr*.8,y,ZC+Math.sin(a)*rr*.8);_s.setScalar(kj>.02?1:1e-4);_m.compose(_p,_q,_s);PART.setMatrixAt(i,_m);}PART.instanceMatrix.needsUpdate=true;
+    {let a=0;for(let u=0;u<t;u+=1/30){a+=(1+14*sstep(30.2,31.4,u))/30;}ROTOR.forEach(g=>g.rotation.x=a);}
+    A_PANAS.atur(seg(t,18.4,19.8),t);A_UBEND.atur(seg(t,25.4,26.6),t);A_DINGIN.atur(seg(t,26.5,27.7),t);
+    A_UAP.atur(seg(t,29.0,30.2),t);A_TURBIN.atur(seg(t,30.4,31.7),t);A_LISTRIK.atur(seg(t,33.2,35.4),t);A_TOWER.atur(seg(t,38.8,40.2),t);A_BALIK.atur(seg(t,40.4,41.8),t);
+    gambarGelembung(t);gambarInset(t);gambarAngka(t);
+    RD.render(SD,KD);
+    let j=JEJAK[0][1];JEJAK.forEach(([s,x])=>{if(t>=s)j=x;});$('#jejak').innerHTML=j+`<span class="z">×${Math.max(1,Math.round(118/(window.HC||118)))}<small>ZOOM</small></span>`;
+    gambarTanda(t);
+  }};

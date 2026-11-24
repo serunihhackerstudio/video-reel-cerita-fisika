@@ -34,7 +34,7 @@ Isi tiap folder: `scene.html` (adegan three.js + subtitle + label), `naskah.md` 
 4. **Bangun semua adegan** mengikuti waktu suara, cek potret.
 5. **Render** MP4 1080×1920, 30 fps (`mf.py render`, Chrome headless + ffmpeg).
 6. **Sampul** bergaya Reels akun (judul, kata kunci di blok aksen, pill fakta, label Toufani RA).
-7. **Publikasi**: Reels, lalu **story** (cuplikan ±14 dtk), lalu **postingan karusel** (7 slide 4:5).
+7. **Publikasi**: Facebook Reels, lalu **story** (cuplikan ±14 dtk), lalu **postingan karusel** (7 slide 4:5). Keenam video pertama juga diunggah ke **Instagram Reels** dan **YouTube Shorts**.
 
 Pembuat kode adegan per video disimpan sebagai potongan `.xx_*.js` dan dirakit oleh `.asm_*.py` (mis. `.asm_ent.py`, `.asm_bh.py`, `.asm_mr.py`).
 

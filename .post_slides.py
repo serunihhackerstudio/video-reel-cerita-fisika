@@ -34,6 +34,12 @@ D = {
            ('Batas penyelam', 'Penyelam biasa hanya aman sampai puluhan meter: gas tertekan dan gas napas mulai berbahaya.'),
            ('Rongga udara', 'Air sulit dimampatkan, tapi rongga berisi udara tidak. Tanpa pelindung tak ada manusia bertahan.'),
            ('Kapsul dan kehidupan', 'Trieste 1960, Cameron 2012, Vescovo 2019. Dan di sana tetap ada kehidupan.')]},
+ 'pelari': {'acc': (46,155,255), 'fg': (255,255,255), 'tag': 'FISIKA · RELATIVITAS', 'judul': 'Pria berlari mendekati kecepatan cahaya', 'hash': '#relativitas #kecepatancahaya #fisika #einstein #lhc #sains #edukasi #ToufaniRA',
+  'poin': [('7× keliling Bumi per detik', 'Cahaya ±300.000 km/detik, keliling Bumi ±40.000 km. Di 99% kecepatan cahaya, pria itu mengitari Bumi ±7 kali tiap detik.'),
+           ('Energi tak terhingga', 'Makin cepat makin besar energinya. Mencapai kecepatan cahaya butuh energi tak terhingga untuk benda bermassa, jadi hanya bisa mendekati.'),
+           ('Udara jadi plasma', 'Molekul udara menumbuknya dengan energi sangat besar, dan udara di depannya berubah jadi plasma panas yang meledak.'),
+           ('Relativitas khusus', 'Bagi sang pelari, waktu melambat (dilatasi waktu) dan jalan di depannya memendek (kontraksi panjang).'),
+           ('Ledakan energi', 'Bagi orang di sekitarnya, tubuhnya jadi ledakan energi dalam sekejap. Tidak ada manusia yang bisa melakukannya di Bumi.')]},
 }
 def wrap(d, text, font, maxw):
     out, cur = [], ''
@@ -43,7 +49,10 @@ def wrap(d, text, font, maxw):
         else: out.append(cur); cur = w
     if cur: out.append(cur)
     return out
+import sys
+SEL=sys.argv[1:]
 for name, v in D.items():
+    if SEL and name not in SEL: continue
     acc, fg = v['acc'], v['fg']
     out = f'post/{name}'
     # 1. sampul

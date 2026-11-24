@@ -12,8 +12,12 @@ V = [
  ('entanglement', '2026-11-24_entanglement-kuantum.mp4', 14.9, 14.0, 'FISIKA KUANTUM', 'APA ITU', 'ENTANGLEMENT', 'KUANTUM?', (122,92,255), (255,255,255)),
  ('blackhole', '2026-11-24_black-hole-dan-lubang-cacing.mp4', 6.8, 14.0, 'ASTRONOMI \u00b7 RELATIVITAS', 'MASUK', 'BLACK HOLE', 'APA YANG TERJADI?', (255,106,31), (255,255,255)),
  ('mariana', '2026-11-24_palung-mariana-menyelam.mp4', 6.3, 14.0, 'SAMUDRA \u00b7 LAUT DALAM', 'MENYELAM KE', 'PALUNG MARIANA', 'APA YANG TERJADI?', (25,227,255), (4,28,40)),
+ ('pelari', '2026-11-24_pelari-kecepatan-cahaya.mp4', 26.0, 14.0, 'FISIKA · RELATIVITAS', 'PRIA BERLARI', 'MENDEKATI CAHAYA', 'APA YANG TERJADI?', (46,155,255), (255,255,255)),
 ]
+import sys
+SEL = sys.argv[1:]
 for fol, mp4, ss, dur, tag, l1, kunci, l3, acc, fg in V:
+    if SEL and fol not in SEL: continue
     im = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
     # gradasi lembut atas & bawah supaya teks terbaca
     for y in range(0, 700):

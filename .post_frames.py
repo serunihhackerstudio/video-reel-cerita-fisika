@@ -8,10 +8,13 @@ T = {
  'entanglement': [5.2, 9.5, 17.4, 26.5, 35.6, 49.5],
  'blackhole': [1.5, 9.4, 17.6, 31.5, 41.5, 48.6],
  'mariana': [5.6, 9.4, 19.5, 31.0, 41.0, 49.0],
+ 'pelari': [14.8, 21.0, 31.5, 38.5, 46.5, 52.5, 30.5],
 }
 os.makedirs('post', exist_ok=True)
 port = 9600
+SEL = sys.argv[1:] or list(T)
 for name, ts in T.items():
+    if name not in SEL: continue
     port += 1
     tmp = os.path.join(tempfile.gettempdir(), 'pf-' + name)
     shutil.rmtree(tmp, ignore_errors=True)
@@ -23,8 +26,8 @@ for name, ts in T.items():
     e2 = dict(env); e2['MF_PORT'] = str(port)
     for attempt in range(3):
         r = subprocess.run([sys.executable, MF, 'potret', tmp, '--t', ','.join(str(x) for x in ts)], env=e2, capture_output=True, text=True)
-        if os.path.exists(os.path.join(tmp, '.potret', '05.jpg')): break
+        if os.path.exists(os.path.join(tmp, '.potret', '%02d.jpg' % (len(ts) - 1))): break
     os.makedirs(f'post/{name}', exist_ok=True)
-    for i in range(6):
+    for i in range(len(ts)):
         shutil.copy(os.path.join(tmp, '.potret', f'{i:02d}.jpg'), f'post/{name}/f{i}.jpg')
     print(name, 'ok')

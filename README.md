@@ -13,6 +13,7 @@ Sumber video explainer **Shorts/Reels 9:16 (±40–55 detik)** bergaya **3D isom
 | [`entanglement/`](entanglement) | Apa itu entanglement kuantum? | ungu-biru elektrik | ±54 dtk |
 | [`blackhole/`](blackhole) | Apa yang terjadi kalau manusia memasuki black hole, dan bagaimana dengan lubang cacing? | oranye menyala | ±56 dtk |
 | [`mariana/`](mariana) | Apa yang terjadi kalau manusia menyelam ke Palung Mariana? | biru bioluminesens | ±53 dtk |
+| [`pelari/`](pelari) | Apa yang terjadi kalau seorang pria berlari mendekati kecepatan cahaya di Bumi? | biru listrik | ±57 dtk |
 | [`higgs/`](higgs) | Kenapa partikel Tuhan (boson Higgs) sangat penting? | — | — |
 
 Isi tiap folder: `scene.html` (adegan three.js + subtitle + label), `naskah.md` atau `caption.txt`, `assets/audio/` (voiceover dan efek suara), `thumbnail.jpg` (sampul), dan `potret-adegan1/` (3 potret adegan pembuka).
@@ -45,7 +46,7 @@ Pembuat kode adegan per video disimpan sebagai potongan `.xx_*.js` dan dirakit o
 | `.sfx.py` | sintesis efek suara (whoosh, tik, zap, hum, zing, hiss) |
 | `.asm_*.py` | merakit `scene.html` dari potongan kode |
 | `.story.py` | membuat klip story (cuplikan + overlay judul dan ajakan) |
-| `.post_frames.py`, `.post_slides.py` | frame bersih dan 7 slide karusel per video |
+| `.post_frames.py`, `.post_slides.py` | frame bersih dan 7 slide karusel per video (argumen: nama video, mis. `python .post_slides.py pelari`) |
 
 ## Kebutuhan
 

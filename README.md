@@ -57,4 +57,4 @@ Pembuat kode adegan per video disimpan sebagai potongan `.xx_*.js` dan dirakit o
 ## Catatan
 
 - Konten sains disusun untuk edukasi; tidak ada rancangan perangkat berbahaya.
-- Satu-satunya nama akun/merek yang dipakai: **Toufani RA**.
+- Nama akun dan hashtag mengikuti platform: Facebook **Toufani RA** (`#ToufaniRA`), Instagram **serunihstudio** (`#serunihstudio`), YouTube **SerunihStudio** (`#SerunihStudio`). Teks sampul memakai Toufani RA.

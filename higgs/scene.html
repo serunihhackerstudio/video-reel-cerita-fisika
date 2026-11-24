@@ -40,9 +40,9 @@
    Skala disederhanakan: 1 satuan ≈ ±5 m horizontal untuk pemandangan, terowongan digambar lebih besar dari aslinya agar terlihat. */
 const PAL={langit:['#8fb7d9','#cfe0ea','#efe6d2'],aks:'#ffb02e',tb:'#ffd27a',ta:'#ffe6b0'};
 {const s=document.documentElement.style;[['--l1',PAL.langit[0]],['--l2',PAL.langit[1]],['--l3',PAL.langit[2]],['--alir',PAL.aks],['--aks',PAL.aks],['--tb',PAL.tb],['--ta',PAL.ta]].forEach(([k,v])=>s.setProperty(k,v));}
-const WAKTU={potong:[6.4,8.6],dur:8.8};
+const WAKTU={potong:[6.4,8.6],potong2:[27.0,30.0],tc:35.9,dur:50.0};
 const HB=130,DEPTH=16,YT=36;               // setengah lebar blok tanah, kedalaman blok, tinggi atas referensi tekstur lapisan
-const RING_R=48,RING_C=[0,-48],RING_Y=-6;  // cincin LHC (terowongan ±100 m) tepat di bawah kompleks (0,0)
+const RING_Y=-7.5;  // sumbu terowongan LHC ±100 m di bawah tanah; di bawah kompleks (0,0) jalurnya lurus
 
 /* ---------- ALAT 3D ---------- */
 const C=h=>new THREE.Color(h).convertSRGBToLinear(),DEG=Math.PI/180;
@@ -108,7 +108,7 @@ function tinggi(x,z){
   const pd=Math.hypot((x+5)/44,(z-8)/34);h*=sstep(1.0,1.8,pd);
   const m=sstep(50,130,d);h+=m*m*(11+10*Math.abs(Math.sin(x*.06-z*.04+.7))+6*Math.abs(Math.sin(x*.13+z*.11))+4*Math.abs(Math.sin(x*.23+z*.19)));
   const ml=sstep(62,122,-x);h+=ml*ml*(8+6*Math.abs(Math.sin(z*.07+x*.03)));
-  const q=Math.hypot((x-80)/34,(z+18)/54),lk=1-sstep(.55,1.05,q);h=h*(1-lk)-2.8*lk;
+  const q=Math.hypot((x-98)/32,(z+18)/54),lk=1-sstep(.55,1.05,q);h=h*(1-lk)-2.8*lk;
   return h;}
 const FIELD=['#6f9a3e','#82aa42','#b3ad4c','#d0b95a','#5e8c36','#93b24f','#c4a95a','#78a047'].map(C),LAWN=C('#6f9a42'),SAND=C('#cdbf94'),MUD=C('#6d806a'),ASPAL=C('#4a4d51');
 const BATU=[C('#6f695f'),C('#857d6e'),C('#58534a')],SALJU=C('#f1f4f6'),KABUT=C('#bcd0df'),PADANG=C('#8aa05a'),_c=new THREE.Color();
@@ -136,33 +136,49 @@ function dinding(sumbuX){const n=NT,pos=new Float32Array((n+1)*2*3),uv=new Float
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('uv',new THREE.BufferAttribute(uv,2));g.setAttribute('normal',new THREE.BufferAttribute(nr,3));g.setIndex(idx);
   const m=new THREE.Mesh(g,new THREE.MeshStandardMaterial({map:tStrata,roughness:1,side:THREE.DoubleSide,clippingPlanes:[POT],clipShadows:true}));m.receiveShadow=true;SD.add(m);}
 dinding(true);dinding(false);
-/* permukaan potong (muncul saat bidang potong menyapu): lapisan tanah berwarna */
+/* permukaan potong: kanvas lapisan tanah + lubang (gua, sumur, terowongan) yang dihitung dari posisi bidang */
 const CN=160,CAPG=new THREE.BufferGeometry(),capP=new Float32Array((CN+1)*6),capU=new Float32Array((CN+1)*4),capN=new Float32Array((CN+1)*6),capI=[];
 for(let i=0;i<=CN;i++){capN.set([0,0,1,0,0,1],i*6);if(i<CN)capI.push(2*i,2*i+1,2*i+2,2*i+1,2*i+3,2*i+2);}
 CAPG.setAttribute('position',new THREE.BufferAttribute(capP,3));CAPG.setAttribute('uv',new THREE.BufferAttribute(capU,2));CAPG.setAttribute('normal',new THREE.BufferAttribute(capN,3));CAPG.setIndex(capI);
-const CAP=new THREE.Mesh(CAPG,new THREE.MeshStandardMaterial({map:tStrata,roughness:1,side:THREE.DoubleSide}));CAP.receiveShadow=true;CAP.frustumCulled=false;CAP.visible=false;SD.add(CAP);
-function aturCap(zc){for(let i=0;i<=CN;i++){const x=-HB+i*2*HB/CN,y=tinggi(x,zc)+.02;capP.set([x,y,zc-.01,x,-DEPTH,zc-.01],i*6);capU.set([x/30,(y+DEPTH)/(YT+DEPTH),x/30,0],i*4);}
+const CCW=4096,CCH=1024,capCv=kanvas(CCW,CCH),cx=capCv.getContext('2d'),tCapC=new THREE.CanvasTexture(capCv);tCapC.encoding=THREE.sRGBEncoding;tCapC.anisotropy=8;
+const CAP=new THREE.Mesh(CAPG,new THREE.MeshStandardMaterial({map:tCapC,alphaTest:.5,roughness:1,side:THREE.DoubleSide}));CAP.receiveShadow=true;CAP.frustumCulled=false;CAP.visible=false;SD.add(CAP);
+const px=x=>(x+HB)/(2*HB)*CCW,py=y=>(YT-y)/(YT+DEPTH)*CCH;
+const zAx=x=>{const a=Math.abs(x);return a<=20?0:-(40-Math.sqrt(Math.max(0,1600-(a-20)*(a-20))));};
+let capKey='';
+function lukisCap(zc){const ada=zc<9.5,key=ada?Math.round(zc*40):'p';if(key===capKey)return;capKey=key;
+  cx.globalCompositeOperation='source-over';cx.clearRect(0,0,CCW,CCH);for(let u=0;u<CCW;u+=512)cx.drawImage(tStrata.image,0,0,256,1024,u,0,512,CCH);
+  const bentuk=[];
+  if(ada&&Math.abs(zc)<9)bentuk.push([[-13,-2.4],[13,-2.4],[13,-13],[-13,-13]]);
+  if(Math.abs(zc)<4.4){const w=Math.sqrt(4.4*4.4-zc*zc);bentuk.push([[16.5-w,.06],[16.5+w,.06],[16.5+w,-13],[16.5-w,-13]]);}
+  {const atas=[],bawah=[];for(let x=-40;x<=40;x+=.5){const d=1.4*1.4-(zAx(x)-zc)*(zAx(x)-zc);if(d>0){const h=Math.sqrt(d);atas.push([x,RING_Y+h]);bawah.push([x,RING_Y-h]);}}
+   if(atas.length>2)bentuk.push(atas.concat(bawah.reverse()));}
+  const jalur=()=>{cx.beginPath();bentuk.forEach(pg=>{pg.forEach(([x,y],i)=>i?cx.lineTo(px(x),py(y)):cx.moveTo(px(x),py(y)));cx.closePath();});};
+  cx.globalCompositeOperation='destination-out';cx.fillStyle='#000';jalur();cx.fill();
+  cx.globalCompositeOperation='source-atop';cx.strokeStyle='rgba(30,20,10,.65)';cx.lineWidth=5;jalur();cx.stroke();
+  tCapC.needsUpdate=true;}
+function aturCap(zc){for(let i=0;i<=CN;i++){const x=-HB+i*2*HB/CN,y=tinggi(x,zc)+.02;capP.set([x,y,zc-.01,x,-DEPTH,zc-.01],i*6);const u=(x+HB)/(2*HB);capU.set([u,(y+DEPTH)/(YT+DEPTH),u,0],i*4);}
   CAPG.attributes.position.needsUpdate=CAPG.attributes.uv.needsUpdate=true;}
 /* danau */
 {const sx=salin(tLaut,1,1);const air=new THREE.Mesh(new THREE.PlaneGeometry(2*HB,2*HB),bhn('#ffffff',{map:sx,roughness:.12,metalness:.05,envMapIntensity:1.4}));air.rotation.x=-Math.PI/2;air.position.y=-.9;air.receiveShadow=true;SD.add(air);window.LAUT=sx;
- [[80,-12,.3],[93,-34,-.6],[70,-40,.9]].forEach(([x,z,ry])=>{const g=new THREE.Group();g.position.set(x,-.9,z);g.rotation.y=ry;SD.add(g);kotak(-1.6,1.6,0,.7,-.5,.5,bhn('#f4f1ea',{roughness:.5}),g);
+ [[100,-12,.3],[110,-34,-.6],[90,-30,.9]].forEach(([x,z,ry])=>{const g=new THREE.Group();g.position.set(x,-.9,z);g.rotation.y=ry;SD.add(g);kotak(-1.6,1.6,0,.7,-.5,.5,bhn('#f4f1ea',{roughness:.5}),g);
   const s=new THREE.Shape();s.moveTo(0,.7);s.lineTo(0,4.6);s.lineTo(1.8,.9);s.lineTo(0,.7);pasang(new THREE.ShapeGeometry(s),bhn('#ffffff',{side:THREE.DoubleSide,roughness:.8}),g,[0,0,0]);});}
 
 /* ---------- KOMPLEKS CERN (permukaan, di atas detektor ATLAS) ---------- */
 const betonM=bhn('#ffffff',{map:tBeton,roughness:.92,envMapIntensity:.3}),bajaM=bhn('#ffffff',{map:tSikat,metalness:.85,roughness:.34}),bajaG=bhn('#ffffff',{map:tSikatG,metalness:.8,roughness:.4});
 const aspalM=bhn('#ffffff',{map:tAspal,roughness:.88,envMapIntensity:.2});
-// balai utama SX1 (di atas gua detektor)
+// balai utama SX1 (di atas gua detektor), pusat x=-4, z=0
 {const sisi=bhn('#ffffff',{map:tBalai,metalness:.35,roughness:.5,envMapIntensity:.5}),atap=bhn('#b5bcc1',{map:tSikat,metalness:.6,roughness:.45});
- const bal=pasang(new THREE.BoxGeometry(24,11,14),[sisi,sisi,atap,atap,sisi,sisi].map(m=>m),SD,[-4,5.5,-2]);
- kotak(-16.3,8.3,10.8,11.4,-9.3,5.3,bajaG,SD);   // lis atap
- kotak(-10,-4,11.4,13.4,-6,-1,sisi,SD);kotak(1,6,11.4,12.6,-7,2,sisi,SD);   // rumah ventilasi di atap
- [-9,-1.5,5].forEach(x=>silinder(.5,11.4,14.4,bajaM,SD,null,[x,12.9,2.5]));
- kotak(-9,1,0,7.5,5.02,5.1,bhn('#3a4650',{roughness:.6}),SD);kotak(-9,1,7.5,7.9,5.0,5.2,bajaG,SD);   // pintu angkut besar
- kotak(-14,-12.5,0,.4,5.3,9,betonM,SD);}
+ pasang(new THREE.BoxGeometry(24,11,14),[sisi,sisi,atap,atap,sisi,sisi],SD,[-4,5.5,0]);
+ {const bt=new THREE.Mesh(new THREE.BoxGeometry(23.6,10.6,13.6),tutupM('#c2c8c9'));bt.position.set(-4,5.5,0);SD.add(bt);}
+ kotak(-16.3,8.3,10.8,11.4,-7.3,7.3,bajaG,SD);
+ kotak(-10,-4,11.4,13.4,-4,1,sisi,SD);kotak(1,6,11.4,12.6,-5,4,sisi,SD);
+ [-9,-1.5,5].forEach(x=>silinder(.5,11.4,14.4,bajaM,SD,null,[x,12.9,4.5]));
+ kotak(-9,1,0,7.5,7.02,7.1,bhn('#3a4650',{roughness:.6}),SD);kotak(-9,1,7.5,7.9,7.0,7.2,bajaG,SD);
+ kotak(-14,-12.5,0,.4,7.3,11,betonM,SD);}
 // bangunan sumur PX14 (turun ke gua) + derek
-{silinder(4.4,0,13,bhn('#ffffff',{map:salin(tBeton,3,2),roughness:.9}),SD,null,[16.5,6.5,-3.5],48);silinder(4.7,13,13.7,bajaG,SD,null,[16.5,13.35,-3.5],48);
- kotak(12.4,20.6,13.7,14.3,-4.2,-2.8,bhn('#d7a83a',{roughness:.5}),SD);kotak(15.6,17.4,14.3,15.6,-4.4,-2.6,bhn('#c9362b',{roughness:.5}),SD);
- batang([12.4,13.7,-3.5],[12.4,18,-3.5],.18,bhn('#d7a83a',{roughness:.5}),SD);batang([20.6,13.7,-3.5],[20.6,18,-3.5],.18,bhn('#d7a83a',{roughness:.5}),SD);kotak(12.2,20.8,18,18.5,-4,-3,bhn('#d7a83a',{roughness:.5}),SD);}
+{const kn=bhn('#d7a83a',{roughness:.5});silinder(4.4,0,13,bhn('#ffffff',{map:salin(tBeton,3,2),roughness:.9}),SD,'#d9c9a8',[16.5,6.5,0],48);silinder(4.7,13,13.7,bajaG,SD,null,[16.5,13.35,0],48);
+ kotak(12.4,20.6,13.7,14.3,-.7,.7,kn,SD);kotak(15.6,17.4,14.3,15.6,-.9,.9,bhn('#c9362b',{roughness:.5}),SD);
+ batang([12.4,13.7,0],[12.4,18,0],.18,kn,SD);batang([20.6,13.7,0],[20.6,18,0],.18,kn,SD);kotak(12.2,20.8,18,18.5,-.5,.5,kn,SD);}
 // gedung kendali
 {const jd=bhn('#ffffff',{map:tJendela,roughness:.5});kotak(-14,-3,0,7.5,9,17,jd,SD);kotak(-14.4,-2.6,7.5,8,8.6,17.4,bhn('#7a7468',{roughness:.7}),SD);}
 // tangki kriogenik, bola helium
@@ -191,28 +207,110 @@ function rumahA(x,z,w,d,h,dinding,atap,ry){const y=tinggi(x,z)-.3,g=new THREE.Gr
 {const g=rumahA(-52,5,3.6,5,4,'#e9e1d0','#6a6a70',0);const sp=pasang(new THREE.ConeGeometry(1.1,4.5,4),bhn('#6a6a70',{roughness:.6}),SD,[-52,tinggi(-52,5)+8.5,5]);sp.rotation.y=Math.PI/4;kotak(-53,-51,tinggi(-52,5)-.3,tinggi(-52,5)+6.3,4,6,bhn('#e9e1d0',{roughness:.85}),SD);}
 // pohon (instanced): hutan di kaki gunung & sepanjang bukit
 {const r=rng(11),NP=420,tj=new THREE.InstancedMesh(new THREE.CylinderGeometry(.18,.25,1.4,6),bhn('#5b4330',{roughness:1}),NP),dn=new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1,1),bhn('#ffffff',{flatShading:true,roughness:.95,side:THREE.DoubleSide}),NP),kn=new THREE.InstancedMesh(new THREE.ConeGeometry(1,2.8,7),bhn('#ffffff',{flatShading:true,roughness:.95,side:THREE.DoubleSide}),NP);let a=0,b=0;
- for(let k=0;k<4000&&a+b<NP;k++){const x=lerp(-HB+4,HB-4,r()),z=lerp(-HB+4,HB-4,r()),h=tinggi(x,z);if(h<.35||h>11)continue;const pd=Math.hypot((x+5)/44,(z-8)/34);if(pd<1.12)continue;if(Math.hypot((x-80)/34,(z+18)/54)<1.12)continue;if(dijalan(x,z)||(x>-66&&x<-40&&z>2&&z<30))continue;if(Math.hypot(x/52,(z+48)/52)<1.0&&hash(k)<.6)continue;
+ for(let k=0;k<4000&&a+b<NP;k++){const x=lerp(-HB+4,HB-4,r()),z=lerp(-HB+4,HB-4,r()),h=tinggi(x,z);if(h<.35||h>11)continue;const pd=Math.hypot((x+5)/44,(z-8)/34);if(pd<1.12)continue;if(Math.hypot((x-98)/32,(z+18)/54)<1.12)continue;if(dijalan(x,z)||(x>-66&&x<-40&&z>2&&z<30))continue;if(Math.hypot(x/52,(z+48)/52)<1.0&&hash(k)<.6)continue;
   const bos=.5+.5*Math.sin(x*.09+1)*Math.sin(z*.08+.5);if(hash(k+9000)>bos*.55+(h>5?.35:0)+.05)continue;const s=1.3+r()*1.2;
   if(h<5.5){_p.set(x,h+.5,z);_s.set(1,1,1);_m.compose(_p,_q,_s);tj.setMatrixAt(a,_m);_p.set(x,h+1.2+s*.9,z);_s.set(s*1.1,s*1.2,s*1.1);_m.compose(_p,_q,_s);dn.setMatrixAt(a,_m);dn.setColorAt(a,C(['#4c7a3b','#5a8a43','#3f6c35','#6a944c','#7a9c3f'][(r()*5)|0]));a++;}
   else{_p.set(x,h+s*1.5,z);_s.set(s*.9,s*1.1,s*.9);_m.compose(_p,_q,_s);kn.setMatrixAt(b,_m);kn.setColorAt(b,C(['#2f5a3a','#3a6a42','#27503a'][(r()*3)|0]));b++;}}
  tj.count=dn.count=a;kn.count=b;[tj,dn,kn].forEach(o=>{o.castShadow=true;o.receiveShadow=true;SD.add(o);});}
 
-/* ---------- JEJAK CINCIN LHC (berpendar tipis di bawah tanah) ---------- */
-const ringPts=Array.from({length:181},(_,i)=>{const a=i/180*Math.PI*2;return new THREE.Vector3(RING_C[0]+RING_R*Math.cos(a),RING_Y,RING_C[1]+RING_R*Math.sin(a));}),ringCurve=new THREE.CatmullRomCurve3(ringPts,true);
-const tDen=tDenyut.clone();tDen.needsUpdate=true;tDen.repeat.set(26,1);
-const RINGA=new THREE.Mesh(new THREE.TubeGeometry(ringCurve,420,.5,8,true),new THREE.MeshBasicMaterial({color:C(PAL.aks),map:tDen,transparent:true,depthTest:false,depthWrite:false,toneMapped:false,clippingPlanes:[POT]}));RINGA.renderOrder=6;SD.add(RINGA);
-const RINGB=new THREE.Mesh(new THREE.TubeGeometry(ringCurve,420,1.3,8,true),new THREE.MeshBasicMaterial({color:C(PAL.aks),transparent:true,opacity:.06,depthTest:false,depthWrite:false,toneMapped:false,clippingPlanes:[POT]}));RINGB.renderOrder=5;SD.add(RINGB);
-/* bidang potong bercahaya */
+/* ---------- JALUR CINCIN LHC (dua bagian lurus + dua lengkung), terowongan ±100 m ---------- */
+const LOOP=[];
+for(let a=90;a>=-90;a-=6)LOOP.push([20+40*Math.cos(a*DEG),-40+40*Math.sin(a*DEG)]);
+[10,0,-10].forEach(x=>LOOP.push([x,-80]));
+for(let a=-90;a>=-270;a-=6)LOOP.push([-20+40*Math.cos(a*DEG),-40+40*Math.sin(a*DEG)]);
+const ringPts=LOOP.concat([[-10,0],[0,0],[10,0]]).map(([x,z])=>new THREE.Vector3(x,RING_Y,z)),ringCurve=new THREE.CatmullRomCurve3(ringPts,true);
+const tDen=tDenyut.clone();tDen.needsUpdate=true;tDen.repeat.set(30,1);const tDen2=tDenyut.clone();tDen2.needsUpdate=true;tDen2.repeat.set(30,1);
+const ringG=new THREE.TubeGeometry(ringCurve,480,.4,8,true);
+const RINGA=new THREE.Mesh(ringG,new THREE.MeshBasicMaterial({color:C(PAL.aks),map:tDen,transparent:true,depthTest:false,depthWrite:false,toneMapped:false,clippingPlanes:[POT]}));RINGA.renderOrder=6;RINGA.position.y=.35;SD.add(RINGA);
+const RINGA2=new THREE.Mesh(ringG,new THREE.MeshBasicMaterial({color:C('#fff0c8'),map:tDen2,transparent:true,depthTest:false,depthWrite:false,toneMapped:false,clippingPlanes:[POT]}));RINGA2.renderOrder=6;RINGA2.position.y=-.35;SD.add(RINGA2);
+const RINGB=new THREE.Mesh(new THREE.TubeGeometry(ringCurve,480,1.3,8,true),new THREE.MeshBasicMaterial({color:C(PAL.aks),transparent:true,opacity:.06,depthTest:false,depthWrite:false,toneMapped:false,clippingPlanes:[POT]}));RINGB.renderOrder=5;SD.add(RINGB);
 const BPOT=new THREE.Group();SD.add(BPOT);
 {const mm=()=>new THREE.MeshBasicMaterial({color:C(PAL.aks),transparent:true,opacity:1,depthWrite:false,toneMapped:false});
  const lem=new THREE.Mesh(new THREE.PlaneGeometry(2*HB,DEPTH+14),new THREE.MeshBasicMaterial({color:C(PAL.aks),transparent:true,opacity:.09,depthWrite:false,side:THREE.DoubleSide,toneMapped:false}));lem.position.set(0,(14-DEPTH)/2,0);BPOT.add(lem);
  [[0,14,2*HB,.5],[0,-DEPTH,2*HB,.5],[-HB,(14-DEPTH)/2,.5,DEPTH+14],[HB,(14-DEPTH)/2,.5,DEPTH+14]].forEach(([x,y,w,h])=>{const b=new THREE.Mesh(new THREE.PlaneGeometry(w,h),mm());b.position.set(x,y,.02);BPOT.add(b);});}
+const ringAt=i=>{const p=ringPts[i%ringPts.length];return[p.x,p.y,p.z];};
 
+/* ---------- BAWAH TANAH: gua detektor, sumur, terowongan, magnet, pipa berkas, detektor berlapis ---------- */
+const IPX=-4,YA=RING_Y;
+const rongga=bhn('#ffffff',{map:salin(tBeton,5,2),roughness:.95,side:THREE.BackSide,envMapIntensity:.6}),lining=bhn('#ffffff',{map:salin(tBeton,60,1),roughness:.9,side:THREE.BackSide,envMapIntensity:.6});
+const pasangI=(g,m,pos,tutup)=>{const o=pasang(g,m,SD,pos,tutup);o.castShadow=o.receiveShadow=false;return o;};
+pasangI(new THREE.BoxGeometry(26,10.6,18),rongga,[0,-7.7,0]);
+pasangI(new THREE.CylinderGeometry(4.4,4.4,13,40),rongga,[16.5,-6.5,0]);
+{const pts=[[13,0],[16.5,0]].concat(LOOP,[[-16.5,0],[-13,0]]).map(([x,z])=>new THREE.Vector3(x,YA,z));
+ pasangI(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,false,'catmullrom',.15),700,1.4,16,false),lining,[0,0,0]);}
+const mTrk=bhn('#3f4f5c',{map:tSikatG,metalness:.7,roughness:.4}),mEM=bhn('#6f7f66',{map:tSikatG,metalness:.5,roughness:.5}),mHAD=bhn('#8a7a63',{map:tSikatG,metalness:.7,roughness:.45}),mMU=bhn('#aeb4b8',{map:tSikat,metalness:.8,roughness:.35}),mMAG=bhn('#3f6a9a',{map:tSikat,metalness:.6,roughness:.4}),mPIP=bhn('#dfe4e8',{map:tSikat,metalness:.9,roughness:.25});
+function lapisX(r0,r1,x0,x1,m,tutup){const g=new THREE.LatheGeometry([[r0,x0],[r1,x0],[r1,x1],[r0,x1],[r0,x0]].map(([r,y])=>new THREE.Vector2(r,y)),56);g.rotateZ(-Math.PI/2);return pasangI(g,m,[0,YA,0],tutup);}
+// detektor (mirip ATLAS): penjejak, kalorimeter elektromagnetik, kalorimeter hadron, sistem muon, roda ujung, kumparan toroid
+lapisX(.4,1.0,IPX-3.2,IPX+3.2,mTrk,'#7fa6c2');
+lapisX(1.08,1.7,IPX-3.6,IPX+3.6,mEM,'#b8cfa3');
+lapisX(1.78,2.8,IPX-4.4,IPX+4.4,mHAD,'#e0a65c');
+lapisX(2.9,3.15,IPX-5.6,IPX+5.6,mMU,'#cfcbc3');lapisX(3.4,3.7,IPX-5.6,IPX+5.6,mMU,'#cfcbc3');
+[-1,1].forEach(sg=>{lapisX(.6,3.7,IPX+sg*5.9-(sg>0?0:.5),IPX+sg*5.9+(sg>0?.5:0),mMU,'#cfcbc3');lapisX(.6,2.0,IPX+sg*6.6-(sg>0?0:.4),IPX+sg*6.6+(sg>0?.4:0),mHAD,'#e0a65c');});
+for(let k=0;k<8;k++){const th=(k*45+22.5)*DEG,y=YA+4.15*Math.sin(th),z=4.15*Math.cos(th);if(z>-.8)continue;const b=pasangI(new THREE.BoxGeometry(9.4,.5,1.3),bhn('#2c3238',{metalness:.7,roughness:.4}),[IPX,y,z]);b.rotation.x=Math.PI/2-th;}
+[-1.8].forEach(z=>[-1,1].forEach(sx=>pasangI(new THREE.BoxGeometry(1.2,1.6,.8),bhn('#3a4046',{roughness:.6}),[IPX+sx*3.8,-12.2,z])));
+// magnet superkonduktor di terowongan (dua di tiap sisi) + pipa berkas
+[[13.6,16.8],[17.2,20]].forEach(([a,b])=>{lapisX(.55,1.05,a,b,mMAG,'#cfd9e0');lapisX(.55,1.05,-b,-a,mMAG,'#cfd9e0');});
+lapisX(.2,.3,-20,20,mPIP,'#eef1f3');
+// dua berkas proton (strip bercahaya) berlawanan arah, bertemu di pusat detektor
+const PITA=(pts,r)=>{const g=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts.map(p=>new THREE.Vector3(...p)),false,'catmullrom',.05),160,r,8,false),tx=tDenyut.clone();tx.needsUpdate=true;tx.repeat.set(8,1);
+  const m=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:C('#ffd27a'),map:tx,transparent:true,depthWrite:false,toneMapped:false,clippingPlanes:[POT]}));m.renderOrder=7;SD.add(m);
+  return{atur(isi,t){g.setDrawRange(0,Math.floor(clamp(isi)*160)*8*6);m.visible=isi>0;tx.offset.x=-t*1.6;}};};
+const BA=PITA([[-20,YA+.2,-.1],[-9,YA+.2,-.1],[IPX,YA,-.1],[0,YA-.2,-.1],[20,YA-.2,-.1]],.1),BB=PITA([[20,YA+.2,-.1],[0,YA+.2,-.1],[IPX,YA,-.1],[-9,YA-.2,-.1],[-20,YA-.2,-.1]],.1);
+const PLG=new THREE.PointLight(C('#ffe0b0'),1.4,46,2);PLG.position.set(0,-5,6);SD.add(PLG);
+
+/* ---------- EFEK: tabrakan, riak Higgs, kabut medan, elektron, atom ---------- */
+const tGlow=teksturK(128,128,(x)=>{const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.35,'rgba(255,255,255,.35)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,128,128);});
+const spr=(hex,op,dt=true)=>{const o=new THREE.Sprite(new THREE.SpriteMaterial({map:tGlow,color:C(hex),transparent:true,opacity:op,depthWrite:false,depthTest:dt,toneMapped:false}));SD.add(o);return o;};
+const IP=[IPX,YA,-.12],TC=WAKTU.tc,FL=spr('#fff0c8',1,false);FL.renderOrder=10;FL.visible=false;
+const TRK=Array.from({length:34},(_,i)=>({ang:i/34*Math.PI*2+hash(i+3)*.18,R:1.6+hash(i+30)*2.1,v:4.5+hash(i+60)*4,o:(()=>{const g=new THREE.CylinderGeometry(.05,.05,1,6);g.translate(0,.5,0);const o=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:C(i%3?'#ffd27a':'#fff6dc'),transparent:true,depthTest:false,depthWrite:false,toneMapped:false}));o.renderOrder=8;o.visible=false;SD.add(o);return o;})()}));
+const RIP=Array.from({length:6},()=>{const o=new THREE.Mesh(new THREE.RingGeometry(.94,1,72),new THREE.MeshBasicMaterial({color:C('#ffc34a'),transparent:true,depthTest:false,depthWrite:false,toneMapped:false,side:THREE.DoubleSide}));o.renderOrder=9;o.visible=false;SD.add(o);return o;});
+const HR=[-4,17,-2];
+function riak(grup,t0,pos,maxR,t){for(let i=0;i<3;i++){const o=RIP[grup*3+i],u=(t-t0-i*.3)/1.5;o.visible=u>0&&u<1;if(!o.visible)continue;o.position.set(...pos);o.quaternion.copy(KD.quaternion);o.scale.setScalar(.2+maxR*E.out(u));o.material.opacity=(1-u)*(1-u)*.95;}}
+// kabut medan Higgs: lembar riak + percikan kabut
+const SHT=[[4,[-4,-2]],[15,[14,-24]],[27,[-30,8]]].map(([y,c])=>{const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,uniforms:{uT:{value:0},uA:{value:0},uZ:{value:1000},uC:{value:new THREE.Vector2(...c)},uCol:{value:new THREE.Color('#ffc766')}},
+  vertexShader:'varying vec3 vW;void main(){vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}',
+  fragmentShader:'uniform float uT,uA,uZ;uniform vec2 uC;uniform vec3 uCol;varying vec3 vW;void main(){if(vW.z>uZ)discard;vec2 p=vW.xz-uC;float r=length(p);float a=pow(sin(r*.42-uT*1.5)*.5+.5,7.)*.6+pow(sin(r*.85-uT*2.2+1.)*.5+.5,12.)*.35;a*=uA*(1.-smoothstep(30.,120.,r));gl_FragColor=vec4(uCol,clamp(a,0.,1.));}'});
+  const o=new THREE.Mesh(new THREE.PlaneGeometry(260,260),m);o.rotation.x=-Math.PI/2;o.position.y=y;o.renderOrder=4;SD.add(o);return m;});
+const KAB=Array.from({length:90},(_,i)=>{const o=spr('#ffe2a8',.12);o.userData={x:lerp(-70,70,hash(i+1)),y:lerp(1,30,hash(i+90)),z:lerp(-70,28,hash(i+190)),s:lerp(14,32,hash(i+290)),ph:hash(i+390)*6.28};o.visible=false;return o;});
+// elektron (melambat di medan = "kena massa") + percikan medan yang menempel + jejak
+const ELO=[-34,19,6],ELD=new THREE.Vector3(54,-6,-16).normalize(),T_EL=15.6;
+const sEl=t=>{let s=0;for(let u=T_EL;u<t;u+=1/30)s+=lerp(19,2.2,E.out(clamp((u-16.9)/1.6)))/30;return s;};
+const posEl=t=>{const s=sEl(t);return[ELO[0]+ELD.x*s,ELO[1]+ELD.y*s,ELO[2]+ELD.z*s];};
+const ELM=new THREE.Mesh(new THREE.SphereGeometry(1,28,20),new THREE.MeshStandardMaterial({color:C('#f6f1e4'),emissive:C('#ffb02e'),emissiveIntensity:.9,roughness:.3,metalness:.2}));ELM.visible=false;SD.add(ELM);
+const ELG=spr('#ffc766',.55,false),ELT=Array.from({length:10},()=>spr('#ffc766',.4,false)),ELC=Array.from({length:14},()=>spr('#ffe9b8',.5,false));
+// atom (inti + elektron mengorbit) yang "bubar" tanpa massa
+const AT=new THREE.Group();AT.position.set(10,15,-8);SD.add(AT);
+const ATN=[[0,0,0],[.55,.2,.1],[-.4,.5,.3],[.1,-.5,.5],[-.3,-.3,-.45],[.45,-.35,-.3]].map((p,i)=>{const o=new THREE.Mesh(new THREE.SphereGeometry(.55,16,12),new THREE.MeshStandardMaterial({color:C(i%2?'#9aa3aa':'#e8b04a'),roughness:.4,metalness:.3}));o.position.set(...p);AT.add(o);return o;});
+const ATR=new THREE.Mesh(new THREE.TorusGeometry(3.4,.07,8,72),new THREE.MeshBasicMaterial({color:C('#ffffff'),transparent:true,opacity:.7,toneMapped:false}));ATR.rotation.set(1.1,.3,0);AT.add(ATR);
+const ATE=new THREE.Mesh(new THREE.SphereGeometry(.5,16,12),new THREE.MeshStandardMaterial({color:C('#f6f1e4'),emissive:C('#ffb02e'),emissiveIntensity:.9,roughness:.3}));AT.add(ATE);AT.visible=false;
+const posAtom=t=>[-6,14,-4];
+function efek(t){
+  // kabut medan
+  const amb=sstep(9.4,11.6,t)*lerp(1,.45,sstep(26,30,t)),pot=t>26.6;
+  SHT.forEach((m,i)=>{m.uniforms.uT.value=t+i*3;m.uniforms.uA.value=.24*amb;m.uniforms.uZ.value=pot?-.5:1000;});
+  KAB.forEach((o,i)=>{const d=o.userData,ok=amb>.01&&!(pot&&d.z>-2);o.visible=ok;if(!ok)return;o.position.set(d.x+Math.sin(t*.25+d.ph)*3,d.y+Math.sin(t*.2+d.ph*2)*1.5,d.z+Math.cos(t*.22+d.ph)*3);o.scale.setScalar(d.s);o.material.opacity=.055*amb;});
+  // elektron
+  const ve=t>T_EL-.2&&t<26.4,pe=posEl(t),m=sstep(16.9,18.6,t),fe=sstep(T_EL-.2,T_EL+.3,t)*(1-sstep(25.2,25.9,t));
+  ELM.visible=ELG.visible=ve;ELT.forEach(o=>o.visible=ve);ELC.forEach(o=>o.visible=ve);
+  if(ve){ELM.position.set(...pe);ELM.scale.setScalar((1.5+1.2*m)*fe);ELG.position.set(...pe);ELG.scale.setScalar(10*fe);
+    ELT.forEach((o,k)=>{const q=posEl(Math.max(T_EL,t-(k+1)*.09));o.position.set(...q);o.scale.setScalar(Math.max(.2,(5-k*.4)*fe));o.material.opacity=.4*(1-k/10)*fe;});
+    ELC.forEach((o,k)=>{const a=t*(1.2+hash(k)*1.5)+k*1.7,r=(2.0+hash(k+5)*1.6)*(.5+.9*m);o.position.set(pe[0]+Math.cos(a)*r,pe[1]+Math.sin(a*1.3)*r*.8,pe[2]+Math.sin(a)*r);o.scale.setScalar(1.8*m*fe);o.material.opacity=.55*m*fe;});}
+  // atom
+  const va=sstep(19.8,20.2,t)*(1-sstep(24.2,24.8,t));AT.visible=va>.01;
+  if(AT.visible){AT.scale.setScalar(va*1.9);const esc=E.in(seg(t,21.2,22.8)),a=t*3.4,ox=Math.cos(a)*3.4,oy=Math.sin(a)*1.7,oz=Math.sin(a)*3.4;ATE.position.set(ox+esc*16,oy+esc*6,oz-esc*7);
+    ATR.material.opacity=.7*(1-sstep(21.2,22.2,t));ATE.scale.setScalar(1-sstep(22.4,23.0,t));}
+  // tabrakan + riak
+  riak(0,27.4,HR,2.0,t);riak(1,TC+.05,IP,2.6,t);
+  const fl=seg(t,TC,TC+.55);FL.visible=t>=TC&&fl<1;if(FL.visible){FL.position.set(...IP);FL.scale.setScalar(14*E.out(fl));FL.material.opacity=(1-fl)*.95;}
+  TRK.forEach(k=>{const u=t-TC,len=Math.min(k.R,k.v*u),a=1-sstep(TC+1.6,TC+2.8,t),on=u>0&&a>.01;k.o.visible=on;if(!on)return;k.o.position.set(IP[0],IP[1],IP[2]);k.o.rotation.z=k.ang-Math.PI/2;k.o.scale.set(1,Math.max(.01,len),1);k.o.material.opacity=a;});
+  const isi=seg(t,33.6,38.2),fa=1-sstep(40,41.5,t);BA.atur(isi*fa+(fa<1?0:0),t);BB.atur(isi*fa,t);
+}
 /* ---------- KAMERA (satu, ortografik, isometrik ±45° / ±30°) ---------- */
 const AZ=45*DEG,EL=30*DEG,ARAH=new THREE.Vector3(Math.sin(AZ)*Math.cos(EL),Math.sin(EL),Math.cos(AZ)*Math.cos(EL));
-const KD_KUNCI=[[0,[-6,0,-30],250],[WAKTU.dur,[-3,2,-5],96]],H0=250;
+const KD_KUNCI=[[0,[-6,0,-30],250],[8.8,[-3,2,-5],96],[15,[-3,10,-3],62],[22,[0,15,-4],54],[26.5,[0,12,-3],64],[30.6,[0,-5,0],56],[33.4,[0,-7,0],56],[35.0,[-4,-7.5,0],32],[38.6,[-4,-7.3,0],36],[44,[-2,-5,-18],130],[50,[0,-4,-40],190]],H0=250;
 const halus=k=>k*k*k*(k*(k*6-15)+10),_v=new THREE.Vector3();
-function kameraDunia(t){const k0=clamp(t/(KD_KUNCI[1][0])),e=lerp(k0,halus(k0),.6),A=KD_KUNCI[0],B=KD_KUNCI[1],tg=A[1].map((v,j)=>lerp(v,B[1][j],e)),h=Math.exp(lerp(Math.log(A[2]),Math.log(B[2]),e));window.HC=h;
+function kameraDunia(t){let i=0;while(i<KD_KUNCI.length-2&&t>KD_KUNCI[i+1][0])i++;const A=KD_KUNCI[i],B=KD_KUNCI[i+1],k0=clamp((t-A[0])/(B[0]-A[0])),e=i==0?lerp(k0,halus(k0),.6):halus(k0),
+  tg=A[1].map((v,j)=>lerp(v,B[1][j],e)),h=Math.exp(lerp(Math.log(A[2]),Math.log(B[2]),e));window.HC=h;
   tg[0]+=nz(t*.35,1)*.05;tg[2]+=nz(t*.3,2)*.05;const w=h*W/H;Object.assign(KD,{left:-w/2,right:w/2,top:h/2,bottom:-h/2});KD.updateProjectionMatrix();
   _v.set(...tg);KD.position.copy(_v).addScaledVector(ARAH,300);KD.lookAt(_v);matahari.position.copy(_v).add(new THREE.Vector3(30,50,22));matahari.target.position.copy(_v);
   const sh=clamp(h*.62,18,78);Object.assign(matahari.shadow.camera,{left:-sh,right:sh,top:sh,bottom:-sh,near:1,far:300});matahari.shadow.camera.updateProjectionMatrix();}
@@ -224,31 +322,59 @@ function tanda(o){o.el=mk('div','lt'+(o.o[0]<0?' r':'')+(o.big?' big':'')+(o.am?
   o.dot=mk('div','dot'+(o.am?' am':''),$('#tanda'));o.ln=svgEl('polyline',{fill:'none',stroke:o.am?PAL.aks:'#fff','stroke-width':3,'stroke-linecap':'round',style:'filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))'},$('#garis'));DAFTAR.push(o);return o;}
 function gambarTanda(t){DAFTAR.forEach(L=>{const k=sstep(L.a,L.a+.4,t)*(1-sstep(L.b,L.b+.3,t)),on=k>.001;
   L.el.style.display=L.dot.style.display=on?'block':'none';L.ln.style.display=on?'':'none';if(!on)return;
-  const[x,y]=keLayar(L.p);L.dot.style.left=x+'px';L.dot.style.top=y+'px';L.dot.style.opacity=k;L.dot.style.transform=`scale(${.4+.6*sstep(L.a,L.a+.25,t)})`;
+  const[x,y]=keLayar(L.pf?L.pf(t):L.p);L.dot.style.left=x+'px';L.dot.style.top=y+'px';L.dot.style.opacity=k;L.dot.style.transform=`scale(${.4+.6*sstep(L.a,L.a+.25,t)})`;
   const ew=L.el.offsetWidth,eh=L.el.offsetHeight,kn=L.o[0]<0;let tx=x+L.o[0],ty=y+L.o[1];
   let kiri=clamp(kn?tx-ew:tx,AMAN.kiri-10,AMAN.kanan-ew);tx=kn?kiri+ew:kiri;const atas=clamp(ty-eh,300,1330-eh);ty=atas+eh;
   L.el.style.left=kiri+'px';L.el.style.top=atas+'px';L.el.style.opacity=sstep(L.a+.12,L.a+.45,t)*(1-sstep(L.b,L.b+.3,t));
   L.el.lastChild.style.transform=`scaleX(${sstep(L.a+.1,L.a+.5,t)})`;const g=sstep(L.a,L.a+.35,t);L.ln.setAttribute('points',`${x},${y} ${lerp(x,tx,g)},${lerp(y,ty,g)}`);L.ln.style.opacity=k;});}
-const RP=a=>[RING_C[0]+RING_R*Math.cos(a*DEG),RING_Y,RING_C[1]+RING_R*Math.sin(a*DEG)];
-tanda({t:'Kompleks CERN',s:'perbatasan Swiss–Prancis',p:[-4,11.6,-2],o:[-70,-210],a:.6,b:2.5});
-tanda({t:'“Partikel Tuhan”',s:'hanya julukan populer',p:[-4,11.6,-2],o:[60,-260],a:2.1,b:5.6,am:1});
-tanda({t:'Cincin LHC',s:'27 km · ±100 m di bawah tanah',p:RP(-20),o:[60,170],a:3.4,b:9,am:1});
-tanda({t:'Boson Higgs',s:'nama ilmiahnya',p:[-4,11.6,-2],o:[-80,-280],a:6.5,b:9,big:1,am:1});
-const JEJAK=[[0,'CERN › <b>SWISS–PRANCIS</b>'],[3.4,'CERN › <b>LHC 27 KM</b>'],[6.4,'PARTIKEL › <b>BOSON HIGGS</b>']];
+const HALL=[-4,11.6,0];
+/* adegan 1 */
+tanda({t:'Kompleks CERN',s:'perbatasan Swiss–Prancis',p:HALL,o:[-70,-210],a:.6,b:2.4});
+tanda({t:'“Partikel Tuhan”',s:'hanya julukan populer',p:HALL,o:[60,-260],a:1.6,b:5.4,am:1});
+tanda({t:'Cincin LHC',s:'27 km · ±100 m di bawah tanah',p:ringAt(46),o:[60,170],a:3.6,b:8.9,am:1});
+tanda({t:'Boson Higgs',s:'nama ilmiahnya',p:HALL,o:[-80,-280],a:6.7,b:9.0,big:1,am:1});
+/* adegan 2: medan Higgs */
+tanda({t:'Medan Higgs',s:'memenuhi seluruh ruang',p:[-4,15,-2],o:[-60,-260],a:10.3,b:14.8,big:1,am:1});
+/* adegan 3: elektron kena massa, atom */
+tanda({t:'Elektron',s:'partikel dasar',pf:posEl,o:[-60,-200],a:15.9,b:18.3});
+tanda({t:'Kena massa',s:'bergerak makin lambat',pf:posEl,o:[70,200],a:17.1,b:20.2,big:1,am:1});
+tanda({t:'Atom',s:'tanpa massa, tak bisa terbentuk',p:[10,15,-8],o:[80,-200],a:20.7,b:22.7,am:1});
+tanda({t:'Bintang · planet · kita',s:'tak akan ada',p:[10,15,-8],o:[-80,-230],a:22.85,b:26.2});
+/* adegan 4: riak, LHC, detektor, tabrakan */
+tanda({t:'Boson Higgs',s:'riak kecil medan Higgs',p:HR,o:[70,-230],a:27.4,b:30.2,big:1,am:1});
+tanda({t:'Akselerator LHC',s:'cincin 27 km · ±100 m di bawah tanah',p:[17,YA-1.4,0],o:[-60,-250],a:30.9,b:33.2,am:1});
+tanda({t:'Magnet superkonduktor',s:'membelokkan berkas',p:[15,YA+1,0],o:[70,-190],a:31.5,b:33.6});
+tanda({t:'Pipa berkas proton',s:'dua arah berlawanan',p:[-17,YA,-.1],o:[-60,230],a:33.0,b:35.3,am:1});
+tanda({t:'Detektor ATLAS',s:'penjejak · kalorimeter · muon',p:[IPX,YA+3.5,0],o:[70,-250],a:33.4,b:35.7});
+tanda({t:'Tabrakan',s:'serpihan partikel menyebar',p:IP,o:[-60,260],a:35.8,b:38.4,big:1,am:1});
+tanda({t:'Riak Higgs',s:'muncul sesaat',p:IP,o:[90,-250],a:36.4,b:38.4,am:1});
+/* adegan 5: 2012, Model Standar, fisika baru */
+tanda({t:'2012',s:'boson Higgs ditemukan',p:[IPX,YA+1,0],o:[-60,-300],a:38.4,b:42.6,big:1,am:1});
+tanda({t:'Model Standar',s:'teori partikel dasar menguat',p:ringAt(15),o:[-40,-280],a:43.2,b:46.6,am:1});
+tanda({t:'Fisika baru?',s:'penelitian terus berlanjut',p:ringAt(32),o:[70,-300],a:46.6,b:50,big:1,am:1});
+const JEJAK=[[0,'CERN › <b>SWISS–PRANCIS</b>'],[3.4,'CERN › <b>LHC 27 KM</b>'],[6.4,'PARTIKEL › <b>BOSON HIGGS</b>'],[9.6,'ALAM SEMESTA › <b>MEDAN HIGGS</b>'],[15.8,'ELEKTRON › <b>MASSA</b>'],[19.7,'TANPA MASSA › <b>TANPA ATOM</b>'],[26.4,'BOSON HIGGS › <b>RIAK MEDAN</b>'],[30.6,'LHC › <b>TEROWONGAN</b>'],[33.3,'DETEKTOR › <b>ATLAS</b>'],[35.7,'TABRAKAN › <b>BOSON HIGGS</b>'],[38.3,'2012 › <b>DITEMUKAN</b>'],[43.1,'<b>MODEL STANDAR</b>'],[46.5,'<b>FISIKA BARU?</b>']];
 
 /* ---------- SCENE ---------- */
-/* waktu kata = PERKIRAAN untuk pratinjau; diganti waktu asli dari edge-tts setelah suara dibuat */
 const SCENE={dur:WAKTU.dur,
-  kata:[['Orang',.5,.8],['menyebutnya',.8,1.4],['partikel',1.4,1.95],['Tuhan.',1.95,2.6],['Padahal',3.2,3.7],['itu',3.7,3.9],['cuma',3.9,4.2],['julukan',4.2,4.7],['populer.',4.7,5.3],['Nama',5.9,6.2],['ilmiahnya:',6.2,6.9],['boson',7.1,7.5],['Higgs.',7.5,8.2]].map(([w,t0,t1])=>({w,t0,t1})),
-  sub:{font:"900 66px 'Archivo'",warna:'#ffffff',aksen:PAL.tb,y:.755,maks:4,kunci:['Tuhan.','boson','Higgs.']},
+  kata:[{"w": "Orang", "t0": 0.399, "t1": 0.676}, {"w": "menyebutnya", "t0": 0.676, "t1": 1.205}, {"w": "partikel", "t0": 1.205, "t1": 1.662}, {"w": "Tuhan.", "t0": 1.662, "t1": 2.19}, {"w": "Padahal", "t0": 2.993, "t1": 3.342}, {"w": "itu", "t0": 3.342, "t1": 3.594}, {"w": "cuma", "t0": 3.594, "t1": 3.823}, {"w": "julukan", "t0": 3.823, "t1": 4.195}, {"w": "populer.", "t0": 4.195, "t1": 4.784}, {"w": "Nama", "t0": 5.59, "t1": 5.866}, {"w": "ilmiahnya:", "t0": 5.866, "t1": 6.624}, {"w": "boson", "t0": 6.864, "t1": 7.261}, {"w": "Higgs.", "t0": 7.261, "t1": 7.717}, {"w": "Menurut", "t0": 8.227, "t1": 8.528}, {"w": "fisika,", "t0": 8.528, "t1": 9.141}, {"w": "seluruh", "t0": 9.405, "t1": 9.742}, {"w": "alam", "t0": 9.742, "t1": 9.946}, {"w": "semesta", "t0": 9.946, "t1": 10.319}, {"w": "terisi", "t0": 10.319, "t1": 10.571}, {"w": "medan", "t0": 10.571, "t1": 10.896}, {"w": "yang", "t0": 10.896, "t1": 11.064}, {"w": "tak", "t0": 11.064, "t1": 11.22}, {"w": "terlihat.", "t0": 11.22, "t1": 11.833}, {"w": "Namanya", "t0": 12.638, "t1": 13.155}, {"w": "medan", "t0": 13.155, "t1": 13.468}, {"w": "Higgs.", "t0": 13.468, "t1": 13.937}, {"w": "Partikel", "t0": 14.447, "t1": 14.831}, {"w": "dasar,", "t0": 14.831, "t1": 15.36}, {"w": "seperti", "t0": 15.601, "t1": 15.949}, {"w": "elektron,", "t0": 15.949, "t1": 16.478}, {"w": "mendapat", "t0": 16.778, "t1": 17.139}, {"w": "massa", "t0": 17.139, "t1": 17.403}, {"w": "lewat", "t0": 17.403, "t1": 17.632}, {"w": "interaksi", "t0": 17.632, "t1": 18.088}, {"w": "dengan", "t0": 18.088, "t1": 18.317}, {"w": "medan", "t0": 18.317, "t1": 18.545}, {"w": "ini.", "t0": 18.545, "t1": 18.966}, {"w": "Tanpa", "t0": 19.77, "t1": 20.023}, {"w": "itu,", "t0": 20.023, "t1": 20.503}, {"w": "atom", "t0": 20.792, "t1": 21.092}, {"w": "tidak", "t0": 21.092, "t1": 21.297}, {"w": "bisa", "t0": 21.297, "t1": 21.501}, {"w": "terbentuk.", "t0": 21.501, "t1": 22.066}, {"w": "Bintang,", "t0": 22.871, "t1": 23.52}, {"w": "planet,", "t0": 23.773, "t1": 24.301}, {"w": "dan", "t0": 24.542, "t1": 24.758}, {"w": "kita", "t0": 24.758, "t1": 24.963}, {"w": "pun", "t0": 24.963, "t1": 25.155}, {"w": "tidak", "t0": 25.155, "t1": 25.347}, {"w": "akan", "t0": 25.347, "t1": 25.527}, {"w": "ada.", "t0": 25.527, "t1": 25.972}, {"w": "Boson", "t0": 26.471, "t1": 26.82}, {"w": "Higgs", "t0": 26.82, "t1": 27.132}, {"w": "adalah", "t0": 27.132, "t1": 27.445}, {"w": "riak", "t0": 27.445, "t1": 27.613}, {"w": "kecil", "t0": 27.613, "t1": 27.913}, {"w": "dari", "t0": 27.913, "t1": 28.082}, {"w": "medan", "t0": 28.082, "t1": 28.322}, {"w": "itu.", "t0": 28.322, "t1": 28.767}, {"w": "Untuk", "t0": 29.581, "t1": 29.81}, {"w": "membuktikannya,", "t0": 29.81, "t1": 30.663}, {"w": "akselerator", "t0": 30.939, "t1": 31.468}, {"w": "LHC,", "t0": 31.468, "t1": 32.105}, {"w": "cincin", "t0": 32.346, "t1": 32.694}, {"w": "sepanjang", "t0": 32.694, "t1": 33.151}, {"w": "dua", "t0": 33.151, "t1": 33.283}, {"w": "puluh", "t0": 33.283, "t1": 33.451}, {"w": "tujuh", "t0": 33.451, "t1": 33.692}, {"w": "kilometer,", "t0": 33.692, "t1": 34.305}, {"w": "menabrakkan", "t0": 34.545, "t1": 35.038}, {"w": "proton", "t0": 35.038, "t1": 35.326}, {"w": "berenergi", "t0": 35.326, "t1": 35.723}, {"w": "sangat", "t0": 35.723, "t1": 35.963}, {"w": "tinggi,", "t0": 35.963, "t1": 36.42}, {"w": "hampir", "t0": 36.625, "t1": 36.985}, {"w": "secepat", "t0": 36.985, "t1": 37.334}, {"w": "cahaya.", "t0": 37.334, "t1": 37.899}, {"w": "Pada", "t0": 38.409, "t1": 38.613}, {"w": "tahun", "t0": 38.613, "t1": 38.865}, {"w": "dua", "t0": 38.865, "t1": 38.986}, {"w": "ribu", "t0": 38.986, "t1": 39.142}, {"w": "dua", "t0": 39.142, "t1": 39.286}, {"w": "belas,", "t0": 39.286, "t1": 39.755}, {"w": "boson", "t0": 39.995, "t1": 40.32}, {"w": "Higgs", "t0": 40.32, "t1": 40.608}, {"w": "akhirnya", "t0": 40.608, "t1": 41.029}, {"w": "ditemukan.", "t0": 41.029, "t1": 41.678}, {"w": "Ini", "t0": 42.482, "t1": 42.735}, {"w": "menguatkan", "t0": 42.735, "t1": 43.227}, {"w": "Model", "t0": 43.227, "t1": 43.516}, {"w": "Standar", "t0": 43.516, "t1": 43.888}, {"w": "fisika.", "t0": 43.889, "t1": 44.502}, {"w": "Penelitian", "t0": 45.307, "t1": 45.8}, {"w": "pun", "t0": 45.8, "t1": 45.944}, {"w": "berlanjut,", "t0": 45.944, "t1": 46.581}, {"w": "mencari", "t0": 46.833, "t1": 47.218}, {"w": "fisika", "t0": 47.218, "t1": 47.578}, {"w": "baru.", "t0": 47.578, "t1": 48.023}],
+  sub:{font:"900 66px 'Archivo'",warna:'#ffffff',aksen:PAL.tb,y:.755,maks:4,kunci:['tuhan','boson','higgs','medan','massa','elektron','atom','lhc','proton','kilometer','ditemukan','standar','baru']},
+  audio:{vo:[{"src": "assets/audio/vo-01.mp3", "at": 0.3, "teks": "Orang menyebutnya partikel Tuhan. Padahal itu cuma julukan populer. Nama ilmiahnya: boson Higgs."}, {"src": "assets/audio/vo-02.mp3", "at": 8.12, "teks": "Menurut fisika, seluruh alam semesta terisi medan yang tak terlihat. Namanya medan Higgs."}, {"src": "assets/audio/vo-03.mp3", "at": 14.34, "teks": "Partikel dasar, seperti elektron, mendapat massa lewat interaksi dengan medan ini. Tanpa itu, atom tidak bisa terbentuk. Bintang, planet, dan kita pun tidak akan ada."}, {"src": "assets/audio/vo-04.mp3", "at": 26.37, "teks": "Boson Higgs adalah riak kecil dari medan itu. Untuk membuktikannya, akselerator LHC, cincin sepanjang dua puluh tujuh kilometer, menabrakkan proton berenergi sangat tinggi, hampir secepat cahaya."}, {"src": "assets/audio/vo-05.mp3", "at": 38.3, "teks": "Pada tahun dua ribu dua belas, boson Higgs akhirnya ditemukan. Ini menguatkan Model Standar fisika. Penelitian pun berlanjut, mencari fisika baru."}],
+    sfx:[{src:'assets/audio/sfx-tik.wav',at:.62,vol:.3},{src:'assets/audio/sfx-tik.wav',at:1.7,vol:.3},{src:'assets/audio/sfx-whoosh.wav',at:6.5,vol:.4},{src:'assets/audio/sfx-tik.wav',at:6.85,vol:.3},
+      {src:'assets/audio/sfx-hum.wav',at:9.9,vol:.28},{src:'assets/audio/sfx-tik.wav',at:10.4,vol:.3},{src:'assets/audio/sfx-tik.wav',at:15.95,vol:.3},{src:'assets/audio/sfx-zing.wav',at:16.9,vol:.3},
+      {src:'assets/audio/sfx-tik.wav',at:20.8,vol:.3},{src:'assets/audio/sfx-hiss.wav',at:24.4,vol:.25},{src:'assets/audio/sfx-tik.wav',at:27.5,vol:.3},{src:'assets/audio/sfx-whoosh.wav',at:27.1,vol:.4},
+      {src:'assets/audio/sfx-tik.wav',at:31.0,vol:.3},{src:'assets/audio/sfx-tik.wav',at:33.5,vol:.3},{src:'assets/audio/sfx-zap.wav',at:35.9,vol:.45},{src:'assets/audio/sfx-tik.wav',at:36.5,vol:.3},
+      {src:'assets/audio/sfx-zing.wav',at:38.5,vol:.35},{src:'assets/audio/sfx-tik.wav',at:43.3,vol:.3},{src:'assets/audio/sfx-tik.wav',at:46.7,vol:.3}],music:null},
   frame(t){
     kameraDunia(t);
-    const kp=E.io(seg(t,...WAKTU.potong)),zc=lerp(70,40,kp),cut=t>WAKTU.potong[0];POT.constant=cut?zc:400;
-    CAP.visible=cut;if(cut)aturCap(zc);
-    BPOT.position.z=zc;BPOT.visible=cut;BPOT.children.forEach((c,i)=>c.material.opacity=(i?1:.09)*Math.sin(Math.PI*clamp(seg(t,WAKTU.potong[0],WAKTU.potong[1]+.4)))+(i?0:0));
-    LAUT.offset.set(t*.012,t*.006);tDen.offset.x=-t*.35;
-    RINGA.material.opacity=.75;
+    let zc=400;if(t>=WAKTU.potong2[0])zc=lerp(40,0,E.io(seg(t,...WAKTU.potong2)));else if(t>=WAKTU.potong[0])zc=lerp(70,40,E.io(seg(t,...WAKTU.potong)));
+    const cut=zc<399;POT.constant=zc;CAP.visible=cut;if(cut){lukisCap(zc);aturCap(zc);}
+    const gl=Math.max(Math.sin(Math.PI*clamp(seg(t,WAKTU.potong[0],WAKTU.potong[1]+.4))),Math.sin(Math.PI*clamp(seg(t,WAKTU.potong2[0],WAKTU.potong2[1]+.4))));
+    BPOT.position.z=zc;BPOT.visible=cut&&gl>.01;BPOT.children.forEach((c,i)=>c.material.opacity=(i?1:.09)*gl);
+    LAUT.offset.set(t*.012,t*.006);tDen.offset.x=-t*.35;tDen2.offset.x=t*.35;
+    RINGA.material.opacity=RINGA2.material.opacity=.6+.4*sstep(37.5,40.5,t);
     for(let i=0;i<44;i++){const m=MENARA[i%2],u=(t*.1+hash(i+1))%1,x=m[0]+nz(t*.2+i,i)*1.0+u*5,y=12.6+u*9,s=1.4+u*2.8;_p.set(x,y,m[1]+nz(t*.15+i,i+9)*1.2);_s.setScalar(s);_m.compose(_p,_q,_s);PLUM.setMatrixAt(i,_m);}PLUM.instanceMatrix.needsUpdate=true;
+    efek(t);
+    const dim=sstep(24.3,25.0,t)*(1-sstep(26.0,26.6,t)),fl=`saturate(${(1-.6*dim).toFixed(3)}) brightness(${(1-.25*dim).toFixed(3)})`;$('#dunia').style.filter=fl;$('#langit').style.filter=fl;
     RD.render(SD,KD);
     let j=JEJAK[0][1];JEJAK.forEach(([s,x])=>{if(t>=s)j=x;});$('#jejak').innerHTML=j+`<span class="z">×${Math.max(1,Math.round(H0/(window.HC||H0)))}<small>ZOOM</small></span>`;
     gambarTanda(t);

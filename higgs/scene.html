@@ -379,3 +379,5 @@ const SCENE={dur:WAKTU.dur,
     let j=JEJAK[0][1];JEJAK.forEach(([s,x])=>{if(t>=s)j=x;});$('#jejak').innerHTML=j+`<span class="z">×${Math.max(1,Math.round(H0/(window.HC||H0)))}<small>ZOOM</small></span>`;
     gambarTanda(t);
   }};
+/* mode bersih (?bersih=1): tanpa label, HUD, subtitle — dipakai untuk membuat sampul */
+if(/bersih=1/.test(location.search)){const st=document.createElement('style');st.textContent='#tanda,#garis,#jejak{display:none!important}';document.head.appendChild(st);SCENE.sub={gaya:'mati'};}

@@ -15,6 +15,7 @@ Sumber video explainer **Shorts/Reels 9:16 (±40–55 detik)** bergaya **3D isom
 | [`mariana/`](mariana) | Apa yang terjadi kalau manusia menyelam ke Palung Mariana? | biru bioluminesens | ±53 dtk |
 | [`pelari/`](pelari) | Apa yang terjadi kalau seorang pria berlari mendekati kecepatan cahaya di Bumi? | biru listrik | ±57 dtk |
 | [`blackhole2/`](blackhole2) | Bisakah kita keluar lewat lubang cacing? (Part 2, lanjutan blackhole) | oranye menyala | ±56 dtk |
+| [`laut/`](laut) | Apa yang terjadi kalau laut tidak asin lagi? (skenario pengandaian, split screen laut asin vs tawar) | kuning cerah | ±74 dtk |
 | [`higgs/`](higgs) | Kenapa partikel Tuhan (boson Higgs) sangat penting? | — | — |
 
 Isi tiap folder: `scene.html` (adegan three.js + subtitle + label), `naskah.md` atau `caption.txt`, `assets/audio/` (voiceover dan efek suara), `thumbnail.jpg` (sampul), dan `potret-adegan1/` (3 potret adegan pembuka).
@@ -48,6 +49,7 @@ Pembuat kode adegan per video disimpan sebagai potongan `.xx_*.js` dan dirakit o
 | `.asm_*.py` | merakit `scene.html` dari potongan kode |
 | `.story.py` | membuat klip story (cuplikan + overlay judul dan ajakan) |
 | `.asm_bh2.py` | merakit `blackhole2/scene.html` (lembaran kisi dilipat, terowongan, split screen) dari `.bh_a/b/c.js` + `.bh2_d.js` |
+| `.asm_lt.py` | merakit `laut/scene.html` (dua dunia laut asin/tawar, split screen) dari `.lt_a/b/d.js` |
 | `.post_frames.py`, `.post_slides.py` | frame bersih dan 7 slide karusel per video (argumen: nama video, mis. `python .post_slides.py pelari`) |
 
 ## Kebutuhan

@@ -32,7 +32,7 @@ Isi tiap folder: `scene.html` (adegan three.js + subtitle + label), `naskah.md` 
 
 1. **Adegan pembuka** → 3 potret dari detik berbeda (`mf.py potret`).
 2. **Naskah** per adegan (nada netral, akurat secara sains).
-3. **Suara gratis** dengan [edge-tts](https://github.com/rany2/edge-tts) (`id-ID-ArdiNeural`) + waktu tiap kata dari `WordBoundary` untuk subtitle. Efek suara disintesis lokal dengan Python (tanpa layanan berbayar).
+3. **Suara** dibuat lewat Voice Gen by Ratware (Voice Design: pria, dewasa); waktu tiap kata untuk subtitle diperkirakan oleh `suara/align.py` (ffmpeg `silencedetect`). Video lama memakai [edge-tts](https://github.com/rany2/edge-tts). Efek suara disintesis lokal dengan Python.
 4. **Bangun semua adegan** mengikuti waktu suara, cek potret.
 5. **Render** MP4 1080×1920, 30 fps (`mf.py render`, Chrome headless + ffmpeg).
 6. **Sampul** bergaya Reels akun (judul, kata kunci di blok aksen, pill fakta, label Toufani RA).
@@ -44,7 +44,8 @@ Pembuat kode adegan per video disimpan sebagai potongan `.xx_*.js` dan dirakit o
 
 | Berkas | Fungsi |
 |---|---|
-| `.tts.py`, `.tts2.py` | suara edge-tts + waktu kata (versi umum ada di skill) |
+| `.tts.py`, `.tts2.py` | suara edge-tts + waktu kata (video lama) |
+| `suara/align.py` | meratakan waktu kata untuk suara dari Ratware (silencedetect + proporsi huruf) |
 | `.sfx.py` | sintesis efek suara (whoosh, tik, zap, hum, zing, hiss) |
 | `.asm_*.py` | merakit `scene.html` dari potongan kode |
 | `.story.py` | membuat klip story (cuplikan + overlay judul dan ajakan) |

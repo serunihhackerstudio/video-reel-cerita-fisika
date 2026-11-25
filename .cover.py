@@ -12,6 +12,7 @@ C = {
  'entanglement': ('entanglement/.clean2.jpg', 'FISIKA KUANTUM', 'APA ITU', 'ENTANGLEMENT', 'KUANTUM?', '2 FOTON \u00b7 1 KETERKAITAN', (122,92,255), (255,255,255)),
  'blackhole': ('blackhole/.clean.jpg', 'ASTRONOMI \u00b7 RELATIVITAS', 'MASUK', 'BLACK HOLE', 'APA YANG TERJADI?', '+ LUBANG CACING (HIPOTESIS)', (255,106,31), (255,255,255)),
  'mariana': ('mariana/.clean.jpg', 'SAMUDRA \u00b7 LAUT DALAM', 'MENYELAM KE', 'PALUNG MARIANA', 'APA YANG TERJADI?', '10,9 KM \u00b7 TEKANAN >1.000\u00d7', (25,227,255), (4,28,40)),
+ 'blackhole2': ('post/blackhole2/f6.jpg', 'ASTRONOMI · PART 2', 'BISAKAH KITA KELUAR', 'LEWAT LUBANG CACING', 'LANJUTAN BLACK HOLE', 'JEMBATAN ATAU JALAN BUNTU?', (255,106,31), (255,255,255)),
  'pelari': ('post/pelari/f6.jpg', 'FISIKA \u00b7 RELATIVITAS', 'PRIA BERLARI', 'MENDEKATI CAHAYA', 'APA YANG TERJADI?', '7\u00d7 KELILING BUMI / DETIK', (46,155,255), (255,255,255)),
 }
 def pill(d, cx, cy, text, font, bg, fg, radius=None, padx=None, pady=None, stroke=0):

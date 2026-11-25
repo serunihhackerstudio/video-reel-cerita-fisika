@@ -13,6 +13,7 @@ V = [
  ('blackhole', '2026-11-24_black-hole-dan-lubang-cacing.mp4', 6.8, 14.0, 'ASTRONOMI \u00b7 RELATIVITAS', 'MASUK', 'BLACK HOLE', 'APA YANG TERJADI?', (255,106,31), (255,255,255)),
  ('mariana', '2026-11-24_palung-mariana-menyelam.mp4', 6.3, 14.0, 'SAMUDRA \u00b7 LAUT DALAM', 'MENYELAM KE', 'PALUNG MARIANA', 'APA YANG TERJADI?', (25,227,255), (4,28,40)),
  ('pelari', '2026-11-24_pelari-kecepatan-cahaya.mp4', 26.0, 14.0, 'FISIKA · RELATIVITAS', 'PRIA BERLARI', 'MENDEKATI CAHAYA', 'APA YANG TERJADI?', (46,155,255), (255,255,255)),
+ ('blackhole2', '2026-11-25_lubang-cacing-part2.mp4', 11.6, 14.0, 'ASTRONOMI · PART 2', 'BISAKAH KITA KELUAR', 'LEWAT LUBANG CACING', 'KISI DILIPAT JADI DUA SISI', (255,106,31), (255,255,255)),
 ]
 import sys
 SEL = sys.argv[1:]

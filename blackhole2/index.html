@@ -1,0 +1,505 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bisakah kita keluar lewat lubang cacing?</title>
+<!-- Motion Format · mesin adegan. File ini DIRAKIT oleh `python3 scripts/mf.py rakit <proyek>`
+     dari scene.html + assets/mesin/core.html. Jangan edit index.html langsung: edit scene.html lalu rakit ulang.
+     Buka di browser: autoplay + loop. ?debug=1 = penggeser waktu · ?t=4.2 = berhenti di detik 4,2 ·
+     ?clean=1 = diam untuk render. Tombol: R = ulang, Spasi = jeda. -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* warna diisi dari PALET di script (bagian 0). Font: ganti link Google Fonts di atas + --fj (judul) / --fm (label) */
+:root{--fj:'Space Grotesk',sans-serif;--fm:'JetBrains Mono',monospace}
+#langit{position:absolute;inset:0;background:linear-gradient(180deg,var(--l1) 0%,var(--l2) 60%,var(--l3) 100%)}
+#dunia{position:absolute;inset:0}
+#dunia canvas,#makro canvas{position:absolute;left:0;top:0;display:block}
+#makro{position:absolute;inset:0;z-index:3;display:none}
+#studio{position:absolute;inset:0;background:radial-gradient(ellipse 95% 70% at 50% 44%,var(--s1) 0%,var(--s2) 55%,var(--s3) 100%)}
+#studio:after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.035) 2px,transparent 2px);background-size:72px 72px;background-position:36px 36px}
+#iris{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:visible}
+#vig{position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse 85% 70% at 50% 46%,rgba(0,0,0,0) 58%,rgba(20,16,10,.32) 100%)}
+#garis{position:absolute;inset:0;z-index:9;pointer-events:none;overflow:visible}
+#tanda{position:absolute;inset:0;z-index:10;pointer-events:none}
+.lt{position:absolute;white-space:nowrap;font:700 44px/1 var(--fm);letter-spacing:.03em;color:#fff;text-transform:uppercase;padding:0 2px 14px;
+  text-shadow:0 2px 2px rgba(0,0,0,.75),0 0 10px rgba(0,0,0,.55),0 0 26px rgba(0,0,0,.35)}
+.lt small{display:block;font:600 32px/1 var(--fj);letter-spacing:0;text-transform:none;margin-top:10px;color:#eef8ff}
+.lt i{position:absolute;left:0;right:0;bottom:0;height:4px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.7);transform-origin:0 50%}
+.lt.r i{transform-origin:100% 50%}
+.lt.big{font:700 64px/1 var(--fj);letter-spacing:.02em;padding-bottom:14px;color:var(--tb)}
+.lt.big small{font:700 34px/1 var(--fj);margin-top:10px}
+.lt.big i{height:5px;background:var(--alir)}
+.lt.am.big{color:var(--ta)}.lt.am.big i{background:var(--aks)}
+.dot{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.3),0 0 18px #fff,0 1px 3px rgba(0,0,0,.6)}
+.dot.am{background:var(--aks);box-shadow:0 0 0 5px color-mix(in srgb,var(--aks) 30%,transparent),0 0 18px var(--aks),0 1px 3px rgba(0,0,0,.6)}
+#jejak{position:absolute;left:70px;top:190px;z-index:12;font:700 30px/1.3 var(--fm);letter-spacing:.03em;color:#fff;text-transform:uppercase;
+  text-shadow:0 2px 3px rgba(0,0,0,.8),0 0 14px rgba(0,0,0,.6),0 0 30px rgba(0,0,0,.35)}
+#jejak b{color:var(--ta);font-weight:700}
+#jejak .z{display:block;margin-top:8px;font:700 76px/1 var(--fj);color:#fff}
+#jejak .z small{font:700 30px/1 var(--fm);color:rgba(255,255,255,.75);margin-left:12px;letter-spacing:.04em}
+#rpm{position:absolute;left:70px;top:350px;z-index:12;opacity:0;font:900 70px/1 var(--fj);color:var(--ta);
+  text-shadow:0 3px 3px rgba(0,0,0,.7),0 0 18px rgba(0,0,0,.5)}
+#rpm small{display:block;font:700 30px/1 var(--fm);color:rgba(255,255,255,.85);letter-spacing:.03em;margin-top:8px}
+#inset{position:absolute;right:160px;top:196px;width:220px;height:220px;border-radius:50%;z-index:12;opacity:0;
+  box-shadow:0 0 0 4px rgba(255,255,255,.95),0 8px 30px rgba(0,0,0,.55)}
+#insetT{position:absolute;right:150px;top:424px;width:240px;text-align:center;z-index:12;opacity:0;font:700 30px/1.1 var(--fm);letter-spacing:.02em;color:#fff;
+  text-transform:uppercase;text-shadow:0 2px 2px rgba(0,0,0,.7),0 0 10px rgba(0,0,0,.5)}
+#titikInset{position:absolute;right:259px;top:295px;width:22px;height:22px;border-radius:50%;z-index:13;opacity:0;background:var(--aks);
+  box-shadow:0 0 0 6px color-mix(in srgb,var(--aks) 35%,transparent),0 0 18px var(--aks)}
+</style>
+<style>
+html,body{margin:0;height:100%;background:#000;overflow:hidden}
+#stage{position:absolute;left:50%;top:50%;width:1080px;height:1920px;transform-origin:50% 50%;overflow:hidden;-webkit-font-smoothing:antialiased}
+#stage *{box-sizing:border-box}
+.abs{position:absolute}
+.wd{display:inline-block;white-space:nowrap}.wi{display:inline-block;will-change:transform}
+#grain{position:absolute;inset:-64px;pointer-events:none;z-index:90;mix-blend-mode:overlay;opacity:0}
+#mfSub{position:absolute;left:0;top:0;width:100%;pointer-events:none;z-index:80;text-align:center}
+#mfSub .sw{display:inline-block;margin:0 .14em;transform-origin:50% 85%}
+#mfLab{position:absolute;inset:0;pointer-events:none;z-index:70;overflow:visible}
+#dbg{position:fixed;left:0;right:0;bottom:0;display:none;gap:10px;align-items:center;padding:8px 12px;background:rgba(0,0,0,.75);color:#fff;font:13px/1 monospace;z-index:999}
+#dbg input{flex:1}
+</style>
+</head>
+<body>
+<div id="stage">
+<div id="langit"></div>
+<div id="dunia"></div>
+<div id="vig"></div>
+<svg id="garis" viewBox="0 0 1080 1920"></svg>
+<div id="tanda"></div>
+<div id="jejak"></div>
+<svg id="mfLab" viewBox="0 0 1080 1920"></svg>
+<div id="mfSub"></div>
+<div id="grain"></div>
+</div>
+<div id="dbg"><button id="dPlay">⏯</button><input id="dScrub" type="range" min="0" max="1000" value="0"><span id="dClock">0.00</span></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="kata.js" onerror="window.KATA=window.KATA||null"></script>
+<script>
+/* ================= MESIN MOTION FORMAT =================
+   Aturan emas: semua gerak adalah fungsi dari waktu t (detik). Jangan pakai Date, performance.now,
+   requestAnimationFrame, setTimeout, atau Math.random tanpa benih: render MP4 = lompat ke tiap frame. */
+window.__errs=[];addEventListener('error',e=>__errs.push(String(e.message)));addEventListener('unhandledrejection',e=>__errs.push('Promise: '+String(e.reason&&e.reason.stack||e.reason)));
+const W=1080,H=1920,RASIO='9:16',TEGAK=H>W,q=new URLSearchParams(location.search);
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+function fit(){const s=Math.min(innerWidth/W,innerHeight/H);$('#stage').style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+
+/* ---------- matematika kecil ---------- */
+const lerp=(a,b,k)=>a+(b-a)*k,clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+const sstep=(a,b,x)=>{const k=clamp((x-a)/(b-a));return k*k*(3-2*k);};
+const seg=(t,a,b)=>clamp((t-a)/(b-a));                 // 0..1 di rentang [a,b]
+const E={lin:k=>k,out:k=>1-Math.pow(1-k,3),in:k=>k*k*k,io:k=>k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2,
+  s:k=>k*k*(3-2*k),ox:k=>k>=1?1:1-Math.pow(2,-10*k),
+  back:k=>{const c1=1.6,c3=c1+1;return 1+c3*Math.pow(k-1,3)+c1*Math.pow(k-1,2);},
+  pegas:k=>k>=1?1:1-Math.exp(-6*k)*Math.cos(12*k)};
+const nz=(t,s=0)=>Math.sin(t*1.31+s*7.13)*.5+Math.sin(t*2.71+s*3.37)*.3+Math.sin(t*.613+s*1.71)*.2; // goyang halus -1..1
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const hash=n=>{const s=Math.sin(n*127.1+31.7)*43758.5453;return s-Math.floor(s);};
+
+/* ---------- DOM & SVG ---------- */
+function mk(tag,cls,parent,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;(parent||$('#stage')).appendChild(e);return e;}
+function svgEl(tag,attrs,parent){const e=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;}
+function kanvas(w=W,h=H,parent){const c=document.createElement('canvas');c.width=w;c.height=h;if(parent){c.style.cssText=`position:absolute;left:0;top:0;width:${w}px;height:${h}px`;parent.appendChild(c);}return c;}
+
+/* ---------- teks per kata: masuk/keluar dengan blur berarah ---------- */
+function split(el){const out=[];(function walk(n){[...n.childNodes].forEach(c=>{if(c.nodeType===3){const parts=c.textContent.split(/(\s+)/);const frag=document.createDocumentFragment();parts.forEach(p=>{if(!p)return;if(/^\s+$/.test(p)){frag.appendChild(document.createTextNode(' '));return;}const wd=document.createElement('span');wd.className='wd';const wi=document.createElement('span');wi.className='wi';wi.textContent=p;wd.appendChild(wi);frag.appendChild(wd);out.push(wi);});c.replaceWith(frag);}else if(c.nodeType===1&&!c.classList.contains('wd'))walk(c);});})(el);return out;}
+const W8=el=>el._w||(el._w=split(el));
+function wIn(tl,el,at,o={}){const ws=W8(el);tl.set(el,{autoAlpha:1},at);tl.fromTo(ws,{yPercent:o.y??80,xPercent:o.x??0,opacity:0,filter:`blur(${o.b??12}px)`,scaleY:o.sy??1.25},{yPercent:0,xPercent:0,opacity:1,filter:'blur(0px)',scaleY:1,duration:o.d??.6,ease:o.ease??'power3.out',stagger:o.st??.07},at);return tl;}
+function wOut(tl,el,at,o={}){const ws=W8(el);tl.to(ws,{yPercent:o.y??-70,xPercent:o.x??0,opacity:0,filter:`blur(${o.b??10}px)`,duration:o.d??.35,ease:'power2.in',stagger:o.st??.025},at);tl.set(el,{autoAlpha:0},at+(o.d??.35)+ws.length*(o.st??.025));return tl;}
+
+/* ---------- butiran film ---------- */
+function grainOn(opacity=.3,blend='overlay'){const c=kanvas(220,220),x=c.getContext('2d'),d=x.createImageData(220,220),r=rng(7);for(let i=0;i<d.data.length;i+=4){const v=r()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255;}x.putImageData(d,0,0);const g=$('#grain');g.style.backgroundImage=`url(${c.toDataURL()})`;g.style.opacity=opacity;g.style.mixBlendMode=blend;}
+function grainFrame(t){const k=Math.floor(t*12);$('#grain').style.transform=`translate(${(k*37)%64-32}px,${(k*53)%64-32}px)`;}
+
+/* ---------- zona aman: tempat teks penting boleh berada ---------- */
+const AMAN=TEGAK?{atas:180,bawah:H-300,kiri:70,kanan:W-150}:{atas:70,bawah:H-90,kiri:110,kanan:W-110};
+
+/* ---------- LABEL PENUNJUK: titik + garis + teks, tanpa kotak ----------
+   const L=label({x:540,y:900,dx:180,dy:-160,teks:'pompa air',warna:'#FFD27A'});
+   di frame(t): L.atur(t, muncul, hilang)            -> garis menggambar, teks masuk
+   objek bergerak / 3D: L.atur(t, muncul, hilang, xLayar, yLayar)  -> titik ikut objek, sisi teks dijaga di zona aman */
+function label(o){const g=svgEl('g',{opacity:0},$('#mfLab'));const w=o.warna||'#FFE7B0',fs=o.ukuran||(TEGAK?54:44);
+  const halo=svgEl('circle',{r:22,fill:w,opacity:.25},g),dot=svgEl('circle',{r:8,fill:w},g);
+  const ln=svgEl('polyline',{fill:'none',stroke:w,'stroke-width':4,'stroke-linecap':'round','stroke-linejoin':'round'},g);
+  const tt=svgEl('text',{fill:o.warnaTeks||'#FFFFFF','font-size':fs,'font-weight':o.tebal||800,style:'paint-order:stroke;stroke:rgba(0,0,0,.55);stroke-width:10px;stroke-linejoin:round'},g);tt.textContent=o.teks;
+  let len=0,kunci='';
+  function tata(x,y){const kk=Math.round(x)+','+Math.round(y);if(kk===kunci)return;kunci=kk;
+    const d0=Math.abs(o.dx??160),lebar=fs*.58*String(o.teks).length+56;
+    const muatKanan=x+d0+lebar<=AMAN.kanan,muatKiri=x-d0-lebar>=AMAN.kiri;
+    let kanan=(o.dx??160)>=0?(muatKanan||!muatKiri&&AMAN.kanan-x>=x-AMAN.kiri):!(muatKiri||!muatKanan&&x-AMAN.kiri>=AMAN.kanan-x);
+    let tx=kanan?Math.min(x+d0,AMAN.kanan-lebar):Math.max(x-d0,AMAN.kiri+lebar);   // tak ada sisi lega: siku digeser ke dalam
+    const ty=clamp(y+(o.dy??-140),AMAN.atas+fs,AMAN.bawah-fs);
+    halo.setAttribute('cx',x);halo.setAttribute('cy',y);dot.setAttribute('cx',x);dot.setAttribute('cy',y);
+    ln.setAttribute('points',`${x},${y} ${tx},${ty} ${tx+(kanan?40:-40)},${ty}`);len=Math.hypot(tx-x,ty-y)+40;ln.setAttribute('stroke-dasharray',len);
+    tt.setAttribute('x',tx+(kanan?56:-56));tt.setAttribute('y',ty+fs*.35);tt.setAttribute('text-anchor',kanan?'start':'end');}
+  tata(o.x??W/2,o.y??H/2);
+  return{g,atur(t,a,b=1e9,x,y){if(!tt._f){tt._f=1;tt.setAttribute('font-family',o.font||(SUB.cfg?SUB.cfg.font.replace(/^.*?\d+px\s*/,''):'system-ui,sans-serif'));}
+    if(x!=null)tata(x,y);const k=E.out(seg(t,a,a+.5)),h=1-seg(t,b,b+.3);g.setAttribute('opacity',Math.min(1,k*3)*h);
+    ln.setAttribute('stroke-dashoffset',len*(1-k));tt.setAttribute('opacity',E.out(seg(t,a+.25,a+.6)));halo.setAttribute('r',22+8*Math.sin(t*4));}};}
+
+const MFlabel=label;   // nama cadangan bila adegan memakai nama `label` sendiri
+
+/* ---------- SUBTITLE dinamis per kata ----------
+   Sumber kata: SCENE.kata, atau window.KATA dari kata.js (dibuat `mf.py kata`). Format [{w,t0,t1}] detik layar.
+   SCENE.sub = { gaya:'polos'|'pil'|'mati', maks:4, y:0.68 (pecahan tinggi) atau fungsi(t,frasa)->{x,y},
+                 font:"800 64px 'Plus Jakarta Sans'", warna:'#fff', aksen:'#FFB547', kunci:['kata','kunci'] } */
+const SUB={frasa:[],cfg:null};
+function subSiapkan(kata,cfg){SUB.cfg=Object.assign({gaya:'polos',maks:TEGAK?4:6,y:TEGAK?.68:.84,warna:'#FFFFFF',aksen:'#FFB547',kunci:[],
+  font:`800 ${TEGAK?64:52}px system-ui,sans-serif`},cfg||{});if(!kata||!kata.length||SUB.cfg.gaya==='mati')return;
+  const c=SUB.cfg,box=$('#mfSub');box.style.font=c.font;box.style.color=c.warna;
+  if(c.gaya==='pil'){box.style.textShadow='none';}else{box.style.textShadow='0 2px 2px rgba(0,0,0,.9),0 0 14px rgba(0,0,0,.75),0 0 40px rgba(0,0,0,.5)';}
+  const norm=w=>String(w).toLowerCase().replace(/[^\p{L}\p{N}]/gu,''),kunci=new Set(c.kunci.map(norm));let cur=[];
+  const tutup=()=>{if(cur.length)SUB.frasa.push(cur);cur=[];};
+  kata.forEach((k,i)=>{const prev=kata[i-1];if(cur.length&&(cur.length>=c.maks||/[.,!?;:…]$/.test(prev.w)||k.t0-prev.t1>.35))tutup();cur.push(k);});tutup();
+  SUB.frasa=SUB.frasa.map((ws,i)=>{const el=mk('div','sf',box);el.style.cssText=`position:absolute;left:0;width:100%;opacity:0;padding:0 ${W-AMAN.kanan}px 0 ${AMAN.kiri}px`;
+    const inner=c.gaya==='pil'?mk('span','',el):el;if(c.gaya==='pil')inner.style.cssText='display:inline-block;padding:.12em .5em .18em;border-radius:.6em;background:rgba(12,12,20,.72)';
+    const spans=ws.map(k=>{const s=mk('span','sw',inner);s.textContent=k.w;if(kunci.has(norm(k.w)))s.style.color=c.aksen;return s;});
+    const nxt=kata.indexOf(ws[ws.length-1])+1;const akhir=Math.min(ws[ws.length-1].t1+.35,kata[nxt]?kata[nxt].t0-.07:1e9);
+    return{el,spans,ws,a:ws[0].t0-.06,b:akhir};});}
+function subFrame(t){if(!SUB.frasa.length)return;const c=SUB.cfg;SUB.frasa.forEach(f=>{const on=t>=f.a&&t<f.b;f.el.style.opacity=on?1:0;if(!on)return;
+  let p=typeof c.y==='function'?c.y(t,f):{x:W/2,y:H*c.y};f.el.style.top=(p.y-f.el.offsetHeight/2)+'px';
+  if(p.x!=null&&p.x!==W/2){f.el.style.left=(p.x-W/2)+'px';}else f.el.style.left='0px';
+  f.spans.forEach((s,i)=>{const k=f.ws[i],m=E.back(seg(t,k.t0-.04,k.t0+.14));s.style.opacity=t<k.t0-.04?(c.gaya==='pil'?.35:0):1;s.style.transform=`translateY(${(1-m)*18}px) scale(${.86+.14*m})`;});});}
+</script>
+<script>
+/* Black hole & lubang cacing · isometrik dibongkar · MODE ortho · aksen oranye menyala. Semua pusat objek di bidang z = 0. */
+const PAL={langit:['#0c1226','#070a16','#030409'],aks:'#ff6a1f',tb:'#ffc3a0',ta:'#ffe0cc'};
+{const s=document.documentElement.style;[['--l1',PAL.langit[0]],['--l2',PAL.langit[1]],['--l3',PAL.langit[2]],['--alir',PAL.aks],['--aks',PAL.aks],['--tb',PAL.tb],['--ta',PAL.ta]].forEach(([k,v])=>s.setProperty(k,v));}
+const WAKTU={potong:[5.1,6.5],dur:55.8};
+const POTF=new THREE.Plane(new THREE.Vector3(0,0,-1),99);let PLN=POTF;
+/* ---------- ALAT 3D ---------- */
+const C=h=>new THREE.Color(h).convertSRGBToLinear(),DEG=Math.PI/180;
+function bhn(hex,o={},klip=true){return new THREE.MeshStandardMaterial(Object.assign({color:C(hex),roughness:.6,metalness:0},o,klip?{clippingPlanes:[PLN],clipShadows:true}:{}));}
+function tutupM(hex){return new THREE.MeshBasicMaterial({color:C(hex),side:THREE.BackSide,clippingPlanes:[PLN],toneMapped:false});}
+function pasang(geo,m,par,pos,tutup){const o=new THREE.Mesh(geo,m);o.castShadow=o.receiveShadow=true;if(pos)o.position.set(...pos);if(tutup&&m.clippingPlanes)o.add(new THREE.Mesh(geo,tutupM(tutup)));par.add(o);return o;}
+function kotak(x0,x1,y0,y1,z0,z1,m,par,tutup){return pasang(new THREE.BoxGeometry(x1-x0,y1-y0,z1-z0),m,par,[(x0+x1)/2,(y0+y1)/2,(z0+z1)/2],tutup);}
+function bubut(prof,m,par,tutup,pos,n=72){const o=pasang(new THREE.LatheGeometry(prof.map(([r,y])=>new THREE.Vector2(r,y)),n),m,par,pos,tutup);return o;}
+function bubutX(prof,m,par,tutup,pos){const g=new THREE.LatheGeometry(prof.map(([r,y])=>new THREE.Vector2(r,y)),56);g.rotateZ(-Math.PI/2);return pasang(g,m,par,pos,tutup);}
+function silinder(r,y0,y1,m,par,tutup,pos){return pasang(new THREE.CylinderGeometry(r,r,y1-y0,40),m,par,pos||[0,(y0+y1)/2,0],tutup);}
+function silinderX(r,x0,x1,m,par,tutup,y,z){const o=pasang(new THREE.CylinderGeometry(r,r,x1-x0,40),m,par,[(x0+x1)/2,y,z],tutup);o.rotation.z=Math.PI/2;return o;}
+function batang(a,b,r,m,par,tutup){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A);const o=pasang(new THREE.CylinderGeometry(r,r,d.length(),14),m,par,null,tutup);o.position.copy(A).add(B).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return o;}
+function selang(titik,r,m,par,n=64){return pasang(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(titik.map(p=>new THREE.Vector3(...p)),false,'catmullrom',.15),n,r,10,false),m,par);}
+const busur=(rx,cy,ry,a0,a1,n=14)=>Array.from({length:n+1},(_,i)=>{const a=lerp(a0,a1,i/n)*DEG;return[rx*Math.cos(a),cy+ry*Math.sin(a)];});
+function dindingBox(par,[x0,x1,y0,y1,z0,z1],lapis,celah=.01){const g=new THREE.Group();par.add(g);let d=0;
+  lapis.forEach(([e,m,w])=>{const a=x0+d,b=x1-d,c=y0+d,f=y1-d,h=z0+d,zf=z1-d;
+    kotak(a,a+e,c,f,h,zf,m,g,w);kotak(b-e,b,c,f,h,zf,m,g,w);kotak(a+e,b-e,f-e,f,h,zf,m,g,w);kotak(a+e,b-e,c,c+e,h,zf,m,g,w);kotak(a+e,b-e,c+e,f-e,h,h+e,m,g,w);kotak(a+e,b-e,c+e,f-e,zf-e,zf,m,g,w);d+=e+celah;});return g;}
+function petaPantul(ren){const c=kanvas(1024,512),x=c.getContext('2d'),g=x.createLinearGradient(0,0,0,512);
+  g.addColorStop(0,'#f4f1ea');g.addColorStop(.47,'#c9c5bb');g.addColorStop(.55,'#8d8778');g.addColorStop(1,'#5b5446');x.fillStyle=g;x.fillRect(0,0,1024,512);
+  x.filter='blur(7px)';x.fillStyle='#fff';[[110,70,190,90],[600,110,240,60],[420,24,130,40]].forEach(r=>x.fillRect(...r));
+  const t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;t.encoding=THREE.sRGBEncoding;return new THREE.PMREMGenerator(ren).fromEquirectangular(t).texture;}
+
+/* ---------- TEKSTUR (canvas) ---------- */
+function teksturK(w,h,lukis,ul){const c=kanvas(w,h),x=c.getContext('2d');lukis(x,w,h,rng(w*7+h));const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;
+  t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;if(ul)t.repeat.set(...ul);return t;}
+function bintik(x,w,h,n,warna,a,b,r,y0=0,hh=h){for(let i=0;i<n;i++){x.fillStyle=warna[(r()*warna.length)|0];const s=a+r()*(b-a);x.fillRect(r()*w,y0+r()*hh,s,s*(.6+r()*.8));}}
+const salin=(t,a,b)=>{const c=t.clone();c.needsUpdate=true;c.repeat.set(a,b);return c;};
+const LAPIS=[[.5,'#6f8c46',['#5f7c3b','#809e55','#4f6a30']],[1.5,'#7a5c3e',['#6a4e33','#8c6c4a','#5a4029']],[1.4,'#b99a6a',['#a8895a','#cbae7e','#9a7c50']],[2.6,'#8f8b84',['#7a766f','#a29e96','#68645d','#b4b0a8']]];
+const TBL=LAPIS.reduce((s,l)=>s+l[0],0);
+const tLapis=teksturK(512,256,(x,w,h,r)=>{let y=0;LAPIS.forEach(([th,d,b],i)=>{const hh=th/TBL*h;x.fillStyle=d;x.fillRect(0,y,w,hh+1);bintik(x,w,h,w*hh/10,b,1,i==3?6:3,r,y,hh);x.fillStyle='rgba(0,0,0,.25)';x.fillRect(0,y+hh-1.5,w,2.5);y+=hh;});});
+const tRumput=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#6f8f46';x.fillRect(0,0,w,h);bintik(x,w,h,3500,['#5f7f3a','#7fa053','#6a8a42','#8aa95c','#557333'],1,3,r);
+  for(let i=0;i<1800;i++){x.strokeStyle=r()<.5?'rgba(40,70,20,.35)':'rgba(170,200,110,.35)';x.lineWidth=1;const a=r()*w,b=r()*h;x.beginPath();x.moveTo(a,b);x.lineTo(a+(r()-.5)*3,b-3-r()*4);x.stroke();}},[14,10]);
+const tBeton=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#b9b4a9';x.fillRect(0,0,w,h);bintik(x,w,h,2400,['#a8a398','#c8c3b8','#9b968b','#d3cec3'],1,3,r);
+  x.fillStyle='rgba(60,55,45,.22)';x.fillRect(0,0,w,2);x.fillRect(0,0,2,h);x.fillRect(0,128,w,1);},[3,2]);
+const tBetonB=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#c4bfb3';x.fillRect(0,0,w,h);bintik(x,w,h,2000,['#b3aea2','#d2cdc1','#a49f94'],1,3,r);
+  for(let i=0;i<4;i++){x.fillStyle='rgba(50,46,38,.2)';x.fillRect(0,i*64,w,2);}x.fillStyle='rgba(50,46,38,.14)';for(let i=0;i<4;i++)x.fillRect(i*64,0,2,h);},[5,2]);
+const tSikat=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#c3c8cb';x.fillRect(0,0,w,h);for(let i=0;i<240;i++){x.fillStyle=`rgba(${r()<.5?255:70},${r()<.5?255:75},${r()<.5?255:80},${.04+r()*.14})`;const y=r()*h;x.fillRect(r()*20,y,w,1+(r()<.2?1:0));}},[2,2]);
+const tSikatG=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#7d868d';x.fillRect(0,0,w,h);for(let i=0;i<240;i++){x.fillStyle=`rgba(${r()<.5?255:30},${r()<.5?255:35},${r()<.5?255:40},${.04+r()*.14})`;x.fillRect(r()*20,r()*h,w,1);}},[2,2]);
+const tAspal=teksturK(128,128,(x,w,h,r)=>{x.fillStyle='#4d5054';x.fillRect(0,0,w,h);bintik(x,w,h,900,['#43464a','#5a5d61','#3a3d41'],1,2,r);},[20,2]);
+const tLaut=teksturK(512,512,(x,w,h,r)=>{const g=x.createLinearGradient(0,0,w,h);g.addColorStop(0,'#2f7690');g.addColorStop(1,'#3f8ca3');x.fillStyle=g;x.fillRect(0,0,w,h);
+  for(let i=0;i<260;i++){x.strokeStyle=`rgba(255,255,255,${.06+r()*.22})`;x.lineWidth=1+r()*2;const a=r()*w,b=r()*h,l=12+r()*34;x.beginPath();x.moveTo(a,b);x.quadraticCurveTo(a+l/2,b-4,a+l,b);x.stroke();}
+  for(let i=0;i<120;i++){x.strokeStyle=`rgba(10,50,70,${.08+r()*.12})`;x.lineWidth=2;const a=r()*w,b=r()*h,l=16+r()*30;x.beginPath();x.moveTo(a,b);x.quadraticCurveTo(a+l/2,b+4,a+l,b);x.stroke();}},[6,5]);
+const tSisiLaut=teksturK(64,256,(x,w,h)=>{const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#4f9db3');g.addColorStop(.12,'#2b6f88');g.addColorStop(.45,'#1d4f66');g.addColorStop(.46,'#9b855f');g.addColorStop(1,'#6e6a64');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tPasir=teksturK(128,128,(x,w,h,r)=>{x.fillStyle='#d8c9a0';x.fillRect(0,0,w,h);bintik(x,w,h,900,['#cbbb90','#e4d6ae','#c2b184'],1,2,r);},[20,1]);
+const tBayang=teksturK(256,256,(x,w,h)=>{const g=x.createRadialGradient(128,128,10,128,128,128);g.addColorStop(0,'rgba(0,0,0,.5)');g.addColorStop(.6,'rgba(0,0,0,.15)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tAlir=teksturK(128,16,(x,w,h)=>{const g=x.createLinearGradient(0,0,w,0);g.addColorStop(0,'rgba(255,255,255,.35)');g.addColorStop(.5,'rgba(255,255,255,1)');g.addColorStop(.62,'rgba(255,255,255,.35)');g.addColorStop(1,'rgba(255,255,255,.35)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tJendela=teksturK(128,128,(x,w,h)=>{x.fillStyle='#cfc9bb';x.fillRect(0,0,w,h);for(let j=0;j<2;j++)for(let i=0;i<4;i++){x.fillStyle='#35596b';x.fillRect(8+i*30,22+j*52,22,34);x.fillStyle='rgba(255,255,255,.3)';x.fillRect(8+i*30,22+j*52,8,34);}},[3,1]);
+
+
+const tKisi=teksturK(64,64,(x,w,h)=>{x.clearRect(0,0,w,h);x.fillStyle='rgba(30,44,86,.55)';x.fillRect(0,0,w,h);x.fillStyle='rgba(190,215,255,.95)';x.fillRect(0,0,w,3);x.fillRect(0,0,3,h);x.fillStyle='rgba(120,150,230,.25)';x.fillRect(3,3,w,2);});
+const tCakram=teksturK(512,512,(x,w,h,r)=>{x.clearRect(0,0,w,h);const c=256;for(let k=0;k<5;k++){const g=x.createRadialGradient(c,c,60+k*0,c,c,250);g.addColorStop(0,'rgba(255,248,224,0)');g.addColorStop(.18,'rgba(255,240,200,.95)');g.addColorStop(.4,'rgba(255,170,70,.8)');g.addColorStop(.75,'rgba(220,70,20,.55)');g.addColorStop(1,'rgba(120,20,5,0)');x.globalCompositeOperation=k?'lighter':'source-over';x.fillStyle=g;x.globalAlpha=k?.12:1;x.beginPath();x.arc(c,c,250,0,7);x.fill();}
+  x.globalAlpha=1;x.globalCompositeOperation='source-over';for(let i=0;i<70;i++){const a=r()*6.283,rr=90+r()*150,l=.6+r()*1.2;x.strokeStyle='rgba(255,'+(150+r()*90|0)+',90,'+(.12+r()*.28)+')';x.lineWidth=2+r()*5;x.beginPath();x.arc(c,c,rr,a,a+l);x.stroke();}
+  x.globalCompositeOperation='destination-out';const g2=x.createRadialGradient(c,c,100,c,c,120);g2.addColorStop(0,'rgba(0,0,0,1)');g2.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g2;x.beginPath();x.arc(c,c,125,0,7);x.fill();});
+const tCincin=teksturK(256,256,(x,w,h)=>{x.clearRect(0,0,w,h);const g=x.createRadialGradient(128,128,70,128,128,126);g.addColorStop(0,'rgba(255,120,40,0)');g.addColorStop(.62,'rgba(255,200,130,.95)');g.addColorStop(.75,'rgba(255,100,30,.5)');g.addColorStop(1,'rgba(255,80,20,0)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tGlow=teksturK(128,128,(x,w,h)=>{const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,170,100,.9)');g.addColorStop(.6,'rgba(255,90,30,.3)');g.addColorStop(1,'rgba(255,90,30,0)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tBatu=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#8a7c6c';x.fillRect(0,0,w,h);bintik(x,w,h,3500,['#7a6d5f','#9a8c7a','#6b5f52','#a89a88'],1,5,r);for(let i=0;i<14;i++){const a=r()*w,b=r()*h,rr=8+r()*22;x.fillStyle='rgba(40,34,28,.35)';x.beginPath();x.arc(a,b,rr,0,7);x.fill();x.fillStyle='rgba(190,175,150,.3)';x.beginPath();x.arc(a-2,b-2,rr*.8,0,7);x.fill();}},[2,1]);
+const tKainA=teksturK(128,128,(x,w,h,r)=>{x.fillStyle='#ecebe6';x.fillRect(0,0,w,h);for(let i=0;i<128;i+=3){x.fillStyle='rgba(0,0,0,.05)';x.fillRect(0,i,w,1);x.fillRect(i,0,1,h);}bintik(x,w,h,400,['#e0dfd8','#f4f3ee'],1,2,r);x.fillStyle='rgba(60,60,60,.35)';x.fillRect(0,62,w,3);},[2,2]);
+const tPanel=teksturK(128,128,(x,w,h)=>{x.fillStyle='#1d2b52';x.fillRect(0,0,w,h);x.strokeStyle='rgba(150,180,255,.6)';x.lineWidth=2;for(let i=0;i<=128;i+=32){x.beginPath();x.moveTo(i,0);x.lineTo(i,h);x.stroke();x.beginPath();x.moveTo(0,i);x.lineTo(w,i);x.stroke();}},[2,1]);
+
+/* ---------- RENDERER, CAHAYA, LATAR BINTANG ---------- */
+const RD=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});RD.setPixelRatio(1);RD.setSize(W,H);RD.outputEncoding=THREE.sRGBEncoding;
+RD.toneMapping=THREE.ACESFilmicToneMapping;RD.toneMappingExposure=1.0;RD.shadowMap.enabled=true;RD.shadowMap.type=THREE.PCFSoftShadowMap;RD.localClippingEnabled=true;RD.setClearColor(0,0);$('#dunia').appendChild(RD.domElement);
+const SD=new THREE.Scene();SD.environment=petaPantul(RD);
+const KD=new THREE.OrthographicCamera(-1,1,1,-1,-600,600);
+SD.add(new THREE.HemisphereLight(C('#cdd8ff'),C('#2a1e16'),.45));
+const matahari=new THREE.DirectionalLight(C('#fff0dc'),2.6);matahari.castShadow=true;matahari.shadow.mapSize.set(4096,4096);matahari.shadow.bias=-.0004;matahari.shadow.normalBias=.04;SD.add(matahari,matahari.target);
+matahari.position.set(40,60,30);matahari.target.position.set(0,0,0);Object.assign(matahari.shadow.camera,{left:-45,right:45,top:45,bottom:-45,near:1,far:300});matahari.shadow.camera.updateProjectionMatrix();
+const tepiL=new THREE.DirectionalLight(C('#9db4ff'),.8);tepiL.position.set(-30,10,-30);SD.add(tepiL);
+{const N=1600,pos=new Float32Array(N*3),col=new Float32Array(N*3),r=rng(9);for(let i=0;i<N;i++){const a=r()*6.283,b=Math.acos(2*r()-1),R=220+r()*60;pos.set([R*Math.sin(b)*Math.cos(a),R*Math.sin(b)*Math.sin(a),R*Math.cos(b)],i*3);const c=new THREE.Color().setHSL(.6+r()*.1,.4*r(),.75+r()*.25);col.set([c.r,c.g,c.b],i*3);}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));const st=new THREE.Points(g,new THREE.PointsMaterial({size:2.6,sizeAttenuation:false,vertexColors:true,transparent:true,opacity:.9,depthWrite:false,toneMapped:false}));st.frustumCulled=false;SD.add(st);}
+const sprite=()=>{const m=new THREE.SpriteMaterial({map:tGlow,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:0});const s=new THREE.Sprite(m);s.visible=false;SD.add(s);return s;};
+function spr(s,pos,sc,op){s.position.set(...pos);s.scale.setScalar(sc);s.material.opacity=op;s.visible=op>.003;}
+const DM=(h,o)=>bhn(h,Object.assign({roughness:.85,envMapIntensity:.4},o),false);
+
+/* ---------- BLACK HOLE RAKSASA + PIRINGAN GAS (adegan 1) ---------- */
+const BH=new THREE.Group();SD.add(BH);
+const bola=new THREE.Mesh(new THREE.SphereGeometry(4,64,40),new THREE.MeshBasicMaterial({color:0x000000,transparent:true}));BH.add(bola);
+const cak=new THREE.Mesh(new THREE.RingGeometry(5.2,15,160,1),new THREE.MeshBasicMaterial({map:tCakram,transparent:true,side:THREE.DoubleSide,depthWrite:false,toneMapped:false}));cak.rotation.x=-Math.PI/2+.0;cak.material.map.center.set(.5,.5);
+{const uv=cak.geometry.attributes.uv,p=cak.geometry.attributes.position;for(let i=0;i<uv.count;i++)uv.setXY(i,(p.getX(i)/15+1)/2,(p.getY(i)/15+1)/2);}
+const CAKG=new THREE.Group();CAKG.rotation.x=.22;CAKG.add(cak);BH.add(CAKG);
+const cinF=new THREE.Sprite(new THREE.SpriteMaterial({map:tCincin,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false}));cinF.scale.setScalar(12.6);BH.add(cinF);
+const cinF2=new THREE.Sprite(new THREE.SpriteMaterial({map:tCincin,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:.6}));cinF2.scale.setScalar(22);cinF2.position.set(-3,2,-3);BH.add(cinF2);
+// bulan berbatu pelengkap
+const BL=new THREE.Mesh(new THREE.IcosahedronGeometry(3.2,4),DM('#ffffff',{map:tBatu,roughness:1}));{const p=BL.geometry.attributes.position;for(let i=0;i<p.count;i++){const x=p.getX(i),y=p.getY(i),z=p.getZ(i),d=1+.12*Math.sin(x*2.1+1)*Math.sin(y*1.7)+.08*Math.sin(z*2.6+2);p.setXYZ(i,x*d,y*d,z*d);}BL.geometry.computeVertexNormals();}
+BL.position.set(34,10,-26);BL.castShadow=BL.receiveShadow=true;SD.add(BL);
+
+/* ---------- RUANG-WAKTU: lembaran kisi berbentuk corong (dipotong POTF) ---------- */
+const YF=r=>7.29-17/(1+r/3),RR=26,RH=4;      // profil corong; horizon di r=4 (y=0)
+function profilCorong(tebal){const top=[],bot=[];for(let i=0;i<=90;i++){const r=lerp(.15,RR,Math.pow(i/90,1.6));top.push([r,YF(r)]);bot.push([r,YF(r)-tebal]);}return top.reverse().concat(bot).concat([[RR,YF(RR)]]);}
+const matF=new THREE.MeshStandardMaterial({color:C('#7f98e0'),map:salin(tKisi,36,20),transparent:true,opacity:0,roughness:.5,metalness:.2,side:THREE.DoubleSide,clippingPlanes:[POTF],clipShadows:true,depthWrite:false,envMapIntensity:.8,emissive:C('#1a2a66'),emissiveIntensity:.25});
+const matFC=new THREE.MeshBasicMaterial({color:C(PAL.aks),side:THREE.BackSide,clippingPlanes:[POTF],toneMapped:false,transparent:true,opacity:0});
+function bikinCorong(){const g=new THREE.LatheGeometry(profilCorong(.3).map(([r,y])=>new THREE.Vector2(r,y)),120);const m=new THREE.Mesh(g,matF);m.renderOrder=1;m.add(new THREE.Mesh(g,matFC));return m;}
+const CORONG=bikinCorong();SD.add(CORONG);
+const GRPF=new THREE.Group();SD.add(GRPF);   // cincin horizon + titik singularitas (terpotong)
+const cincinH=new THREE.Mesh(new THREE.TorusGeometry(RH,.09,10,120),new THREE.MeshBasicMaterial({color:C(PAL.aks),clippingPlanes:[POTF],toneMapped:false,transparent:true,opacity:0}));cincinH.rotation.x=Math.PI/2;cincinH.position.y=YF(RH)+.02;GRPF.add(cincinH);
+const titikS=new THREE.Mesh(new THREE.SphereGeometry(.28,16,12),new THREE.MeshBasicMaterial({color:C('#fff0e0'),toneMapped:false,transparent:true,opacity:0}));titikS.position.set(0,YF(.15)-.1,0);GRPF.add(titikS);
+const GLS=sprite(),GLH=sprite(),GLCH=sprite();
+function bingkai(w,h){const g=new THREE.Group();SD.add(g);const s=new THREE.Shape();s.moveTo(-w/2,-h/2);s.lineTo(w/2,-h/2);s.lineTo(w/2,h/2);s.lineTo(-w/2,h/2);s.lineTo(-w/2,-h/2);
+  g.add(new THREE.Mesh(new THREE.ShapeGeometry(s),new THREE.MeshBasicMaterial({color:C(PAL.aks),transparent:true,opacity:.1,depthWrite:false,side:THREE.DoubleSide,toneMapped:false})));
+  g.add(new THREE.LineLoop(new THREE.BufferGeometry().setFromPoints(s.getPoints().map(p=>new THREE.Vector3(p.x,p.y,0))),new THREE.LineBasicMaterial({color:C(PAL.aks),transparent:true,toneMapped:false})));return g;}
+const FRC=bingkai(58,18);FRC.position.set(0,-1.5,0);
+
+/* ---------- PESAWAT, ASTRONAUT (kain pelindung), PENGAMAT ---------- */
+const bajaP=bhn('#ffffff',{map:tSikat,metalness:.85,roughness:.34,envMapIntensity:1.2},false),bajaGP=bhn('#ffffff',{map:tSikatG,metalness:.8,roughness:.4},false),kacaP=bhn('#9fd0ff',{transparent:true,opacity:.45,roughness:.05,metalness:.2,envMapIntensity:2},false);
+function bikinPesawat(){const g=new THREE.Group();const lathe=(p,m)=>{const o=new THREE.Mesh(new THREE.LatheGeometry(p.map(([r,y])=>new THREE.Vector2(r,y)),32),m);o.rotation.z=-Math.PI/2;o.castShadow=true;g.add(o);return o;};
+  lathe([[0,-1.8],[.55,-1.5],[.8,-.6],[.8,1.2],[.6,1.9],[.35,2.2],[0,2.25]],bajaP);   // badan
+  const k=new THREE.Mesh(new THREE.SphereGeometry(.5,24,16,0,6.283,0,1.57),kacaP);k.position.set(1.0,.5,0);k.scale.set(1.5,.9,.9);g.add(k);
+  [-1,1].forEach(s=>{const sa=new THREE.Mesh(new THREE.BoxGeometry(.2,.1,1.9),bajaGP);sa.position.set(-.2,0,s*1.6);sa.castShadow=true;g.add(sa);const pn=new THREE.Mesh(new THREE.BoxGeometry(1.5,.06,1.0),bhn('#ffffff',{map:tPanel,metalness:.5,roughness:.35},false));pn.position.set(-.2,0,s*3.0);pn.castShadow=true;g.add(pn);});
+  const mt=new THREE.Mesh(new THREE.ConeGeometry(.42,.9,20),new THREE.MeshBasicMaterial({color:C('#ffb070'),toneMapped:false}));mt.rotation.z=Math.PI/2;mt.position.set(-2.3,0,0);g.add(mt);
+  const es=new THREE.Sprite(new THREE.SpriteMaterial({map:tGlow,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:.9}));es.scale.setScalar(2.2);es.position.set(-2.9,0,0);g.add(es);return g;}
+function bikinAstronaut(){const g=new THREE.Group(),mats=[];const M=(h,o)=>{const m=new THREE.MeshStandardMaterial(Object.assign({color:C(h),roughness:.9},o,{transparent:true}));mats.push(m);return m;};
+  const kain=M('#ffffff',{map:tKainA}),logam=M('#b9bfc4',{metalness:.85,roughness:.34}),emas=M('#e3b04a',{metalness:1,roughness:.12,envMapIntensity:1.6}),aks=M(PAL.aks,{roughness:.6});
+  const part=(geo,m,pos,rot)=>{const o=new THREE.Mesh(geo,m);o.position.set(...pos);if(rot)o.rotation.set(...rot);o.castShadow=true;g.add(o);return o;};
+  part(new THREE.CylinderGeometry(.52,.46,1.2,22),kain,[0,.1,0]);part(new THREE.SphereGeometry(.52,20,14),kain,[0,.7,0]);part(new THREE.SphereGeometry(.46,20,14),kain,[0,-.5,0]);
+  part(new THREE.BoxGeometry(.6,.75,.28),logam,[0,.2,-.56]);part(new THREE.BoxGeometry(.38,.3,.12),aks,[0,.4,.5]);
+  part(new THREE.SphereGeometry(.5,24,18),kain,[0,1.5,0]);part(new THREE.SphereGeometry(.4,24,18,-1.2,2.4,.5,1.5),emas,[0,1.5,.2]);
+  [-1,1].forEach(s=>{part(new THREE.CylinderGeometry(.17,.15,1.0,14),kain,[s*.72,.1,0],[0,0,s*.25]);part(new THREE.SphereGeometry(.2,14,10),logam,[s*.82,-.42,0]);
+    part(new THREE.CylinderGeometry(.2,.17,1.1,14),kain,[s*.26,-1.25,0]);part(new THREE.BoxGeometry(.34,.24,.5),logam,[s*.26,-1.85,.08]);});
+  g.userData.mats=mats;return g;}
+const PES=bikinPesawat();PES.position.set(24,8.2,-4);PES.rotation.y=.5;SD.add(PES);
+const AST=bikinAstronaut();SD.add(AST);const GHO=bikinAstronaut();SD.add(GHO);
+const OBS=new THREE.Group();SD.add(OBS);{OBS.position.set(25,8.5,0);const b=new THREE.Mesh(new THREE.BoxGeometry(1.3,.9,.9),bajaP);b.castShadow=true;OBS.add(b);const d=new THREE.Mesh(new THREE.SphereGeometry(.8,22,12,0,6.283,0,1.2),bajaGP);d.rotation.x=Math.PI;d.position.y=1;OBS.add(d);const e=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,1,6),bajaGP);e.position.y=1.5;OBS.add(e);}
+const FIG=(f,mat)=>{};
+/* ---------- ALIRAN: strip bercahaya ---------- */
+const tA=teksturK(128,16,(x,w,h)=>{const g=x.createLinearGradient(0,0,w,0);g.addColorStop(0,'rgba(255,255,255,.35)');g.addColorStop(.5,'rgba(255,255,255,1)');g.addColorStop(.62,'rgba(255,255,255,.35)');g.addColorStop(1,'rgba(255,255,255,.35)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const glowM=o=>new THREE.MeshBasicMaterial(Object.assign({color:C(PAL.aks),transparent:true,depthWrite:false,toneMapped:false},o));
+function strip(titik,r){const cu=new THREE.CatmullRomCurve3(titik.map(p=>new THREE.Vector3(...p)),false,'catmullrom',.2),g=new THREE.TubeGeometry(cu,240,r,8),tx=tA.clone();tx.needsUpdate=true;const pj=cu.getLength();tx.repeat.set(pj/1.4,1);
+  const m=new THREE.Mesh(g,glowM({map:tx}));m.renderOrder=3;SD.add(m);const hd=sprite();
+  return{cu,m,atur(isi,off,op=1,sc=1.1,col){g.setDrawRange(0,Math.floor(clamp(isi)*240)*8*6);m.visible=isi>0&&op>.01;m.material.opacity=op;if(col)m.material.color.copy(C(col));tx.offset.x=-off;if(isi>0&&isi<1){const p=cu.getPointAt(clamp(isi));spr(hd,[p.x,p.y,p.z],sc,op);}else spr(hd,[0,0,0],1,0);}};}
+const jalurPerm=(phi,r0,r1,dy=.35,n=36)=>Array.from({length:n},(_,i)=>{const r=lerp(r0,r1,i/(n-1));return[r*Math.cos(phi),YF(r)+dy,r*Math.sin(phi)];});
+const S_JATUH=strip(jalurPerm(0,20,1.2,.5),.12);
+const S_CAHAYA=strip([[4.6,YF(4.6)+.5,0],[6.4,3.4,0],[11,6.0,0],[18,8.0,0],[24,8.7,0]],.11);
+const S_RAYA=[[[4.3,.3,0],[6.6,2.8,0],[6.7,5.0,0],[4.5,5.2,0],[2.6,2.0,0],[1.6,-3.4,0]],[[-4.3,.3,0],[-6.2,2.6,0],[-6.8,4.6,0],[-4.8,5.0,-.5],[-2.7,1.8,-.4],[-1.6,-3.5,-.3]]].map(p=>strip(p,.1));
+const S_KONV=[Math.PI*1.0,-Math.PI*.35,-Math.PI*.65,-Math.PI*.5,0.0,Math.PI*.9].map(phi=>strip(jalurPerm(phi,4.6,.35,.3,34),.1));
+const TR_FL=sprite();
+/* ===== BLACK HOLE PART 2 · lubang cacing · (memakai ulang corong, astronaut, pesawat, bintang, label Part 1) ===== */
+[S_JATUH,S_CAHAYA,...S_RAYA,...S_KONV].forEach(s=>s.m.visible=false);GHO.visible=false;OBS.visible=false;CORONG.visible=false;GRPF.visible=false;
+const st2=document.createElement('style');st2.textContent='.lt.sm{font-size:34px}.lt.sm small{font-size:26px}.lt.big.sm{font-size:50px}.lt.big.sm small{font-size:28px}';document.head.appendChild(st2);
+
+/* ---------- LEMBARAN KISI: dua cekungan/tonjolan, dilipat seperti kertas ---------- */
+const Y0=7.29,XA=0,XB=26,XC=13,GP=5,SX0=-24,SX1=50,SZ=28,NX=148,NZ=84;
+const baseY=(x,z)=>{const ra=Math.hypot(x-XA,z),rb=Math.hypot(x-XB,z);return Y0-13/(1+ra/3.4)+8.5/(1+rb/2.6);};
+function lipat(x,y,z,f,o){if(f<=0||x<=XC){o[0]=x;o[1]=y;return o;}const p=f*Math.PI,c=Math.cos(p),s=Math.sin(p),yc=baseY(XC,z),vx=x-XC,vy=y-yc;
+  o[0]=XC+vx*c-vy*s;o[1]=yc+vx*s+vy*c+GP*(1-c)/2*Math.min(1,vx/6);return o;}
+const PXP=new THREE.Plane(new THREE.Vector3(-1,0,0),26);
+const gKisi=new THREE.BufferGeometry(),nV=(NX+1)*(NZ+1),pK=new Float32Array(nV*3),uK=new Float32Array(nV*2),iK=[];
+for(let j=0;j<=NZ;j++)for(let i=0;i<=NX;i++){const k=j*(NX+1)+i;uK[k*2]=i/NX*((SX1-SX0)/2);uK[k*2+1]=j/NZ*SZ;}
+for(let j=0;j<NZ;j++)for(let i=0;i<NX;i++){const a=j*(NX+1)+i,b=a+1,c=a+NX+1,d=c+1;iK.push(a,c,b,b,c,d);}
+gKisi.setAttribute('position',new THREE.BufferAttribute(pK,3));gKisi.setAttribute('uv',new THREE.BufferAttribute(uK,2));gKisi.setIndex(iK);
+const mKisi=new THREE.MeshStandardMaterial({color:C('#7f98e0'),map:salin(tKisi,1,1),transparent:true,opacity:0,roughness:.5,metalness:.2,side:THREE.DoubleSide,clippingPlanes:[POTF,PXP],depthWrite:false,envMapIntensity:.8,emissive:C('#1a2a66'),emissiveIntensity:.25});
+mKisi.map.wrapS=mKisi.map.wrapT=THREE.RepeatWrapping;mKisi.map.repeat.set(1,1);
+const KISI=new THREE.Mesh(gKisi,mKisi);KISI.renderOrder=1;KISI.frustumCulled=false;SD.add(KISI);
+let _fK=-1;const _o=[0,0];
+function aturKisi(f){if(f===_fK)return;_fK=f;for(let j=0;j<=NZ;j++){const z=-SZ+2*SZ*j/NZ;for(let i=0;i<=NX;i++){const x=SX0+(SX1-SX0)*i/NX,k=(j*(NX+1)+i)*3;lipat(x,baseY(x,z),z,f,_o);pK[k]=_o[0];pK[k+1]=_o[1];pK[k+2]=z;}}
+  gKisi.attributes.position.needsUpdate=true;gKisi.computeVertexNormals();}
+/* irisan (penampang di bidang potong): pita oranye mengikuti profil lembaran */
+const NR=300,gRib=new THREE.BufferGeometry(),pR=new Float32Array((NR+1)*2*3),iR=[];
+for(let i=0;i<NR;i++){const a=i*2,b=a+1,c=a+2,d=a+3;iR.push(a,b,c,c,b,d);}
+gRib.setAttribute('position',new THREE.BufferAttribute(pR,3));gRib.setIndex(iR);
+const mRib=new THREE.MeshBasicMaterial({color:C(PAL.aks),side:THREE.DoubleSide,clippingPlanes:[PXP],toneMapped:false,transparent:true,opacity:0});
+const RIB=new THREE.Mesh(gRib,mRib);RIB.renderOrder=2;RIB.frustumCulled=false;SD.add(RIB);
+function aturRib(zc,f){for(let i=0;i<=NR;i++){const x=SX0+(SX1-SX0)*i/NR,y=baseY(x,zc);lipat(x,y,zc,f,_o);let k=i*6;pR[k]=_o[0];pR[k+1]=_o[1];pR[k+2]=zc;lipat(x,y-.4,zc,f,_o);pR[k+3]=_o[0];pR[k+4]=_o[1];pR[k+5]=zc;}
+  gRib.attributes.position.needsUpdate=true;}
+/* ujung corong A (dasar) dan ujung corong B setelah dilipat */
+const TA2=[XA,baseY(XA,0)+.25,0],TB2=(()=>{const o=lipat(XB,baseY(XB,0),0,1,[0,0]);return[o[0],o[1]-.25,0];})();
+/* terowongan penghubung: tabung berjari-jari berubah (bisa menutup) */
+const cuT=new THREE.CatmullRomCurve3([new THREE.Vector3(...TB2),new THREE.Vector3(TB2[0]+1.7,lerp(TB2[1],TA2[1],.33),0),new THREE.Vector3(TB2[0]-1.4,lerp(TB2[1],TA2[1],.68),0),new THREE.Vector3(...TA2)],false,'catmullrom',.5);
+const TU=48,TS=18,gTu=new THREE.BufferGeometry(),pT=new Float32Array((TU+1)*(TS+1)*3),iT=[],FR=cuT.computeFrenetFrames(TU,false),PT=cuT.getPoints(TU);
+for(let u=0;u<TU;u++)for(let s=0;s<TS;s++){const a=u*(TS+1)+s,b=a+1,c=a+TS+1,d=c+1;iT.push(a,c,b,b,c,d);}
+gTu.setAttribute('position',new THREE.BufferAttribute(pT,3));gTu.setIndex(iT);
+function aturTu(r0,kp){for(let u=0;u<=TU;u++){const uu=u/TU,r=Math.max(.05,r0*(1-.93*kp*Math.pow(Math.sin(Math.PI*uu),.5)));for(let s=0;s<=TS;s++){const a=s/TS*6.2832,n=FR.normals[u],b=FR.binormals[u],k=(u*(TS+1)+s)*3,ca=Math.cos(a)*r,sa=Math.sin(a)*r;
+  pT[k]=PT[u].x+ca*n.x+sa*b.x;pT[k+1]=PT[u].y+ca*n.y+sa*b.y;pT[k+2]=PT[u].z+ca*n.z+sa*b.z;}}gTu.attributes.position.needsUpdate=true;gTu.computeVertexNormals();}
+const mTu=new THREE.MeshStandardMaterial({color:C('#a8c8ff'),transparent:true,opacity:0,roughness:.08,metalness:.2,envMapIntensity:1.8,side:THREE.DoubleSide,clippingPlanes:[POTF],depthWrite:false});
+const TUN=new THREE.Mesh(gTu,mTu);TUN.renderOrder=3;TUN.frustumCulled=false;SD.add(TUN);
+const mTuC=new THREE.MeshBasicMaterial({color:C(PAL.aks),side:THREE.BackSide,clippingPlanes:[POTF],toneMapped:false,transparent:true,opacity:0});const TUNC=new THREE.Mesh(gTu,mTuC);TUNC.frustumCulled=false;TUNC.renderOrder=3;SD.add(TUNC);
+/* cincin materi eksotis: cincin energi berpendar yang menahan mulut terowongan */
+const RING=[.1,.5,.9].map((uu,i)=>{const m=new THREE.MeshBasicMaterial({color:C('#ffb070'),blending:THREE.AdditiveBlending,transparent:true,opacity:0,depthWrite:false,toneMapped:false});
+  const g=new THREE.Group(),tr=new THREE.Mesh(new THREE.TorusGeometry(2.4,.11,10,72),m),sp=sprite();SD.add(g);g.add(tr);const p=cuT.getPointAt(uu),tg=cuT.getTangentAt(uu);g.position.copy(p);g.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),tg.clone().normalize());g.userData={tr,sp,p,m,uu};return g;});
+const ORB=sprite();
+/* panggung dua panel (split screen): kiri black hole, kanan lubang cacing */
+const PLX=100,PRX=200,SC_L=.8,SC_R=.3;
+const CL=bikinCorong();CL.scale.setScalar(SC_L);CL.position.set(PLX,0,0);SD.add(CL);
+const horL=new THREE.Mesh(new THREE.TorusGeometry(4*SC_L,.08,10,100),new THREE.MeshBasicMaterial({color:C(PAL.aks),clippingPlanes:[POTF],toneMapped:false}));horL.rotation.x=Math.PI/2;horL.position.set(PLX,SC_L*YF(4)+.02,0);SD.add(horL);
+const tipLy=SC_L*(YF(.15)-.1);const sphL=new THREE.Mesh(new THREE.SphereGeometry(.28,16,12),new THREE.MeshBasicMaterial({color:C('#fff0e0'),toneMapped:false}));sphL.position.set(PLX,tipLy,0);SD.add(sphL);
+const GLD=sprite(),GLO=sprite(),GLE=sprite();
+const CR1=bikinCorong(),CR2=bikinCorong();[CR1,CR2].forEach((c,i)=>{c.scale.setScalar(SC_R);c.position.set(PRX+(i?9:-9),0,0);SD.add(c);});
+const tipRy=SC_R*YF(.15);const cuW=new THREE.CatmullRomCurve3([[PRX-9,tipRy-.2,0],[PRX-6,-4.6,0],[PRX-2.6,-6.4,0],[PRX+2.6,-6.4,0],[PRX+6,-4.6,0],[PRX+9,tipRy-.2,0]].map(p=>new THREE.Vector3(...p)),false,'catmullrom',.4);
+{const gt=new THREE.TubeGeometry(cuW,100,.9,16,false),tb=new THREE.Mesh(gt,new THREE.MeshStandardMaterial({color:C('#a8c8ff'),transparent:true,opacity:.3,roughness:.08,metalness:.2,envMapIntensity:1.8,side:THREE.DoubleSide,clippingPlanes:[POTF],depthWrite:false}));tb.renderOrder=2;
+ tb.add(new THREE.Mesh(gt,new THREE.MeshBasicMaterial({color:C(PAL.aks),side:THREE.BackSide,clippingPlanes:[POTF],toneMapped:false,transparent:true,opacity:.55})));SD.add(tb);}
+const ptL=[];for(let r=19;r>=.4;r-=.65)ptL.push([PLX-SC_L*r,SC_L*(YF(r)+.55),0]);ptL.push([PLX-.2,tipLy+.5,0]);
+const pLs=strip(ptL,.38);
+const ptR=[];for(let r=18;r>=.5;r-=1.1)ptR.push([PRX-9-SC_R*r,SC_R*(YF(r)+.6),0]);
+cuW.getPoints(26).slice(1,-1).forEach(p=>ptR.push([p.x,p.y+.0,0]));
+for(let r=.5;r<=18;r+=1.1)ptR.push([PRX+9+SC_R*r,SC_R*(YF(r)+.6),0]);ptR.push([PRX+9+SC_R*19+4,SC_R*YF(20)+4,0],[PRX+9+SC_R*19+8,SC_R*YF(20)+8.5,0]);
+const pRs=strip(ptR,.38);
+const AL=bikinAstronaut(),AR=bikinAstronaut();[AL,AR].forEach(a=>{a.scale.setScalar(.8);SD.add(a);});
+/* ---------- KAMERA ---------- */
+const AZ=45*DEG,EL=30*DEG,ARAH=new THREE.Vector3(Math.sin(AZ)*Math.cos(EL),Math.sin(EL),Math.cos(AZ)*Math.cos(EL));
+const KD_KUNCI=[[0,[6,4,0],105],[3.6,[10,4,0],62],[4.5,[8,3,0],56],[5.9,[2,0,0],50],[7.2,[4,0,0],56],[9.8,[13,3,0],112],[11.0,[13,3,0],112],[13.5,[8,1,0],86],[16.4,[0,-2,0],54],[18.5,[0,-2.2,0],40],[20.3,[0,-2.5,0],27],[29.6,[0,-2.5,0],25],[31,[0,-2.5,0],30],[45.4,[0,-2.5,0],30],[46.4,[0,-2.5,0],34],[56,[0,-1,0],70]];
+const halus=k=>k*k*k*(k*(k*6-15)+10),_v=new THREE.Vector3();
+function cariKunci(K,t){let i=0;while(i<K.length-2&&t>K[i+1][0])i++;return[K[i],K[i+1],halus(clamp((t-K[i][0])/(K[i+1][0]-K[i][0])))];}
+function pasangKamera(cam,tg,h,w){Object.assign(cam,{left:-w/2,right:w/2,top:h/2,bottom:-h/2});cam.updateProjectionMatrix();_v.set(...tg);cam.position.copy(_v).addScaledVector(ARAH,200);cam.lookAt(_v);}
+function kameraDunia(t){const[A,B,e]=cariKunci(KD_KUNCI,t),tg=A[1].map((v,j)=>lerp(v,B[1][j],e)),h=Math.exp(lerp(Math.log(A[2]),Math.log(B[2]),e));window.HC=h;tg[0]+=nz(t*.35,1)*.05;tg[2]+=nz(t*.3,2)*.05;pasangKamera(KD,tg,h,h*W/H);}
+const PAN={L:{x:24,y:330,w:510,h:700,tg:[PLX,.6,0],lebar:27,cam:new THREE.OrthographicCamera(-1,1,1,-1,-400,400)},R:{x:546,y:330,w:510,h:700,tg:[PRX,.2,0],lebar:34,cam:new THREE.OrthographicCamera(-1,1,1,-1,-400,400)}};
+Object.values(PAN).forEach(p=>pasangKamera(p.cam,p.tg,p.lebar*p.h/p.w,p.lebar));
+function keLayar(p,pn){const P=pn?PAN[pn]:null;_v.set(p[0],p[1],p[2]).project(P?P.cam:KD);return P?[P.x+(_v.x+1)/2*P.w,P.y+(1-_v.y)/2*P.h]:[(_v.x+1)/2*W,(1-_v.y)/2*H];}
+function letakkan(g,x,y,naik=1.3){g.position.set(x,y+naik,0);}
+/* ---------- LABEL ---------- */
+const DAFTAR=[];
+function tanda(o){o.el=mk('div','lt'+(o.o[0]<0?' r':'')+(o.big?' big':'')+(o.am?' am':'')+(o.sm?' sm':''),$('#tanda'),o.t+(o.s?'<small>'+o.s+'</small>':'')+'<i></i>');
+  o.dot=mk('div','dot'+(o.am?' am':''),$('#tanda'));o.ln=svgEl('polyline',{fill:'none',stroke:o.am?PAL.aks:'#fff','stroke-width':3,'stroke-linecap':'round',style:'filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))'},$('#garis'));DAFTAR.push(o);return o;}
+function gambarTanda(t){DAFTAR.forEach(L=>{const k=sstep(L.a,L.a+.4,t)*(1-sstep(L.b,L.b+.3,t)),on=k>.001;
+  L.el.style.display=L.dot.style.display=on?'block':'none';L.ln.style.display=on?'':'none';if(!on)return;
+  const p=typeof L.p==='function'?L.p(t):L.p,[x,y]=keLayar(p,L.pn);L.dot.style.left=x+'px';L.dot.style.top=y+'px';L.dot.style.opacity=k;L.dot.style.transform='scale('+(.4+.6*sstep(L.a,L.a+.25,t))+')';
+  const ew=L.el.offsetWidth,eh=L.el.offsetHeight,kn=L.o[0]<0,b0=L.pn?PAN[L.pn].x+12:AMAN.kiri-10,b1=L.pn?PAN[L.pn].x+PAN[L.pn].w-12:AMAN.kanan;let tx=x+L.o[0],ty=y+L.o[1];
+  let kiri=clamp(kn?tx-ew:tx,b0,b1-ew);tx=kn?kiri+ew:kiri;const atas=clamp(ty-eh,L.pn?380:300,(L.pn?PAN[L.pn].y+PAN[L.pn].h-16:1330)-eh);ty=atas+eh;
+  L.el.style.left=kiri+'px';L.el.style.top=atas+'px';L.el.style.opacity=sstep(L.a+.12,L.a+.45,t)*(1-sstep(L.b,L.b+.3,t));
+  L.el.lastChild.style.transform='scaleX('+sstep(L.a+.1,L.a+.5,t)+')';const g=sstep(L.a,L.a+.35,t);L.ln.setAttribute('points',x+','+y+' '+lerp(x,tx,g)+','+lerp(y,ty,g));L.ln.style.opacity=k;});}
+const midT=[(TA2[0]+TB2[0])/2,(TA2[1]+TB2[1])/2,0];
+tanda({t:'Singularitas',s:'titik di pusat black hole',p:[0,4.5,0],o:[-60,-230],a:1.5,b:4.5,am:1});
+tanda({t:'Astronaut',s:'mencari jalan keluar',p:[20,7.4,0],o:[-120,-190],a:2.7,b:4.6});
+tanda({t:'Ruang-waktu',s:'lembaran kisi yang melengkung',p:[9,baseY(9,0),0],o:[110,-190],a:5.3,b:7.0,am:1});
+tanda({t:'Relativitas umum',s:'dari persamaannyalah solusi ini lahir',p:[-9,baseY(-9,0),0],o:[-60,-190],a:6.3,b:9.0});
+tanda({t:'Lubang cacing',s:'terowongan teoretis',p:[XB,baseY(XB,0)+.2,0],o:[-130,-200],a:8.0,b:11.3,big:1,am:1});
+tanda({t:'Dua titik ruang-waktu',s:'dihubungkan satu terowongan',p:[XA,baseY(XA,0),0],o:[130,-200],a:9.9,b:11.9});
+tanda({t:'Dilipat',s:'seperti selembar kertas',p:[XC,baseY(XC,0)+.3,0],o:[120,-230],a:12.4,b:15.6,big:1,am:1});
+tanda({t:'Ujung corong kedua',s:'muncul di sisi seberang',p:TB2,o:[140,-210],a:16.2,b:18.4,am:1});
+tanda({t:'Terowongan',s:'penghubung dua sisi',p:midT,o:[-120,140],a:17.0,b:19.4});
+tanda({t:'Materi eksotis',s:'energi negatif penahan terowongan',p:[TB2[0]+1.7,midT[1]+1,0],o:[140,-210],a:21.4,b:24.2,big:1,am:1});
+tanda({t:'BELUM PERNAH DITEMUKAN',s:'hanya ada di persamaan',p:[midT[0]-1.4,midT[1]-1.4,0],o:[-120,230],a:24.3,b:27.4,big:1,am:1});
+tanda({t:'Terowongan menutup',s:'sebelum ada yang sempat lewat',p:midT,o:[130,-230],a:27.7,b:30.2,am:1});
+tanda({t:'Black hole',s:'ujungnya singularitas',p:[PLX-SC_L*10,SC_L*YF(10),0],o:[-40,-190],a:31.0,b:33.0,sm:1,pn:'L'});
+tanda({t:'Singularitas',s:'titik di dasar corong',p:[PLX,tipLy,0],o:[-60,-210],a:32.4,b:45.4,sm:1,am:1,pn:'L'});
+tanda({t:'Lubang cacing',s:'jika memang ada',p:[PRX-9-SC_R*9,SC_R*YF(9),0],o:[-30,-190],a:34.9,b:37.0,sm:1,pn:'R'});
+tanda({t:'Sisi lain',s:'keluar di corong kedua',p:[PRX+9+SC_R*16,SC_R*YF(16)+.6,0],o:[-40,-190],a:38.4,b:45.4,sm:1,pn:'R'});
+tanda({t:'Persamaan membolehkan',s:'secara matematika',p:midT,o:[130,-190],a:46.3,b:48.0,am:1});
+tanda({t:'Belum teramati',s:'alam belum pernah menunjukkannya',p:TB2,o:[140,-220],a:48.1,b:50.3});
+tanda({t:'HIPOTESIS',s:'belum terbukti',p:[midT[0],midT[1]-.5,0],o:[-110,-250],a:50.3,b:56,big:1,am:1});
+const JEJAK=[[0,'RUANG ANGKASA › <b>SINGULARITAS</b>'],[4.5,'BLACK HOLE › <b>RUANG-WAKTU</b>'],[7.8,'<b>LUBANG CACING</b> (HIPOTESIS)'],[11.0,'KISI › <b>DILIPAT</b> JADI DUA SISI'],[18.3,'<b>MATERI EKSOTIS</b> · ENERGI NEGATIF'],[30.4,'BLACK HOLE <b>vs</b> LUBANG CACING'],[45.5,'<b>MANA DULUAN?</b>']];
+/* ---------- panel split: bingkai, judul, spanduk ---------- */
+const bgP={};['L','R'].forEach(k=>{const P=PAN[k];const b=mk('div','',$('#langit'));Object.assign(b.style,{position:'absolute',left:P.x+'px',top:P.y+'px',width:P.w+'px',height:P.h+'px',borderRadius:'30px',background:'radial-gradient(ellipse at 50% 40%,#1a2347,#05070f)',opacity:0});
+  const f=mk('div','',$('#stage'));Object.assign(f.style,{position:'absolute',left:P.x+'px',top:P.y+'px',width:P.w+'px',height:P.h+'px',borderRadius:'30px',boxSizing:'border-box',border:'5px solid rgba(255,255,255,.95)',boxShadow:'0 0 40px rgba(255,106,31,.35),0 10px 34px rgba(0,0,0,.5)',zIndex:11,opacity:0,pointerEvents:'none'});
+  const h=mk('div','',$('#stage'),k==='L'?'BLACK HOLE':'LUBANG CACING');Object.assign(h.style,{position:'absolute',left:P.x+'px',top:(P.y+22)+'px',width:P.w+'px',textAlign:'center',zIndex:12,opacity:0,font:'700 40px/1 var(--fj)',color:'#fff',textShadow:'0 2px 3px rgba(0,0,0,.8)'});
+  bgP[k]={b,f,h};});
+const mkPil=(k,txt,l)=>{const d=mk('div','',$('#stage'),txt);Object.assign(d.style,{position:'absolute',left:(PAN[k].x+10)+'px',top:'1052px',width:(PAN[k].w-20)+'px',textAlign:'center',zIndex:12,opacity:0,font:'700 46px/1 var(--fj)',color:'#fff',background:PAL.aks,padding:'14px 0',borderRadius:'16px'});return d;};
+const PILL=mkPil('L','JALAN BUNTU'),PILR=mkPil('R','JEMBATAN (?)');
+const BAN=mk('div','',$('#stage'),'KEDUANYA MASIH SEBATAS TEORI');Object.assign(BAN.style,{position:'absolute',left:'90px',top:'1150px',width:'900px',textAlign:'center',zIndex:13,opacity:0,font:'700 40px/1 var(--fj)',color:'#fff',background:PAL.aks,padding:'12px 0',borderRadius:'16px'});
+const mkQ=()=>{const d=mk('div','',$('#stage'),'?');Object.assign(d.style,{position:'absolute',zIndex:12,opacity:0,font:'700 190px/1 var(--fj)',color:'#fff',textShadow:'0 0 30px '+PAL.aks+',0 0 70px '+PAL.aks+',0 4px 4px rgba(0,0,0,.7)',transform:'translate(-50%,-50%)'});return d;};
+const Q1=mkQ(),Q2=mkQ();
+function renderPanel(k){const P=PAN[k];RD.setViewport(P.x,H-P.y-P.h,P.w,P.h);RD.setScissor(P.x,H-P.y-P.h,P.w,P.h);RD.render(SD,P.cam);}
+const SPK=[];
+/* ---------- SCENE ---------- */
+const TTS=[{"teks": "Kalau semua jalan menuju singularitas... apa ada jalan keluar lain?", "kata": [["Kalau", 0.1125, 0.3375], ["semua", 0.3375, 0.625], ["jalan", 0.625, 0.925], ["menuju", 0.925, 1.25], ["singularitas", 1.25, 2.0625], ["apa", 2.2375, 2.4875], ["ada", 2.4875, 2.65], ["jalan", 2.65, 2.9125], ["keluar", 2.9125, 3.15], ["lain", 3.15, 3.575]]}, {"teks": "Lubang cacing adalah solusi dari persamaan relativitas umum: sebuah terowongan teoretis yang menghubungkan dua titik ruang-waktu. Bayangkan kisi ruang-waktu berbentuk corong, dilipat jadi dua sisi, sehingga ujung corong kedua muncul di seberang.", "kata": [["Lubang", 0.1125, 0.4], ["cacing", 0.4, 0.8], ["adalah", 0.8, 1.0875], ["solusi", 1.0875, 1.475], ["dari", 1.475, 1.6125], ["persamaan", 1.6125, 2.1125], ["relativitas", 2.1125, 2.6875], ["umum", 2.6875, 3.1625], ["sebuah", 3.425, 3.7875], ["terowongan", 3.7875, 4.1625], ["teoretis", 4.1625, 4.6625], ["yang", 4.6625, 4.7625], ["menghubungkan", 4.7625, 5.3], ["dua", 5.3, 5.4625], ["titik", 5.4625, 5.75], ["ruang-waktu", 5.75, 6.5], ["Bayangkan", 7.35, 7.8375], ["kisi", 7.8375, 8.075], ["ruang-waktu", 8.075, 8.525], ["berbentuk", 8.525, 8.9375], ["corong", 8.9375, 9.4125], ["dilipat", 9.6875, 10.1], ["jadi", 10.1, 10.35], ["dua", 10.35, 10.525], ["sisi", 10.525, 11.0375], ["sehingga", 11.3125, 11.725], ["ujung", 11.725, 12.0125], ["corong", 12.0125, 12.2625], ["kedua", 12.2625, 12.5], ["muncul", 12.5, 12.8625], ["di", 12.8625, 12.925], ["seberang", 12.925, 13.5]]}, {"teks": "Agar tetap terbuka dan bisa dilewati, lubang cacing butuh materi eksotis, yaitu energi negatif, yang belum pernah ditemukan. Tanpa itu, terowongannya diperkirakan menutup sebelum ada yang sempat lewat.", "kata": [["Agar", 0.1125, 0.3625], ["tetap", 0.3625, 0.6], ["terbuka", 0.6, 1.0], ["dan", 1.0, 1.1625], ["bisa", 1.1625, 1.3875], ["dilewati", 1.3875, 2.075], ["lubang", 2.3625, 2.675], ["cacing", 2.675, 2.9875], ["butuh", 2.9875, 3.225], ["materi", 3.225, 3.475], ["eksotis", 3.475, 4.1625], ["yaitu", 4.425, 4.75], ["energi", 4.75, 5.075], ["negatif", 5.075, 5.7125], ["yang", 5.9125, 6.0875], ["belum", 6.0875, 6.25], ["pernah", 6.25, 6.475], ["ditemukan", 6.475, 7.15], ["Tanpa", 8.0, 8.225], ["itu", 8.225, 8.7125], ["terowongannya", 9.0125, 9.5375], ["diperkirakan", 9.5375, 10.0875], ["menutup", 10.0875, 10.45], ["sebelum", 10.45, 10.7625], ["ada", 10.7625, 11.0375], ["yang", 11.0375, 11.1875], ["sempat", 11.1875, 11.4875], ["lewat", 11.4875, 11.9125]]}, {"teks": "Jadi black hole adalah jalan buntu menuju singularitas. Sedangkan lubang cacing, jika memang ada, adalah jembatan menuju tempat lain. Keduanya masih sebatas teori. Belum ada pengamatan yang membuktikan keduanya bisa dilewati.", "kata": [["Jadi", 0.1, 0.425], ["black", 0.425, 0.625], ["hole", 0.625, 0.8875], ["adalah", 0.8875, 1.2], ["jalan", 1.2, 1.4875], ["buntu", 1.4875, 1.775], ["menuju", 1.775, 2.1625], ["singularitas", 2.1625, 3.0875], ["Sedangkan", 3.9375, 4.3875], ["lubang", 4.3875, 4.6375], ["cacing", 4.6375, 5.175], ["jika", 5.425, 5.7375], ["memang", 5.7375, 5.9625], ["ada", 5.9625, 6.475], ["adalah", 6.7625, 7.075], ["jembatan", 7.075, 7.4875], ["menuju", 7.4875, 7.8375], ["tempat", 7.8375, 8.15], ["lain", 8.15, 8.625], ["Keduanya", 9.4625, 9.9625], ["masih", 9.9625, 10.225], ["sebatas", 10.225, 10.6], ["teori", 10.6, 11.1625], ["Belum", 12.0, 12.25], ["ada", 12.25, 12.4375], ["pengamatan", 12.4375, 12.9375], ["yang", 12.9375, 13.0625], ["membuktikan", 13.0625, 13.6], ["keduanya", 13.6, 14.0875], ["bisa", 14.0875, 14.375], ["dilewati", 14.375, 15.1]]}, {"teks": "Persamaannya membolehkan, tapi alam belum pernah menunjukkannya. Menurutmu mana duluan: manusia masuk black hole, atau menemukan lubang cacing?", "kata": [["Persamaannya", 0.1125, 0.6875], ["membolehkan", 0.6875, 1.45], ["tapi", 1.7625, 2.0125], ["alam", 2.0125, 2.2125], ["belum", 2.2125, 2.375], ["pernah", 2.375, 2.6], ["menunjukkannya", 2.6, 3.4375], ["Menurutmu", 4.2875, 4.725], ["mana", 4.725, 4.9125], ["duluan", 4.9125, 5.475], ["manusia", 5.75, 6.2], ["masuk", 6.2, 6.45], ["black", 6.45, 6.6625], ["hole", 6.6625, 7.05], ["atau", 7.275, 7.5125], ["menemukan", 7.5125, 7.9125], ["lubang", 7.9125, 8.1625], ["cacing", 8.1625, 8.6625]]}];const KATA=[];let _st=.3;TTS.forEach(o=>{const tk=o.teks.split(' ');o.kata.forEach((k,i)=>KATA.push({w:tk[i],t0:+(_st+k[1]).toFixed(3),t1:+(_st+k[2]).toFixed(3)}));o.start=_st;_st+=o.kata[o.kata.length-1][2]+.4;});
+const SKR=[[.4,'hum',.2],[1.6,'tik',.25],[4.45,'whoosh',.3],[5.4,'tik',.25],[6.4,'tik',.22],[8.0,'tik',.28],[8.1,'whoosh',.2],[12.3,'whoosh',.3],[16.2,'zing',.3],[17.0,'tik',.22],[20.3,'zing',.3],[21.4,'tik',.25],[24.3,'tik',.28],[26.4,'hiss',.25],[27.7,'tik',.22],[30.4,'whoosh',.3],[31.0,'tik',.22],[33.3,'zap',.3],[34.9,'tik',.22],[37.4,'zing',.3],[40.0,'tik',.25],[45.5,'whoosh',.3],[46.3,'tik',.22],[50.3,'zing',.3]];
+const SCENE={dur:56.0,
+  kata:KATA,
+  sub:{font:"700 66px 'Space Grotesk'",warna:'#ffffff',aksen:PAL.tb,y:.755,maks:4,kunci:['singularitas','lubang','cacing','corong','terowongan','eksotis','negatif','teori','buntu','jembatan','black','hole','menutup','ruang-waktu','relativitas','dilipat','ditemukan','sempat']},
+  audio:{vo:TTS.map((o,i)=>({src:'assets/audio/vo-0'+(i+1)+'.mp3',at:+o.start.toFixed(2),teks:o.teks})),sfx:SKR.map(([at,n,vol])=>({src:'assets/audio/sfx-'+n+'.wav',at,vol})),music:null},
+  frame(t){
+    const ZP=.001;POTF.constant=lerp(12,ZP,E.io(seg(t,4.5,5.9)));
+    {const t0=4.45,t1=5.9,k=Math.sin(Math.PI*clamp(seg(t,t0,t1+.5)));FRC.position.z=POTF.constant+.01;FRC.visible=t>t0&&t<t1+.5;FRC.children.forEach((c,i)=>c.material.opacity=(i?1:.12)*k);}
+    const split=sstep(30.4,31.1,t)*(1-sstep(45.5,46.2,t)),main=1-split;
+    // black hole raksasa memudar, lembaran kisi muncul
+    const fb=1-sstep(4.9,5.8,t),kf=sstep(4.7,5.6,t);BH.visible=fb>.01&&t<6;bola.material.opacity=fb;cak.material.opacity=fb;cinF.material.opacity=fb;cinF2.material.opacity=.6*fb;cak.rotation.z=t*.4;
+    BL.visible=t<5.9;AST.visible=t<5.6;PES.visible=t<5.6;
+    AST.position.set(20,YF(20)+2.4+Math.sin(t*1.3)*.25,0);AST.rotation.set(Math.sin(t*.7)*.12,.5+t*.1,Math.cos(t*.6)*.1);
+    PES.position.y=8.2+Math.sin(t*.9)*.3;PES.rotation.y=.5+Math.sin(t*.4)*.1;
+    // lembaran: ungkap bagian kanan lalu dilipat
+    PXP.constant=lerp(26,62,E.io(seg(t,7.4,9.8)));
+    const f=E.io(seg(t,11.0,16.4)),zc=Math.max(POTF.constant,-27);aturKisi(f);aturRib(clamp(zc,-27,27),f);
+    mKisi.opacity=.9*kf*main;mRib.opacity=kf*main;KISI.visible=RIB.visible=main>.01&&kf>.01;
+    // terowongan, cincin materi eksotis, penutupan
+    const kt=E.out(seg(t,16.2,17.6)),kc=sstep(20.3,21.0,t)*(1-sstep(26.0,26.6,t)),pin=E.io(seg(t,26.3,29.2));
+    aturTu(1.3,pin);TUN.visible=TUNC.visible=main>.01&&kt>.01;mTu.opacity=.42*kt*main;mTuC.opacity=.6*kt*main;
+    RING.forEach((g,i)=>{const u=g.userData,fl=kc*(.8+.2*Math.sin(t*9+i*2)),vis=main>.01&&kc>.01;g.visible=vis;g.scale.setScalar(1+.07*Math.sin(t*5+i)+.35*(1-sstep(20.3,21.3,t)));u.m.opacity=fl;spr(u.sp,[u.p.x,u.p.y,u.p.z],6.5,vis?kc*.45:0);g.rotation.z=t*.6;});
+    {const uo=clamp(seg(t,27.2,29.0))*.55,p=cuT.getPointAt(uo),op=(t>27.2&&t<29.5)?1:0,fl=sstep(29.0,29.2,t)*(1-sstep(29.2,29.8,t));spr(ORB,[p.x,p.y,p.z],1.3+fl*3.2,main>.01?Math.max(op*.95,fl):0);}
+    // panel split
+    ['L','R'].forEach(k=>{const b=bgP[k];b.b.style.opacity=split;b.f.style.opacity=split;b.h.style.opacity=split;});
+    PILL.style.opacity=sstep(33.2,33.6,t)*split;PILR.style.opacity=sstep(37.4,37.8,t)*split;BAN.style.opacity=sstep(40.0,40.4,t)*(1-sstep(42.4,42.8,t));
+    CL.visible=horL.visible=sphL.visible=CR1.visible=CR2.visible=split>.01;[AL,AR].forEach(a=>a.visible=split>.01);
+    // pastikan material corong terlihat saat dipakai panel
+    matF.opacity=.9;matFC.opacity=1;
+    spr(GLD,[PLX,tipLy,0],1.6*(1+.35*Math.sin(t*3))*(t>33.2?2.2:1),split>.01?.85:0);
+    const aL=seg(t,31.4,33.3),aR=seg(t,35.0,39.6);
+    pLs.atur(split>.01?aL:0,t*2.4,split,1.8,'#ffe2b8');pRs.atur(split>.01?aR:0,t*2.4,split,1.8,'#ffe2b8');
+    {const p=pLs.cu.getPointAt(clamp(aL));letakkan(AL,p.x,p.y,1.4);AL.rotation.set(0,.5,0);AL.visible=split>.01&&t>31.2&&t<33.5;const fz=sstep(33.0,33.6,t);spr(GLO,[PLX,tipLy+.3,0],3.5+3*Math.sin(Math.PI*clamp(seg(t,33.2,34.4))),split>.01?.9*(1-sstep(34.4,35,t))*(t>33.2?1:0):0);}
+    {const p=pRs.cu.getPointAt(clamp(aR));letakkan(AR,p.x,p.y,1.1);AR.rotation.set(0,.5,0);AR.visible=split>.01&&t>34.9&&t<39.7;}
+    {const o=sstep(39.0,39.5,t)*split;Q2.style.opacity=o;if(o>.01){const[x,y]=keLayar([PRX+9+SC_R*19+8,SC_R*YF(20)+8.5,0],'R');Q2.style.left=Math.min(x,PAN.R.x+PAN.R.w-70)+'px';Q2.style.top=y+'px';Q2.style.transform='translate(-50%,-50%) scale('+(1+.06*Math.sin(t*5))+')';}}
+    {const o=sstep(46.6,47.1,t)*main;Q1.style.opacity=o*.95;if(o>.01){const[x,y]=keLayar([TB2[0],TB2[1]+7.5,0]);Q1.style.left=x+'px';Q1.style.top=y+'px';Q1.style.transform='translate(-50%,-50%) scale('+(1+.06*Math.sin(t*5))+')';}}
+    kameraDunia(t);
+    RD.setScissorTest(false);RD.setViewport(0,0,W,H);
+    if(split<.999){RD.render(SD,KD);}
+    if(split>.01){RD.setScissorTest(true);if(split>=.999){RD.setScissorTest(false);RD.clear();RD.setScissorTest(true);}renderPanel('L');renderPanel('R');RD.setScissorTest(false);RD.setViewport(0,0,W,H);}
+    gambarTanda(t);
+    let j=JEJAK[0][1];JEJAK.forEach(([s,x])=>{if(t>=s)j=x;});$('#jejak').innerHTML=j+'<span class="z">×'+Math.max(1,Math.round(105/(window.HC||105)))+'<small>ZOOM</small></span>';
+  }};
+</script>
+<script>
+/* ---------- boot: timeline, audio pratinjau, autoplay + loop, penggeser debug, API render ---------- */
+(function(){
+const DUR=SCENE.dur;const tl=gsap.timeline({paused:true});
+if(SCENE.build)SCENE.build(tl);tl.set({},{},DUR);
+window.AUDIO_PLAN=Object.assign({dur:DUR,vo:[],sfx:[],music:null,loops:[]},SCENE.audio||{});
+subSiapkan(SCENE.kata||window.KATA,SCENE.sub);
+const P=window.AUDIO_PLAN,EV=[];const A=src=>{const a=new Audio(src);a.preload='auto';return a;};
+P.vo.forEach(v=>EV.push({at:v.at,el:A(v.src),vol:v.vol??1}));
+if(P.music)EV.push({at:P.music.at||0,el:A(P.music.src),vol:Math.min(1,P.music.vol??.15),music:1});
+P.sfx.forEach(s=>EV.push({at:s.at,el:A(s.src),vol:Math.min(1,s.vol??.5)}));
+let live=false,lastT=0;const dbgOn=q.has('debug');
+function frame(t){SCENE.frame&&SCENE.frame(t);subFrame(t);grainFrame(t);}
+tl.eventCallback('onUpdate',()=>{const t=tl.time();frame(t);
+  if(live&&!tl.paused())EV.forEach(e=>{if(e.at>=lastT&&e.at<t&&t-e.at<.25){e.el.volume=e.vol;e.el.currentTime=0;e.el.play().catch(()=>{});}});
+  lastT=t;if(dbgOn){$('#dScrub').value=t/DUR*1000;$('#dClock').textContent=t.toFixed(2);}});
+const stopAudio=()=>EV.forEach(e=>e.el.pause());
+function start(){stopAudio();lastT=-1;live=true;tl.play(0);}
+tl.eventCallback('onComplete',()=>start());
+async function seek(t){live=false;tl.pause(t,true);frame(t);if(SCENE.siap)await SCENE.siap(t);}
+window.MF={W,H,RASIO,DURATION:DUR,tl,ready:false,seek,play:start};
+addEventListener('keydown',e=>{if(/^[rR]$/.test(e.key))start();if(e.code==='Space'){e.preventDefault();if(tl.paused())tl.play();else{tl.pause();stopAudio();}}});
+if(dbgOn){$('#dbg').style.display='flex';const sc=$('#dScrub');sc.addEventListener('input',()=>{live=false;stopAudio();tl.pause();tl.time(sc.value/1000*DUR);frame(tl.time());});$('#dPlay').onclick=()=>{if(tl.paused()){live=true;lastT=tl.time();tl.play();}else{tl.pause();stopAudio();}};}
+const muatAwal=SCENE.muat?Promise.resolve(SCENE.muat()):Promise.resolve();
+Promise.all([document.fonts.ready,muatAwal]).then(()=>new Promise(r=>setTimeout(r,80))).then(()=>{
+  try{tl.pause(0,true);frame(0);}catch(err){__errs.push('frame(0): '+String(err&&err.stack||err));}window.MF.ready=true;
+  if(q.has('t')){seek(parseFloat(q.get('t'))||0);return;}
+  if(q.has('clean'))return;
+  const probe=EV.find(e=>e.music)||EV[0];if(!probe){start();return;}
+  probe.el.volume=0;probe.el.play().then(()=>{probe.el.pause();start();}).catch(()=>{const go=()=>{removeEventListener('pointerdown',go);removeEventListener('keydown',go);start();};addEventListener('pointerdown',go);addEventListener('keydown',go);});
+});
+})();
+</script>
+</body>
+</html>

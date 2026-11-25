@@ -1,0 +1,252 @@
+<!--@TITLE Apa yang terjadi kalau matahari tiba-tiba menghilang?-->
+<!--@RASIO 9:16-->
+<!--@HEAD-->
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+/* warna diisi dari PALET di script (bagian 0). Font: ganti link Google Fonts di atas + --fj (judul) / --fm (label) */
+:root{--fj:'Outfit',sans-serif;--fm:'JetBrains Mono',monospace}
+#langit{position:absolute;inset:0;background:linear-gradient(180deg,var(--l1) 0%,var(--l2) 60%,var(--l3) 100%)}
+#dunia{position:absolute;inset:0}
+#dunia canvas,#makro canvas{position:absolute;left:0;top:0;display:block}
+#makro{position:absolute;inset:0;z-index:3;display:none}
+#studio{position:absolute;inset:0;background:radial-gradient(ellipse 95% 70% at 50% 44%,var(--s1) 0%,var(--s2) 55%,var(--s3) 100%)}
+#studio:after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 2px,transparent 2px),linear-gradient(90deg,rgba(255,255,255,.035) 2px,transparent 2px);background-size:72px 72px;background-position:36px 36px}
+#iris{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:visible}
+#vig{position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse 85% 70% at 50% 46%,rgba(0,0,0,0) 58%,rgba(20,16,10,.32) 100%)}
+#garis{position:absolute;inset:0;z-index:9;pointer-events:none;overflow:visible}
+#tanda{position:absolute;inset:0;z-index:10;pointer-events:none}
+.lt{position:absolute;white-space:nowrap;font:700 44px/1 var(--fm);letter-spacing:.03em;color:#fff;text-transform:uppercase;padding:0 2px 14px;
+  text-shadow:0 2px 2px rgba(0,0,0,.75),0 0 10px rgba(0,0,0,.55),0 0 26px rgba(0,0,0,.35)}
+.lt small{display:block;font:600 32px/1 var(--fj);letter-spacing:0;text-transform:none;margin-top:10px;color:#eef8ff}
+.lt i{position:absolute;left:0;right:0;bottom:0;height:4px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.7);transform-origin:0 50%}
+.lt.r i{transform-origin:100% 50%}
+.lt.big{font:800 64px/1 var(--fj);letter-spacing:.02em;padding-bottom:14px;color:var(--tb)}
+.lt.big small{font:700 34px/1 var(--fj);margin-top:10px}
+.lt.big i{height:5px;background:var(--alir)}
+.lt.am.big{color:var(--ta)}.lt.am.big i{background:var(--aks)}
+.dot{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#fff;box-shadow:0 0 0 5px rgba(255,255,255,.3),0 0 18px #fff,0 1px 3px rgba(0,0,0,.6)}
+.dot.am{background:var(--aks);box-shadow:0 0 0 5px color-mix(in srgb,var(--aks) 30%,transparent),0 0 18px var(--aks),0 1px 3px rgba(0,0,0,.6)}
+#jejak{position:absolute;left:70px;top:190px;z-index:12;font:700 30px/1.3 var(--fm);letter-spacing:.03em;color:#fff;text-transform:uppercase;
+  text-shadow:0 2px 3px rgba(0,0,0,.8),0 0 14px rgba(0,0,0,.6),0 0 30px rgba(0,0,0,.35)}
+#jejak b{color:var(--ta);font-weight:700}
+#jejak .z{display:block;margin-top:8px;font:800 76px/1 var(--fj);color:#fff}
+#jejak .z small{font:700 30px/1 var(--fm);color:rgba(255,255,255,.75);margin-left:12px;letter-spacing:.04em}
+#rpm{position:absolute;left:70px;top:350px;z-index:12;opacity:0;font:900 70px/1 var(--fj);color:var(--ta);
+  text-shadow:0 3px 3px rgba(0,0,0,.7),0 0 18px rgba(0,0,0,.5)}
+#rpm small{display:block;font:700 30px/1 var(--fm);color:rgba(255,255,255,.85);letter-spacing:.03em;margin-top:8px}
+#inset{position:absolute;right:160px;top:196px;width:220px;height:220px;border-radius:50%;z-index:12;opacity:0;
+  box-shadow:0 0 0 4px rgba(255,255,255,.95),0 8px 30px rgba(0,0,0,.55)}
+#insetT{position:absolute;right:150px;top:424px;width:240px;text-align:center;z-index:12;opacity:0;font:700 30px/1.1 var(--fm);letter-spacing:.02em;color:#fff;
+  text-transform:uppercase;text-shadow:0 2px 2px rgba(0,0,0,.7),0 0 10px rgba(0,0,0,.5)}
+#titikInset{position:absolute;right:259px;top:295px;width:22px;height:22px;border-radius:50%;z-index:13;opacity:0;background:var(--aks);
+  box-shadow:0 0 0 6px color-mix(in srgb,var(--aks) 35%,transparent),0 0 18px var(--aks)}
+</style>
+<!--@BODY-->
+<div id="langit"></div>
+<div id="dunia"></div>
+<div id="vig"></div>
+<svg id="garis" viewBox="0 0 1080 1920"></svg>
+<div id="tanda"></div>
+<div id="jejak"></div>
+<!--@SCRIPT-->
+/* Matahari tiba-tiba menghilang · isometrik dibongkar · ortho · aksen kuning keemasan. Matahari di pusat, Bumi mengorbit r=48 di bidang XZ. */
+const PAL={langit:['#0a0e1d','#060814','#02030a'],aks:'#ffc61a',tb:'#ffe08a',ta:'#fff0b8'};
+{const s=document.documentElement.style;[['--l1',PAL.langit[0]],['--l2',PAL.langit[1]],['--l3',PAL.langit[2]],['--alir',PAL.aks],['--aks',PAL.aks],['--tb',PAL.tb],['--ta',PAL.ta]].forEach(([k,v])=>s.setProperty(k,v));}
+const POTF=new THREE.Plane(new THREE.Vector3(0,0,-1),999);let PLN=POTF;
+/* ---------- ALAT 3D ---------- */
+const C=h=>new THREE.Color(h).convertSRGBToLinear(),DEG=Math.PI/180;
+function bhn(hex,o={},klip=true){return new THREE.MeshStandardMaterial(Object.assign({color:C(hex),roughness:.6,metalness:0},o,klip?{clippingPlanes:[PLN],clipShadows:true}:{}));}
+function tutupM(hex){return new THREE.MeshBasicMaterial({color:C(hex),side:THREE.BackSide,clippingPlanes:[PLN],toneMapped:false});}
+function pasang(geo,m,par,pos,tutup){const o=new THREE.Mesh(geo,m);o.castShadow=o.receiveShadow=true;if(pos)o.position.set(...pos);if(tutup&&m.clippingPlanes)o.add(new THREE.Mesh(geo,tutupM(tutup)));par.add(o);return o;}
+function kotak(x0,x1,y0,y1,z0,z1,m,par,tutup){return pasang(new THREE.BoxGeometry(x1-x0,y1-y0,z1-z0),m,par,[(x0+x1)/2,(y0+y1)/2,(z0+z1)/2],tutup);}
+function bubut(prof,m,par,tutup,pos,n=72){const o=pasang(new THREE.LatheGeometry(prof.map(([r,y])=>new THREE.Vector2(r,y)),n),m,par,pos,tutup);return o;}
+function bubutX(prof,m,par,tutup,pos){const g=new THREE.LatheGeometry(prof.map(([r,y])=>new THREE.Vector2(r,y)),56);g.rotateZ(-Math.PI/2);return pasang(g,m,par,pos,tutup);}
+function silinder(r,y0,y1,m,par,tutup,pos){return pasang(new THREE.CylinderGeometry(r,r,y1-y0,40),m,par,pos||[0,(y0+y1)/2,0],tutup);}
+function silinderX(r,x0,x1,m,par,tutup,y,z){const o=pasang(new THREE.CylinderGeometry(r,r,x1-x0,40),m,par,[(x0+x1)/2,y,z],tutup);o.rotation.z=Math.PI/2;return o;}
+function batang(a,b,r,m,par,tutup){const A=new THREE.Vector3(...a),B=new THREE.Vector3(...b),d=B.clone().sub(A);const o=pasang(new THREE.CylinderGeometry(r,r,d.length(),14),m,par,null,tutup);o.position.copy(A).add(B).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.normalize());return o;}
+function selang(titik,r,m,par,n=64){return pasang(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(titik.map(p=>new THREE.Vector3(...p)),false,'catmullrom',.15),n,r,10,false),m,par);}
+const busur=(rx,cy,ry,a0,a1,n=14)=>Array.from({length:n+1},(_,i)=>{const a=lerp(a0,a1,i/n)*DEG;return[rx*Math.cos(a),cy+ry*Math.sin(a)];});
+function dindingBox(par,[x0,x1,y0,y1,z0,z1],lapis,celah=.01){const g=new THREE.Group();par.add(g);let d=0;
+  lapis.forEach(([e,m,w])=>{const a=x0+d,b=x1-d,c=y0+d,f=y1-d,h=z0+d,zf=z1-d;
+    kotak(a,a+e,c,f,h,zf,m,g,w);kotak(b-e,b,c,f,h,zf,m,g,w);kotak(a+e,b-e,f-e,f,h,zf,m,g,w);kotak(a+e,b-e,c,c+e,h,zf,m,g,w);kotak(a+e,b-e,c+e,f-e,h,h+e,m,g,w);kotak(a+e,b-e,c+e,f-e,zf-e,zf,m,g,w);d+=e+celah;});return g;}
+function petaPantul(ren){const c=kanvas(1024,512),x=c.getContext('2d'),g=x.createLinearGradient(0,0,0,512);
+  g.addColorStop(0,'#f4f1ea');g.addColorStop(.47,'#c9c5bb');g.addColorStop(.55,'#8d8778');g.addColorStop(1,'#5b5446');x.fillStyle=g;x.fillRect(0,0,1024,512);
+  x.filter='blur(7px)';x.fillStyle='#fff';[[110,70,190,90],[600,110,240,60],[420,24,130,40]].forEach(r=>x.fillRect(...r));
+  const t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;t.encoding=THREE.sRGBEncoding;return new THREE.PMREMGenerator(ren).fromEquirectangular(t).texture;}
+
+/* ---------- TEKSTUR (canvas) ---------- */
+function teksturK(w,h,lukis,ul){const c=kanvas(w,h),x=c.getContext('2d');lukis(x,w,h,rng(w*7+h));const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;
+  t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=8;if(ul)t.repeat.set(...ul);return t;}
+function bintik(x,w,h,n,warna,a,b,r,y0=0,hh=h){for(let i=0;i<n;i++){x.fillStyle=warna[(r()*warna.length)|0];const s=a+r()*(b-a);x.fillRect(r()*w,y0+r()*hh,s,s*(.6+r()*.8));}}
+const salin=(t,a,b)=>{const c=t.clone();c.needsUpdate=true;c.repeat.set(a,b);return c;};
+const LAPIS=[[.5,'#6f8c46',['#5f7c3b','#809e55','#4f6a30']],[1.5,'#7a5c3e',['#6a4e33','#8c6c4a','#5a4029']],[1.4,'#b99a6a',['#a8895a','#cbae7e','#9a7c50']],[2.6,'#8f8b84',['#7a766f','#a29e96','#68645d','#b4b0a8']]];
+const TBL=LAPIS.reduce((s,l)=>s+l[0],0);
+const tLapis=teksturK(512,256,(x,w,h,r)=>{let y=0;LAPIS.forEach(([th,d,b],i)=>{const hh=th/TBL*h;x.fillStyle=d;x.fillRect(0,y,w,hh+1);bintik(x,w,h,w*hh/10,b,1,i==3?6:3,r,y,hh);x.fillStyle='rgba(0,0,0,.25)';x.fillRect(0,y+hh-1.5,w,2.5);y+=hh;});});
+const tRumput=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#6f8f46';x.fillRect(0,0,w,h);bintik(x,w,h,3500,['#5f7f3a','#7fa053','#6a8a42','#8aa95c','#557333'],1,3,r);
+  for(let i=0;i<1800;i++){x.strokeStyle=r()<.5?'rgba(40,70,20,.35)':'rgba(170,200,110,.35)';x.lineWidth=1;const a=r()*w,b=r()*h;x.beginPath();x.moveTo(a,b);x.lineTo(a+(r()-.5)*3,b-3-r()*4);x.stroke();}},[14,10]);
+const tBeton=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#b9b4a9';x.fillRect(0,0,w,h);bintik(x,w,h,2400,['#a8a398','#c8c3b8','#9b968b','#d3cec3'],1,3,r);
+  x.fillStyle='rgba(60,55,45,.22)';x.fillRect(0,0,w,2);x.fillRect(0,0,2,h);x.fillRect(0,128,w,1);},[3,2]);
+const tBetonB=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#c4bfb3';x.fillRect(0,0,w,h);bintik(x,w,h,2000,['#b3aea2','#d2cdc1','#a49f94'],1,3,r);
+  for(let i=0;i<4;i++){x.fillStyle='rgba(50,46,38,.2)';x.fillRect(0,i*64,w,2);}x.fillStyle='rgba(50,46,38,.14)';for(let i=0;i<4;i++)x.fillRect(i*64,0,2,h);},[5,2]);
+const tSikat=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#c3c8cb';x.fillRect(0,0,w,h);for(let i=0;i<240;i++){x.fillStyle=`rgba(${r()<.5?255:70},${r()<.5?255:75},${r()<.5?255:80},${.04+r()*.14})`;const y=r()*h;x.fillRect(r()*20,y,w,1+(r()<.2?1:0));}},[2,2]);
+const tSikatG=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#7d868d';x.fillRect(0,0,w,h);for(let i=0;i<240;i++){x.fillStyle=`rgba(${r()<.5?255:30},${r()<.5?255:35},${r()<.5?255:40},${.04+r()*.14})`;x.fillRect(r()*20,r()*h,w,1);}},[2,2]);
+const tAspal=teksturK(128,128,(x,w,h,r)=>{x.fillStyle='#4d5054';x.fillRect(0,0,w,h);bintik(x,w,h,900,['#43464a','#5a5d61','#3a3d41'],1,2,r);},[20,2]);
+const tLaut=teksturK(512,512,(x,w,h,r)=>{const g=x.createLinearGradient(0,0,w,h);g.addColorStop(0,'#2f7690');g.addColorStop(1,'#3f8ca3');x.fillStyle=g;x.fillRect(0,0,w,h);
+  for(let i=0;i<260;i++){x.strokeStyle=`rgba(255,255,255,${.06+r()*.22})`;x.lineWidth=1+r()*2;const a=r()*w,b=r()*h,l=12+r()*34;x.beginPath();x.moveTo(a,b);x.quadraticCurveTo(a+l/2,b-4,a+l,b);x.stroke();}
+  for(let i=0;i<120;i++){x.strokeStyle=`rgba(10,50,70,${.08+r()*.12})`;x.lineWidth=2;const a=r()*w,b=r()*h,l=16+r()*30;x.beginPath();x.moveTo(a,b);x.quadraticCurveTo(a+l/2,b+4,a+l,b);x.stroke();}},[6,5]);
+const tSisiLaut=teksturK(64,256,(x,w,h)=>{const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#4f9db3');g.addColorStop(.12,'#2b6f88');g.addColorStop(.45,'#1d4f66');g.addColorStop(.46,'#9b855f');g.addColorStop(1,'#6e6a64');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tPasir=teksturK(128,128,(x,w,h,r)=>{x.fillStyle='#d8c9a0';x.fillRect(0,0,w,h);bintik(x,w,h,900,['#cbbb90','#e4d6ae','#c2b184'],1,2,r);},[20,1]);
+const tBayang=teksturK(256,256,(x,w,h)=>{const g=x.createRadialGradient(128,128,10,128,128,128);g.addColorStop(0,'rgba(0,0,0,.5)');g.addColorStop(.6,'rgba(0,0,0,.15)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tAlir=teksturK(128,16,(x,w,h)=>{const g=x.createLinearGradient(0,0,w,0);g.addColorStop(0,'rgba(255,255,255,.35)');g.addColorStop(.5,'rgba(255,255,255,1)');g.addColorStop(.62,'rgba(255,255,255,.35)');g.addColorStop(1,'rgba(255,255,255,.35)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tJendela=teksturK(128,128,(x,w,h)=>{x.fillStyle='#cfc9bb';x.fillRect(0,0,w,h);for(let j=0;j<2;j++)for(let i=0;i<4;i++){x.fillStyle='#35596b';x.fillRect(8+i*30,22+j*52,22,34);x.fillStyle='rgba(255,255,255,.3)';x.fillRect(8+i*30,22+j*52,8,34);}},[3,1]);
+
+
+/* ---------- RENDERER, CAHAYA ---------- */
+const RD=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true,alpha:true});RD.setPixelRatio(1);RD.setSize(W,H);RD.outputEncoding=THREE.sRGBEncoding;
+RD.toneMapping=THREE.ACESFilmicToneMapping;RD.toneMappingExposure=1.05;RD.localClippingEnabled=true;RD.setClearColor(0,0);$('#dunia').appendChild(RD.domElement);
+const SD=new THREE.Scene();
+const KD=new THREE.OrthographicCamera(-1,1,1,-1,-900,900);
+const HEM=new THREE.HemisphereLight(C('#9db4e8'),C('#1a1410'),.5);SD.add(HEM);
+const SUNL=new THREE.DirectionalLight(C('#fff1d0'),3.2);SD.add(SUNL,SUNL.target);
+{const N=2200,pos=new Float32Array(N*3),col=new Float32Array(N*3),r=rng(21);for(let i=0;i<N;i++){const a=r()*6.283,b=Math.acos(2*r()-1),R=560+r()*60;pos.set([R*Math.sin(b)*Math.cos(a),R*Math.sin(b)*Math.sin(a),R*Math.cos(b)],i*3);const c=new THREE.Color().setHSL(.58+r()*.12,.3*r(),.7+r()*.3);col.set([c.r,c.g,c.b],i*3);}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));const st=new THREE.Points(g,new THREE.PointsMaterial({size:2.4,sizeAttenuation:false,vertexColors:true,transparent:true,opacity:.9,depthWrite:false,toneMapped:false}));st.frustumCulled=false;SD.add(st);}
+const tGlow=teksturK(128,128,(x,w,h)=>{const g=x.createRadialGradient(64,64,0,64,64,64);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.25,'rgba(255,214,110,.9)');g.addColorStop(.6,'rgba(255,170,40,.3)');g.addColorStop(1,'rgba(255,150,20,0)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const sprite=()=>{const m=new THREE.SpriteMaterial({map:tGlow,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,toneMapped:false,opacity:0});const s=new THREE.Sprite(m);s.visible=false;SD.add(s);return s;};
+function spr(s,pos,sc,op){s.position.set(...pos);s.scale.setScalar(sc);s.material.opacity=op;s.visible=op>.003;}
+/* ---------- tekstur ---------- */
+const tMatahari=teksturK(512,256,(x,w,h,r)=>{const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#ffe9a0');g.addColorStop(.5,'#ffc84a');g.addColorStop(1,'#ffb02e');x.fillStyle=g;x.fillRect(0,0,w,h);bintik(x,w,h,2600,['#ffd978','#ffae35','#fff2b8','#f59a22'],2,10,r);},[1,1]);
+const tBumi=teksturK(1024,512,(x,w,h,r)=>{const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#2b7fc2');g.addColorStop(.5,'#1d63a6');g.addColorStop(1,'#2b7fc2');x.fillStyle=g;x.fillRect(0,0,w,h);
+  for(let i=0;i<500;i++){x.strokeStyle='rgba(255,255,255,'+(.04+r()*.1)+')';x.lineWidth=1+r()*2;const a=r()*w,b=r()*h;x.beginPath();x.moveTo(a,b);x.quadraticCurveTo(a+10,b-3,a+22,b);x.stroke();}
+  const bl=(cx,cy,rx,ry,c1,c2)=>{for(let k=0;k<26;k++){const a=cx+(r()-.5)*rx*1.6,b=cy+(r()-.5)*ry*1.6,s=14+r()*30;x.fillStyle=r()<.6?c1:c2;x.beginPath();x.ellipse(a,b,s,s*(.6+r()*.5),r()*3,0,7);x.fill();}};
+  bl(250,200,120,70,'#5b9448','#7da55a');bl(300,330,50,90,'#6f9a4f','#a08a5a');bl(640,190,150,60,'#6c9a47','#a89a62');bl(700,300,60,70,'#c4b27a','#8fa35a');bl(870,370,60,35,'#b8a46a','#7d9a4f');bl(480,120,40,25,'#88a85e','#a8b878');
+  x.fillStyle='rgba(255,255,255,.9)';x.fillRect(0,0,w,26);x.fillRect(0,h-34,w,34);bintik(x,w,h,400,['rgba(255,255,255,.7)'],6,18,r,0,40);},[1,1]);
+const tEs=teksturK(512,256,(x,w,h,r)=>{x.fillStyle='#e6f6fb';x.fillRect(0,0,w,h);bintik(x,w,h,1500,['#cfeaf4','#f6fdff','#b9dcea'],2,9,r);for(let i=0;i<60;i++){x.strokeStyle='rgba(130,185,210,.4)';x.lineWidth=1.5;x.beginPath();x.moveTo(r()*w,r()*h);x.lineTo(r()*w,r()*h);x.stroke();}},[1,1]);
+const tAlirV=teksturK(16,128,(x,w,h)=>{const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'rgba(255,255,255,.3)');g.addColorStop(.5,'rgba(255,255,255,1)');g.addColorStop(.62,'rgba(255,255,255,.3)');g.addColorStop(1,'rgba(255,255,255,.3)');x.fillStyle=g;x.fillRect(0,0,w,h);});
+const tTitik=teksturK(16,128,(x,w,h)=>{x.clearRect(0,0,w,h);for(let i=0;i<4;i++){const g=x.createLinearGradient(0,i*32,0,i*32+22);g.addColorStop(0,'rgba(255,255,255,0)');g.addColorStop(.5,'rgba(255,255,255,1)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,i*32,w,22);}});
+const lingkarTex=(stops)=>teksturK(256,256,(x,w,h)=>{const g=x.createRadialGradient(128,128,0,128,128,128);stops.forEach(([o,c])=>g.addColorStop(o,c));x.fillStyle=g;x.fillRect(0,0,w,h);});
+/* ---------- MATAHARI, ORBIT ---------- */
+const Ro=40,SUNR=7.5,ER=4;
+const MAT=new THREE.Group();SD.add(MAT);
+const sunMesh=new THREE.Mesh(new THREE.SphereGeometry(SUNR,48,32),new THREE.MeshBasicMaterial({map:tMatahari,toneMapped:false}));MAT.add(sunMesh);
+const glowA=sprite(),glowB=sprite(),flash=sprite();
+const orbit=new THREE.Mesh(new THREE.TorusGeometry(Ro,.09,6,260),new THREE.MeshBasicMaterial({color:C('#9db4d6'),transparent:true,opacity:.55,toneMapped:false,depthWrite:false}));orbit.rotation.x=Math.PI/2;SD.add(orbit);
+/* ---------- BUMI (bidang potong: lingkaran bertumpuk) ---------- */
+const EG=new THREE.Group();SD.add(EG);
+const lap=(tex,o={})=>new THREE.MeshBasicMaterial(Object.assign({map:tex,transparent:false,toneMapped:false,depthWrite:false,side:THREE.DoubleSide},o));
+const bumiMesh=new THREE.Mesh(new THREE.SphereGeometry(ER,64,40),new THREE.MeshStandardMaterial({map:tBumi,roughness:.85,metalness:0,clippingPlanes:[POTF]}));bumiMesh.rotation.z=23*DEG;EG.add(bumiMesh);
+const esMesh=new THREE.Mesh(new THREE.SphereGeometry(ER+.04,64,40),new THREE.MeshStandardMaterial({map:tEs,roughness:.3,transparent:true,opacity:0,clippingPlanes:[POTF],depthWrite:false}));EG.add(esMesh);
+const LAPISB=[['es','#dff4fb',ER],['laut','#2fa4d8',ER-.0],['kerak','#8a6a48',ER-.3],['mantel','#d8552b',ER-.78],['intiLuar','#ff9a1f',1.7],['intiDalam','#ffe27a',.78]];
+const tMantel=lingkarTex([[0,'#ff7a2a'],[.45,'#e0561f'],[1,'#b73d17']]),tInti=lingkarTex([[0,'#fff4b0'],[.6,'#ffcf4a'],[1,'#ffa81f']]),tLuar=lingkarTex([[0,'#ffb33a'],[1,'#f27f12']]);
+const DISK=LAPISB.map(([n,h,r],i)=>{const tex=n==='mantel'?tMantel:n==='intiLuar'?tLuar:n==='intiDalam'?tInti:null;const m=new THREE.Mesh(new THREE.CircleGeometry(1,96),tex?lap(tex):new THREE.MeshBasicMaterial({color:C(h),toneMapped:false,depthWrite:false,side:THREE.DoubleSide}));m.renderOrder=10+i;m.userData={n,r};EG.add(m);return m;});
+const dDisk=n=>DISK.find(d=>d.userData.n===n);
+/* ventilasi dasar laut, cacing tabung, gelembung panas */
+const VENT=[34,74,112].map(a=>{const g=new THREE.Group(),r=ER-.3;g.position.set(r*Math.cos(a*DEG),r*Math.sin(a*DEG),-.1);g.rotation.z=(a-90)*DEG;
+  const kon=new THREE.Mesh(new THREE.ConeGeometry(.2,.5,8),new THREE.MeshStandardMaterial({color:C('#4a3a2c'),roughness:.9}));kon.position.y=.2;g.add(kon);
+  const cw=new THREE.MeshStandardMaterial({color:C('#e0463a'),roughness:.6,emissive:C('#601510')});for(let i=0;i<5;i++){const c=new THREE.Mesh(new THREE.CylinderGeometry(.03,.035,.22+i*.03,6),cw);c.position.set((i-2)*.1,.42,.12*((i%2)-.5));c.rotation.z=(i-2)*.12;g.add(c);}
+  const gl=sprite();g.userData={gl,a};EG.add(g);return g;});
+const GEL=[...Array(18)].map(()=>{const s=new THREE.Mesh(new THREE.SphereGeometry(.05,8,6),new THREE.MeshBasicMaterial({color:C('#ffd27a'),transparent:true,opacity:0,toneMapped:false}));EG.add(s);return s;});
+/* ---------- strip bercahaya (silinder antara dua titik) ---------- */
+function mkLink(col,r,tex){const geo=new THREE.CylinderGeometry(r,r,1,10,1,true),mt=new THREE.MeshBasicMaterial({color:C(col),map:tex.clone(),transparent:true,depthWrite:false,toneMapped:false,side:THREE.DoubleSide});mt.map.needsUpdate=true;const m=new THREE.Mesh(geo,mt);m.renderOrder=20;m.visible=false;SD.add(m);const hd=sprite();
+  return{m,atur(A,B,u0,u1,off,op,rep=.7){const a=A.clone().lerp(B,u0),b=A.clone().lerp(B,u1),d=b.clone().sub(a),L=d.length();if(L<.05||op<.01){m.visible=false;spr(hd,[0,0,0],1,0);return;}m.visible=true;m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),d.clone().normalize());m.scale.set(1,L,1);mt.map.repeat.set(1,L*rep);mt.map.offset.y=-off;mt.opacity=op;spr(hd,[b.x,b.y,b.z],r*9,op*.8);}};}
+const LINK_CAH=mkLink('#ffe27a',.22,tAlirV),LINK_GRAV=mkLink('#ffb020',.16,tTitik);
+const HEAT=[0,1,2].map(i=>{const m=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3([new THREE.Vector3(0,0,-.2),new THREE.Vector3(.4*Math.cos((34+i*38)*DEG)*2,.4*Math.sin((34+i*38)*DEG)*2,-.2),new THREE.Vector3(2.2*Math.cos((38+i*38)*DEG)*1.0,2.2*Math.sin((38+i*38)*DEG)*1.0,-.2),new THREE.Vector3((ER-.35)*Math.cos((34+i*38)*DEG),(ER-.35)*Math.sin((34+i*38)*DEG),-.2)]),60,.07,8),new THREE.MeshBasicMaterial({color:C(PAL.aks),map:tAlir.clone(),transparent:true,depthWrite:false,toneMapped:false}));m.material.map.needsUpdate=true;m.material.map.repeat.set(7,1);m.renderOrder=22;m.visible=false;EG.add(m);return m;});
+
+const EZ=E;const E_in=k=>EZ.in(k),E_out=k=>EZ.out(k),E_io=k=>EZ.io(k);
+/* ---------- WAKTU (dari suara) ---------- */
+const TTS=[{"teks": "Bayangkan matahari lenyap dalam sekejap. Anehnya, selama sekitar delapan menit, kita belum tahu apa-apa. Ini skenario pengandaian, karena matahari tidak mungkin menghilang tiba-tiba.", "kata": [["Bayangkan", 0.218, 0.65], ["matahari", 0.687, 1.074], ["lenyap", 1.107, 1.404], ["dalam", 1.43, 1.682], ["sekejap", 1.703, 2.045], ["Anehnya", 2.722, 3.099], ["selama", 3.131, 3.459], ["sekitar", 3.487, 3.864], ["delapan", 3.897, 4.274], ["menit", 4.307, 4.585], ["kita", 4.8, 5.046], ["belum", 5.067, 5.367], ["tahu", 5.393, 5.64], ["apa-apa", 5.661, 6.014], ["Ini", 6.452, 6.622], ["skenario", 6.637, 7.042], ["pengandaian", 7.077, 7.624], ["karena", 8.038, 8.317], ["matahari", 8.341, 8.703], ["tidak", 8.735, 8.971], ["mungkin", 8.991, 9.312], ["menghilang", 9.34, 9.786], ["tiba-tiba", 9.825, 10.188]]}, {"teks": "Cahaya matahari butuh sekitar delapan menit untuk sampai ke Bumi, jadi selama itu langit masih terang, seolah tidak terjadi apa-apa.", "kata": [["Cahaya", 0.205, 0.501], ["matahari", 0.527, 0.913], ["butuh", 0.946, 1.198], ["sekitar", 1.219, 1.56], ["delapan", 1.59, 1.931], ["menit", 1.961, 2.212], ["untuk", 2.234, 2.485], ["sampai", 2.507, 2.803], ["ke", 2.829, 2.946], ["Bumi", 2.956, 3.162], ["jadi", 3.56, 3.779], ["selama", 3.799, 4.113], ["itu", 4.14, 4.312], ["langit", 4.327, 4.641], ["masih", 4.668, 4.935], ["terang", 4.958, 5.272], ["seolah", 5.3, 5.614], ["tidak", 5.641, 5.908], ["terjadi", 5.931, 6.293], ["apa-apa", 6.325, 6.639]]}, {"teks": "Perubahan gravitasi juga merambat secepat cahaya, jadi Bumi tetap melengkung mengikuti orbitnya selama sekitar delapan menit itu.", "kata": [["Perubahan", 0.202, 0.667], ["gravitasi", 0.707, 1.171], ["juga", 1.211, 1.434], ["merambat", 1.453, 1.869], ["secepat", 1.905, 2.273], ["cahaya", 2.305, 2.624], ["jadi", 3.064, 3.275], ["Bumi", 3.293, 3.504], ["tetap", 3.522, 3.779], ["melengkung", 3.802, 4.288], ["mengikuti", 4.33, 4.771], ["orbitnya", 4.809, 5.204], ["selama", 5.238, 5.541], ["sekitar", 5.567, 5.916], ["delapan", 5.946, 6.295], ["menit", 6.326, 6.583], ["itu", 6.605, 6.77]]}, {"teks": "Setelah itu, langit mendadak gelap, dan Bumi melaju lurus ke luar angkasa, menyinggung garis orbit lamanya, tidak lagi mengitari apa pun.", "kata": [["Setelah", 0.23, 0.571], ["itu", 0.601, 0.762], ["langit", 0.776, 1.073], ["mendadak", 1.098, 1.484], ["gelap", 1.518, 1.769], ["dan", 2.168, 2.352], ["Bumi", 2.368, 2.603], ["melaju", 2.623, 2.96], ["lurus", 2.989, 3.275], ["ke", 3.3, 3.433], ["luar", 3.445, 3.679], ["angkasa", 3.7, 4.088], ["menyinggung", 4.461, 5.009], ["garis", 5.056, 5.321], ["orbit", 5.344, 5.608], ["lamanya", 5.631, 5.99], ["tidak", 6.022, 6.286], ["lagi", 6.309, 6.526], ["mengitari", 6.545, 6.999], ["apa", 7.038, 7.208], ["pun", 7.223, 7.393]]}, {"teks": "Tanpa sinar matahari, fotosintesis berhenti, suhu turun drastis dalam beberapa minggu, dan permukaan laut mulai membeku. Es perlahan menutup lautan dari tepi sampai ke tengah.", "kata": [["Tanpa", 0.201, 0.499], ["sinar", 0.524, 0.822], ["matahari", 0.847, 1.304], ["fotosintesis", 1.344, 2.012], ["berhenti", 2.07, 2.527], ["suhu", 2.566, 2.81], ["turun", 2.832, 3.129], ["drastis", 3.155, 3.558], ["dalam", 3.593, 3.89], ["beberapa", 3.916, 4.372], ["minggu", 4.412, 4.762], ["dan", 5.178, 5.341], ["permukaan", 5.355, 5.79], ["laut", 5.828, 6.036], ["mulai", 6.054, 6.308], ["membeku", 6.33, 6.674], ["Es", 6.704, 6.822], ["perlahan", 6.832, 7.222], ["menutup", 7.256, 7.6], ["lautan", 7.63, 7.929], ["dari", 7.955, 8.163], ["tepi", 8.181, 8.39], ["sampai", 8.408, 8.707], ["ke", 8.733, 8.851], ["tengah", 8.861, 9.16]]}, {"teks": "Panas dari dalam Bumi menjaga air di bawah es tetap cair lebih lama, dan kehidupan di sekitar ventilasi dasar laut bisa bertahan lebih lama.", "kata": [["Panas", 0.216, 0.494], ["dari", 0.518, 0.746], ["dalam", 0.766, 1.043], ["Bumi", 1.068, 1.296], ["menjaga", 1.316, 1.692], ["air", 1.725, 1.904], ["di", 1.919, 2.048], ["bawah", 2.059, 2.337], ["es", 2.361, 2.49], ["tetap", 2.502, 2.779], ["cair", 2.803, 3.032], ["lebih", 3.051, 3.329], ["lama", 3.353, 3.581], ["dan", 3.848, 4.013], ["kehidupan", 4.027, 4.466], ["di", 4.505, 4.624], ["sekitar", 4.634, 4.982], ["ventilasi", 5.012, 5.451], ["dasar", 5.49, 5.746], ["laut", 5.768, 5.979], ["bisa", 5.997, 6.208], ["bertahan", 6.226, 6.62], ["lebih", 6.654, 6.91], ["lama", 6.932, 7.143]]}, {"teks": "Jadi matahari bukan cuma sumber cahaya, tapi juga jangkar yang menahan Bumi di tempatnya.", "kata": [["Jadi", 0.216, 0.448], ["matahari", 0.469, 0.903], ["bukan", 0.941, 1.223], ["cuma", 1.248, 1.48], ["sumber", 1.5, 1.834], ["cahaya", 1.863, 2.196], ["tapi", 2.225, 2.457], ["juga", 2.477, 2.709], ["jangkar", 2.73, 3.113], ["yang", 3.147, 3.379], ["menahan", 3.399, 3.783], ["Bumi", 3.816, 4.049], ["di", 4.069, 4.2], ["tempatnya", 4.212, 4.696]]}];const KATA=[];let _st=.3;TTS.forEach(o=>{const tk=o.teks.split(' ');o.kata.forEach((k,i)=>KATA.push({w:tk[i],t0:+(_st+k[1]).toFixed(3),t1:+(_st+k[2]).toFixed(3)}));o.start=_st;o.dur=o.kata[o.kata.length-1][2];_st+=o.dur+.4;});
+const CS=TTS.map(o=>o.start),CD=TTS.map(o=>o.dur),CE=CS.map((s,i)=>s+CD[i]),T=(i,f)=>CS[i]+f*CD[i];
+const DURASI=CE[CE.length-1]+1.2;
+const TV=T(0,.34),TARR=CS[3]+1.0,TCUT=T(4,.02),TREP=CS[6]-.2;      // matahari lenyap · strip terakhir sampai · potong Bumi · pemutaran ulang (jangkar)
+/* ---------- GERAK BUMI ---------- */
+const TH0=-30*DEG,OM=1.4/Ro,VL=1.4;
+const ep=(th)=>new THREE.Vector3(Ro*Math.cos(th),0,Ro*Math.sin(th));
+function posBumi(t){if(t>=TREP)return ep(TH0-OM*(t-TREP)*.8);if(t<TARR)return ep(TH0-OM*t);const ta=TH0-OM*TARR,a=ep(ta),d=new THREE.Vector3(Math.sin(ta),0,-Math.cos(ta));return a.add(d.multiplyScalar(VL*(t-TARR)));}
+/* ---------- KAMERA ---------- */
+const AZ=45*DEG,EL=30*DEG,ARAH=new THREE.Vector3(Math.sin(AZ)*Math.cos(EL),Math.sin(EL),Math.cos(AZ)*Math.cos(EL));
+const halus=k=>k*k*k*(k*(k*6-15)+10),_v=new THREE.Vector3();
+function interp(K,t){let i=0;while(i<K.length-2&&t>K[i+1][0])i++;const e=halus(clamp((t-K[i][0])/(K[i+1][0]-K[i][0])));return[K[i],K[i+1],e];}
+const HK=[[0,126],[T(0,.9),106],[CS[1],106],[CS[3],110],[CS[4]-.2,124],[CS[4]+1.6,17],[CE[5]+.2,17],[CE[5]+1.8,104],[DURASI,98]];
+const FK=[[0,.5],[T(0,.9),.6],[CS[1],.5],[CS[3],.55],[CS[4]-.2,.75],[CS[4]+1.2,1],[CE[5],1],[CE[5]+1.8,.5],[DURASI,.5]];
+let EPOS=new THREE.Vector3();
+function kameraDunia(t){const[A,B,e]=interp(HK,t),h=Math.exp(lerp(Math.log(A[1]),Math.log(B[1]),e)),[Fa,Fb,fe]=interp(FK,t),f=lerp(Fa[1],Fb[1],fe);
+  const tg=new THREE.Vector3(EPOS.x*f,EPOS.y*f,EPOS.z*f);pasangKamera(KD,[tg.x,tg.y,tg.z],h,h*W/H);window.HC=h;}
+function pasangKamera(cam,tg,h,w){Object.assign(cam,{left:-w/2,right:w/2,top:h/2,bottom:-h/2});cam.updateProjectionMatrix();_v.set(...tg);cam.position.copy(_v).addScaledVector(ARAH,400);cam.lookAt(_v);}
+function keLayar(p){_v.set(p[0],p[1],p[2]).project(KD);return[(_v.x+1)/2*W,(1-_v.y)/2*H];}
+/* ---------- LABEL ---------- */
+const DAFTAR=[];
+function tanda(o){o.el=mk('div','lt'+(o.o[0]<0?' r':'')+(o.big?' big':'')+(o.am?' am':'')+(o.sm?' sm':''),$('#tanda'),o.t+(o.s?'<small>'+o.s+'</small>':'')+'<i></i>');
+  o.dot=mk('div','dot'+(o.am?' am':''),$('#tanda'));o.ln=svgEl('polyline',{fill:'none',stroke:o.am?PAL.aks:'#fff','stroke-width':3,'stroke-linecap':'round',style:'filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))'},$('#garis'));DAFTAR.push(o);return o;}
+function gambarTanda(t){DAFTAR.forEach(L=>{const k=sstep(L.a,L.a+.4,t)*(1-sstep(L.b,L.b+.3,t)),on=k>.001;
+  L.el.style.display=L.dot.style.display=on?'block':'none';L.ln.style.display=on?'':'none';if(!on)return;
+  const p=typeof L.p==='function'?L.p(t):L.p,[x,y]=keLayar(p);L.dot.style.left=x+'px';L.dot.style.top=y+'px';L.dot.style.opacity=k;L.dot.style.transform='scale('+(.4+.6*sstep(L.a,L.a+.25,t))+')';
+  const ew=L.el.offsetWidth,eh=L.el.offsetHeight,kn=L.o[0]<0;let tx=x+L.o[0],ty=y+L.o[1];
+  let kiri=clamp(kn?tx-ew:tx,AMAN.kiri-10,AMAN.kanan-ew);tx=kn?kiri+ew:kiri;const atas=clamp(ty-eh,300,1330-eh);ty=atas+eh;
+  L.el.style.left=kiri+'px';L.el.style.top=atas+'px';L.el.style.opacity=sstep(L.a+.12,L.a+.45,t)*(1-sstep(L.b,L.b+.3,t));
+  L.el.lastChild.style.transform='scaleX('+sstep(L.a+.1,L.a+.5,t)+')';const g=sstep(L.a,L.a+.35,t);L.ln.setAttribute('points',x+','+y+' '+lerp(x,tx,g)+','+lerp(y,ty,g));L.ln.style.opacity=k;});}
+const mid=()=>[EPOS.x*.5,0,EPOS.z*.5],tit=(f)=>{const q=EPOS.clone().multiplyScalar(f);return[q.x,q.y,q.z];};
+const lokal=(r,a)=>[EPOS.x+r*Math.cos(a*DEG),EPOS.y+r*Math.sin(a*DEG),EPOS.z];
+tanda({t:'Matahari',s:'sumber cahaya dan tarikan',p:[0,SUNR,0],o:[110,-190],a:T(0,.04),b:T(0,.33),am:1,big:1});
+tanda({t:'Bumi',s:'mengorbit matahari',p:()=>[EPOS.x,EPOS.y+ER,EPOS.z],o:[-90,-200],a:T(0,.1),b:T(0,.33)});
+tanda({t:'Garis orbit',s:'jalur Bumi mengitari matahari',p:()=>{const q=ep(TH0-OM*TV+0.55);return[q.x,q.y,q.z];},o:[-100,170],a:T(0,.4),b:T(0,.78)});
+tanda({t:'Cahaya terakhir',s:'masih di perjalanan',p:()=>tit(.45),o:[110,-200],a:T(0,.62),b:T(0,1.0)+.6,am:1});
+tanda({t:'±8 menit',s:'waktu cahaya sampai ke Bumi',p:()=>tit(.62),o:[-110,-210],a:CS[1]+.3,b:T(1,.64),am:1,big:1});
+tanda({t:'Langit masih terang',s:'belum ada yang berubah',p:()=>[EPOS.x,EPOS.y+ER,EPOS.z],o:[-80,-190],a:T(1,.7),b:CE[1]+.6});
+tanda({t:'Tarikan gravitasi',s:'juga merambat secepat cahaya',p:()=>tit(.55),o:[110,170],a:CS[2]+.2,b:CE[2]+.2,am:1});
+tanda({t:'Bumi masih mengorbit',s:'selama ±8 menit',p:()=>[EPOS.x,EPOS.y+ER,EPOS.z],o:[-90,-190],a:T(2,.5),b:CE[2]+.7});
+tanda({t:'Strip terakhir sampai',s:'tarikan matahari berakhir',p:()=>[EPOS.x,EPOS.y+ER*.5,EPOS.z],o:[-110,-200],a:TARR,b:TARR+2.4,am:1,big:1});
+tanda({t:'Lepas orbit',s:'melaju lurus, menyinggung orbit lama',p:()=>[EPOS.x,EPOS.y+ER,EPOS.z],o:[110,-200],a:T(3,.38),b:CE[3]+.4,am:1});
+tanda({t:'Garis orbit lama',s:'tidak lagi diikuti',p:()=>{const q=ep(TH0-OM*TARR-.2);return[q.x,q.y,q.z];},o:[110,190],a:T(3,.62),b:CE[3]+.5});
+tanda({t:'Lautan',s:'tebalnya kelihatan di irisan',p:()=>lokal(ER-.15,150),o:[-110,-200],a:T(4,.3),b:T(4,.58),am:1});
+tanda({t:'Kerak · Mantel · Inti',s:'lapisan Bumi berwarna beda',p:()=>lokal(2.4,-40),o:[110,200],a:T(4,.3),b:T(4,.55)});
+tanda({t:'Laut membeku',s:'es menebal dari permukaan',p:()=>lokal(ER+.15,100),o:[110,-200],a:T(4,.6),b:CE[4]+.4,am:1,big:1});
+tanda({t:'Air cair di bawah es',s:'masih terjaga panas dalam Bumi',p:()=>lokal(ER-.12,40),o:[110,200],a:T(5,.3),b:T(5,.6),am:1});
+tanda({t:'Panas dari dalam Bumi',s:'sisa panas inti masih mengalir',p:()=>lokal(1.2,-30),o:[110,190],a:CS[5]+.1,b:T(5,.32),am:1,big:1});
+tanda({t:'Ventilasi dasar laut',s:'kehidupan bertahan lebih lama',p:()=>lokal(ER-.35,112),o:[-110,-200],a:T(5,.58),b:CE[5]+.4,am:1});
+tanda({t:'Jangkar',s:'tarikan matahari menahan Bumi di orbit',p:()=>tit(.5),o:[110,-200],a:CS[6]+.3,b:CE[6]+.6,am:1,big:1});
+tanda({t:'Matahari',s:'bukan cuma sumber cahaya',p:[0,SUNR,0],o:[100,-190],a:CS[6]+.1,b:CS[6]+3});
+const JEJAK=[[0,'RUANG ANGKASA › <b>MATAHARI & BUMI</b>'],[TV,'MATAHARI <b>LENYAP</b> › CAHAYA TERAKHIR'],[CS[2],'<b>GRAVITASI</b> MERAMBAT SECEPAT CAHAYA'],[TARR,'<b>LEPAS ORBIT</b>'],[CS[4],'BUMI <b>DIIRIS</b> › LAUT MEMBEKU'],[CS[5],'<b>PANAS DALAM BUMI</b>'],[TREP,'<b>JANGKAR</b> TATA SURYA']];
+/* ---------- SCENE ---------- */
+const SKR=[[.4,'hum',.2],[T(0,.04),'tik',.25],[TV,'zap',.3],[T(0,.62),'tik',.22],[CS[1]+.3,'tik',.25],[CS[2]+.2,'zing',.25],[TARR,'whoosh',.3],[T(3,.38),'tik',.22],[CS[4]+.2,'whoosh',.3],[T(4,.3),'tik',.25],[T(4,.6),'hiss',.22],[CS[5]+.1,'tik',.25],[T(5,.58),'zing',.25],[CS[6]+.2,'whoosh',.3],[CS[6]+.3,'tik',.25]];
+const SCENE={dur:DURASI,
+  kata:KATA,
+  sub:{font:"800 66px 'Outfit'",warna:'#ffffff',aksen:PAL.tb,y:.755,maks:4,kunci:['matahari','lenyap','delapan','menit','cahaya','gravitasi','orbit','orbitnya','gelap','lurus','fotosintesis','membeku','es','panas','jangkar','ventilasi','laut','Bumi']},
+  audio:{vo:TTS.map((o,i)=>({src:'assets/audio/vo-0'+(i+1)+'.mp3',at:+o.start.toFixed(2),teks:o.teks})),sfx:SKR.map(([at,n,vol])=>({src:'assets/audio/sfx-'+n+'.wav',at,vol})),music:null},
+  frame(t){
+    const E=posBumi(t);EPOS.copy(E);EG.position.copy(E);bumiMesh.rotation.y=t*.25;esMesh.rotation.y=t*.25;
+    const rep=t>=TREP,rt=sstep(TREP-.35,TREP+.3,t);
+    // matahari: lenyap pada TV, kembali pada pemutaran ulang
+    const sv=(t<TV?1:1-E_in(seg(t,TV,TV+.3)))*(1-0)+(rep?E_out(seg(t,TREP,TREP+.8)):0);const sunVis=t<TV?1:(rep?E_out(seg(t,TREP,TREP+.8)):Math.max(0,1-E_in(seg(t,TV,TV+.3))));
+    sunMesh.scale.setScalar(Math.max(.001,sunVis));sunMesh.visible=sunVis>.01;sunMesh.rotation.y=t*.1;
+    spr(glowA,[0,0,0],40*sunVis,.85*sunVis);spr(glowB,[0,0,0],70*sunVis,.35*sunVis);
+    const fl=Math.exp(-Math.max(0,t-TV)*3.2)*(t>=TV?1:0);spr(flash,[0,0,0],90*fl+10,fl*1.2);
+    // cahaya: arah dari matahari ke Bumi; mati saat strip terakhir sampai
+    const lit=(t<TARR||rep)?1:1-E_io(seg(t,TARR,TARR+.9));
+    SUNL.intensity=3.2*lit;HEM.intensity=.07+.5*lit;
+    const dir=E.clone().normalize();SUNL.position.copy(E).sub(dir.clone().multiplyScalar(60));SUNL.target.position.copy(E);SUNL.target.updateMatrixWorld();
+    // strip: cahaya & gravitasi dari matahari ke Bumi
+    const A=dir.clone().multiplyScalar(SUNR),B=E.clone().sub(dir.clone().multiplyScalar(ER+.3)),off=new THREE.Vector3(0,1.1,0);
+    const tail=t<TV?0:clamp((t-TV)/(TARR-TV)),sunOn=(t<TARR&&!rep)?1:0;
+    const full=t<TV?clamp(seg(t,T(0,.12),T(0,.3))):1;
+    LINK_CAH.atur(A,B,tail*(1-0),Math.min(1,full),t*3,sunOn*Math.min(1,full*1.2));
+    LINK_GRAV.atur(A.clone().add(off),B.clone().add(off),tail,Math.min(1,seg(t,T(0,.2),T(0,.36))),t*2.2,(sunOn&&t>=T(0,.2))?.9:0,1.1);
+    // pemutaran ulang: tarikan menahan Bumi (jangkar)
+    if(rep){const k=rt;LINK_GRAV.atur(A.clone().add(off),B.clone().add(off),0,1,t*2.2,.95*k,1.1);LINK_CAH.atur(A,B,0,1,t*3,.8*k);}
+    const kn=t>=TARR&&t<TARR+.9?Math.sin(Math.PI*seg(t,TARR,TARR+.9)):0;spr(flash,[E.x,E.y+1,E.z],40*kn+.01,kn*1.2);
+    // bidang potong Bumi, es, panas
+    const dcut=lerp(ER+2.2,0,E_io(seg(t,TCUT,TCUT+1.6)))+(ER+2.2)*E_io(seg(t,CE[5]+.5,CE[5]+1.5)),keBumi=(t<TCUT-.1||t>CE[5]+1.6)?0:1;
+    POTF.constant=E.z+dcut;
+    DISK.forEach(d=>{const r=d.userData.r,rr=d.userData.n==='es'?r+.45*E_io(seg(t,CS[4]+.6,CE[4]+.2))*1:r;const rad=rr>Math.abs(dcut)?Math.sqrt(rr*rr-dcut*dcut):0;d.visible=keBumi&&rad>.02;d.scale.setScalar(Math.max(.001,rad));d.position.z=dcut;if(d.userData.n==='es')d.visible=d.visible&&seg(t,CS[4]+.6,CE[4]+.2)>.01;});
+    esMesh.material.opacity=.92*E_io(seg(t,CS[4]+.6,CE[4]))*(1-E_io(seg(t,CE[5]+.5,CE[5]+1.5)));
+    const heat=E_io(seg(t,CS[5]-.3,CS[5]+1.3))*(1-E_io(seg(t,CE[5]+1,CE[5]+1.8)));
+    HEAT.forEach((h,i)=>{h.visible=heat>.02&&keBumi;h.material.opacity=heat;h.material.map.offset.x=-t*1.6-i*.3;});
+    VENT.forEach((v,i)=>{const k=heat;spr(v.userData.gl,[E.x+(ER-.1)*Math.cos(v.userData.a*DEG),E.y+(ER-.1)*Math.sin(v.userData.a*DEG),E.z+.2],1.6*k+.01,.9*k*(.8+.2*Math.sin(t*5+i)));});
+    GEL.forEach((g,i)=>{const v=VENT[i%3],ph=(t*.7+i*.37)%1,r=ER-.3+ph*.5,a=v.userData.a*DEG;g.position.set(r*Math.cos(a)+Math.sin(i*3+t)*.05,r*Math.sin(a),.05);g.material.opacity=heat*(1-ph)*.9;g.visible=heat>.02&&keBumi;});
+    bumiMesh.visible=!(dcut<=.0&&false);
+    orbit.material.opacity=.55*(1-.85*E_io(seg(t,CS[4]-.3,CS[4]+1.2))*(1-E_io(seg(t,CE[5]+.6,CE[5]+1.6))));
+    kameraDunia(t);RD.render(SD,KD);
+    gambarTanda(t);
+    let j=JEJAK[0][1];JEJAK.forEach(([s,x])=>{if(t>=s)j=x;});$('#jejak').innerHTML=j;
+    // hitung mundur cahaya terakhir (08:20 -> 00:00)
+    const pr=t<TV?0:t>=TARR?1:(t-TV)/(TARR-TV),sec=Math.round(500*(1-pr)),h=$('#rpm');if(h){h.style.opacity=(t>=TV&&t<TARR+.6)?1:0;h.innerHTML=String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0')+'<small>CAHAYA TERAKHIR TIBA</small>';}
+  }};

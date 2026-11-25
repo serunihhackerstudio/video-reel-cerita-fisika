@@ -16,6 +16,7 @@ C = {
  'laut': ('post/laut/f6.jpg', 'SAINS · LAUT', 'APA YANG TERJADI', 'LAUT TIDAK ASIN', 'LAGI?', 'SKENARIO PENGANDAIAN', (255,212,0), (50,40,0)),
  'blackhole2': ('post/blackhole2/f6.jpg', 'ASTRONOMI · PART 2', 'BISAKAH KITA KELUAR', 'LEWAT LUBANG CACING', 'LANJUTAN BLACK HOLE', 'JEMBATAN ATAU JALAN BUNTU?', (255,106,31), (255,255,255)),
  'pelari': ('post/pelari/f6.jpg', 'FISIKA \u00b7 RELATIVITAS', 'PRIA BERLARI', 'MENDEKATI CAHAYA', 'APA YANG TERJADI?', '7\u00d7 KELILING BUMI / DETIK', (46,155,255), (255,255,255)),
+ 'emas': ('post/emas/f6.jpg', 'SAINS · ASTRONOMI', 'DARI MANA ASAL', 'EMAS', 'DI BUMI?', 'LEBIH TUA DARI BUMI', (247,193,61), (50,34,0)),
 }
 def pill(d, cx, cy, text, font, bg, fg, radius=None, padx=None, pady=None, stroke=0):
     """Blok berisi teks dengan teks tepat di tengah (kapital: pakai tinggi huruf kapital, bukan tinggi font)."""

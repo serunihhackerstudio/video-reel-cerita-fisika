@@ -58,6 +58,12 @@ D = {
            ('Udara jadi plasma', 'Molekul udara menumbuknya dengan energi sangat besar, dan udara di depannya berubah jadi plasma panas yang meledak.'),
            ('Relativitas khusus', 'Bagi sang pelari, waktu melambat (dilatasi waktu) dan jalan di depannya memendek (kontraksi panjang).'),
            ('Ledakan energi', 'Bagi orang di sekitarnya, tubuhnya jadi ledakan energi dalam sekejap. Tidak ada manusia yang bisa melakukannya di Bumi.')]},
+ 'emas': {'acc': (247,193,61), 'fg': (50,34,0), 'tag': 'SAINS · ASTRONOMI', 'judul': 'Dari mana asal emas di Bumi?', 'hash': '#emas #bintangneutron #astronomi #asalusul #sains #edukasi #explainer #3D #ToufaniRA',
+  'poin': [('Batuan berurat emas', 'Emas di cincinmu berasal dari batuan berurat emas, tetapi atom-atomnya jauh lebih tua daripada Bumi itu sendiri.'),
+           ('Inti atom emas', 'Setiap atom emas punya 79 proton dan 118 neutron di dalam intinya.'),
+           ('Hujan neutron', 'Bintang biasa hanya membuat unsur sampai sekitar besi. Unsur berat terbentuk saat inti dihujani neutron dengan sangat cepat sampai membesar menjadi emas dan platina.'),
+           ('Tabrakan bintang neutron', 'Salah satu sumber utama yang sudah teramati adalah tabrakan dua bintang neutron, terdeteksi pada tahun 2017.'),
+           ('Dibawa hujan asteroid', 'Awan emas bercampur ke awan gas pembentuk tata surya. Sebagian besar emas Bumi tenggelam ke inti, dan emas yang kita tambang diduga dibawa hujan asteroid.')]},
 }
 def wrap(d, text, font, maxw):
     out, cur = [], ''

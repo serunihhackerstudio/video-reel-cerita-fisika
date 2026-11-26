@@ -16,6 +16,7 @@ V = [
  ('matahari', '2026-11-25_matahari-menghilang.mp4', 25.1, 14.0, 'ASTRONOMI · SKENARIO', 'APA YANG TERJADI', 'MATAHARI MENGHILANG', 'TIBA-TIBA?', (255,198,26), (50,36,0)),
  ('laut', '2026-11-25_laut-tidak-asin.mp4', 34.6, 14.0, 'SAINS · LAUT', 'APA YANG TERJADI', 'LAUT TIDAK ASIN', 'LAGI?', (255,212,0), (50,40,0)),
  ('blackhole2', '2026-11-25_lubang-cacing-part2.mp4', 11.6, 14.0, 'ASTRONOMI · PART 2', 'BISAKAH KITA KELUAR', 'LEWAT LUBANG CACING', 'KISI DILIPAT JADI DUA SISI', (255,106,31), (255,255,255)),
+ ('bintang', '2026-11-26_bintang-masa-lalu.mp4', 21.9, 14.0, 'SAINS · ASTRONOMI', 'MELIHAT BINTANG', 'MASA LALU', 'SETIAP MALAM', (217,60,245), (255,255,255)),
  ('pesta', '2026-11-26_pesta-penjelajah-waktu.mp4', 10.8, 14.0, 'SAINS · FISIKA', 'PESTA PENJELAJAH', 'WAKTU', 'TANPA TAMU', (217,60,245), (255,255,255)),
  ('emas', '2026-11-25_asal-emas.mp4', 30.6, 14.0, 'SAINS · ASTRONOMI', 'DARI MANA ASAL', 'EMAS', 'DI BUMI?', (247,193,61), (50,34,0)),
 ]

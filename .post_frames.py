@@ -12,6 +12,7 @@ T = {
  'matahari': [14.0, 22.0, 30.0, 38.0, 46.0, 52.5, 40.5],
  'laut': [14.5, 23.5, 32.5, 43.5, 53.5, 71.0, 7.6],
  'blackhole2': [7.0, 14.5, 22.5, 28.5, 38.5, 52.0, 18.0],
+ 'pesta': [9.2, 13.2, 20.4, 32.6, 38.6, 53.2, 1.2],
  'emas': [13.0, 16.1, 20.3, 34.0, 50.3, 37.2, 3.4],
 }
 os.makedirs('post', exist_ok=True)
@@ -24,7 +25,7 @@ for name, ts in T.items():
     shutil.rmtree(tmp, ignore_errors=True)
     subprocess.run([sys.executable, MF, 'baru', tmp, '--dasar', 'isometrik-dibongkar', '--rasio', '9:16'], check=True, stdout=subprocess.DEVNULL, env=env)
     s = open(f'{name}/scene.html', encoding='utf-8').read()
-    s = s.replace('<!--@BODY-->', '<style>#mfSub,.lt,.dot,#garis,#jejak,#tanda,#rpm{display:none!important}</style><!--@BODY-->', 1)
+    s = s.replace('<!--@BODY-->', '<style>#mfSub,.lt,.dot,#garis,#jejak,#tanda,#rpm,#seri{display:none!important}</style><!--@BODY-->', 1)
     open(os.path.join(tmp, 'scene.html'), 'w', encoding='utf-8').write(s)
     shutil.copytree(f'{name}/assets', os.path.join(tmp, 'assets'), dirs_exist_ok=True)
     e2 = dict(env); e2['MF_PORT'] = str(port)

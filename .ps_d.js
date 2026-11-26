@@ -80,7 +80,7 @@ const JEJAK=[[0,'CAMBRIDGE › <b>GEDUNG KAMPUS</b>'],[CS[0]+4.5,'CAMBRIDGE › 
 const hx=h=>new THREE.Color(h),mixC=(a,b,k)=>'#'+hx(a).lerp(hx(b),k).getHexString();
 function lighting(t){const n=sstep(TN0,TN1,t),a=n<.5?n/.5:(n-.5)/.5,c0=n<.5?'#fff0cf':'#ff8f4f',c1=n<.5?'#ff8f4f':'#8aa6ff';SUNL.color.copy(C(mixC(c0,c1,a)));
   SUNL.intensity=n<.5?lerp(3.0,2.0,a):lerp(2.0,.55,a);const ey=n<.5?lerp(.85,.32,a):lerp(.32,.9,a),dir=V(-.45,ey,.78).normalize();SUNL.position.copy(SUNL.target.position).addScaledVector(dir,90);
-  HEM.color.copy(C(mixC('#b6a8ff',n<.5?'#7f6fd0':'#2a3a8f',n<.5?n*2:1)));HEM.intensity=lerp(.55,.42,n);
+  HEM.color.copy(C(mixC('#b6a8ff',n<.5?'#7f6fd0':'#2a3a8f',n<.5?n*2:1)));HEM.intensity=lerp(.75,.45,n);
   ROOML.intensity=.6+2.2*n;ROOML2.intensity=.4+1.4*n;winMats.forEach(m=>m.emissiveIntensity=1.5*n);
   BULB.forEach(b=>b.material.color.copy(C('#ffd890')).multiplyScalar(.5+.9*n));STARS.material.opacity=.95*sstep(.3,1,n);
   const g=[0,1,2].map(i=>mixC(PAL.langit[i],['#171034','#0c0824','#05030f'][i],n));$('#langit').style.background='linear-gradient(180deg,'+g[0]+' 0%,'+g[1]+' 60%,'+g[2]+' 100%)';return n;}

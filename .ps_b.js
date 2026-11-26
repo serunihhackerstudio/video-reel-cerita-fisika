@@ -9,7 +9,7 @@ function pasangKamera(cam,tg,h,w,D){Object.assign(cam,{left:-w/2,right:w/2,top:h
 pasangKamera(KS,{x:0,y:0,z:0},1500,1500*W/H,5000);
 const HEM=new THREE.HemisphereLight(C('#b6a8ff'),C('#3a2418'),.55);SD.add(HEM);
 const SUNL=new THREE.DirectionalLight(C('#fff0cf'),3);SUNL.castShadow=true;SUNL.shadow.mapSize.set(4096,4096);
-Object.assign(SUNL.shadow.camera,{left:-27,right:27,top:27,bottom:-27,near:1,far:170});SUNL.shadow.bias=-.0004;SUNL.shadow.normalBias=.03;SD.add(SUNL,SUNL.target);SUNL.target.position.set(0,3,0);
+Object.assign(SUNL.shadow.camera,{left:-27,right:27,top:27,bottom:-27,near:1,far:170});SUNL.shadow.bias=-.0012;SUNL.shadow.normalBias=.09;SUNL.shadow.radius=2;SD.add(SUNL,SUNL.target);SUNL.target.position.set(0,3,0);
 const ROOML=new THREE.PointLight(C('#ffb066'),0,30,1.4);ROOML.position.set(-.5,5.4,-2);SD.add(ROOML);
 const ROOML2=new THREE.PointLight(C('#ffc58a'),0,14,1.4);ROOML2.position.set(-6,4.5,-1.8);SD.add(ROOML2);
 /* bintang (layar) */
@@ -17,11 +17,11 @@ const STARS=(()=>{const N=2400,pos=new Float32Array(N*3),col=new Float32Array(N*
  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));g.setAttribute('color',new THREE.BufferAttribute(col,3));
  const p=new THREE.Points(g,new THREE.PointsMaterial({size:2.6,sizeAttenuation:false,vertexColors:true,transparent:true,opacity:0,depthWrite:false,toneMapped:false}));p.frustumCulled=false;SS.add(p);return p;})();
 /* ---------- TEKSTUR ---------- */
-const tBrick=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#5a3426';x.fillRect(0,0,w,h);const bw=64,bh=32,cs=['#a8573a','#9d4c34','#b4633f','#93472f','#ad5d3d','#a05038'];
-  for(let j=0;j<8;j++)for(let i=-1;i<5;i++){const px=i*bw+(j%2)*32;x.fillStyle=cs[(r()*cs.length)|0];x.fillRect(px+2,j*bh+2,bw-4,bh-4);x.fillStyle='rgba(0,0,0,.08)';x.fillRect(px+2,j*bh+bh-6,bw-4,4);}
-  bintik(x,w,h,900,['rgba(255,220,180,.10)','rgba(40,15,8,.14)','rgba(120,60,40,.12)'],1,3,r);});
+const tBrick=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#86503c';x.fillRect(0,0,w,h);const bw=64,bh=32,cs=['#a8573a','#a1523a','#ac5d3e','#9c4e36','#a95a3c','#a35439'];
+  for(let j=0;j<8;j++)for(let i=-1;i<5;i++){const px=i*bw+(j%2)*32;x.fillStyle=cs[(r()*cs.length)|0];x.fillRect(px+3,j*bh+3,bw-6,bh-6);}
+  bintik(x,w,h,300,['rgba(255,220,180,.06)','rgba(40,15,8,.07)'],2,4,r);});
 const tStone=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#d9ccac';x.fillRect(0,0,w,h);bintik(x,w,h,2200,['#cdbf9d','#e3d8bb','#c5b793','#ddd0b0'],1,3,r);x.fillStyle='rgba(90,75,50,.28)';x.fillRect(0,0,w,2);x.fillRect(0,128,w,2);x.fillRect(0,0,2,128);x.fillRect(128,128,2,128);});
-const tSlate=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#363a52';x.fillRect(0,0,w,h);for(let j=0;j<10;j++)for(let i=-1;i<8;i++){const px=i*32+(j%2)*16,v=(r()*14)|0;x.fillStyle=`rgb(${52+v},${57+v},${82+v})`;x.fillRect(px+1,j*26+1,30,24);x.fillStyle='rgba(0,0,0,.22)';x.fillRect(px+1,j*26+22,30,3);}});
+const tSlate=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#363a52';x.fillRect(0,0,w,h);for(let j=0;j<10;j++)for(let i=-1;i<8;i++){const px=i*32+(j%2)*16,v=(r()*14)|0;x.fillStyle=`rgb(${52+v},${57+v},${82+v})`;x.fillRect(px+1,j*26+1,30,24);x.fillStyle='rgba(0,0,0,.10)';x.fillRect(px+1,j*26+22,30,3);}});
 const tGrass=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#6a9150';x.fillRect(0,0,w,h);bintik(x,w,h,4200,['#5b8244','#78a059','#6a9150','#85ab63','#4f7439'],1,3,r);for(let i=0;i<1600;i++){x.strokeStyle=r()<.5?'rgba(35,65,20,.3)':'rgba(180,215,120,.3)';x.lineWidth=1;const a=r()*w,b=r()*h;x.beginPath();x.moveTo(a,b);x.lineTo(a+(r()-.5)*3,b-3-r()*4);x.stroke();}});
 const tDirt=teksturK(256,256,(x,w,h,r)=>{const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#5a8a43');g.addColorStop(.1,'#6b4a30');g.addColorStop(.55,'#5a3d28');g.addColorStop(1,'#4a3322');x.fillStyle=g;x.fillRect(0,0,w,h);bintik(x,w,h,1500,['#7a5638','#4a3322','#6b4a30','#8a6644'],1,4,r);});
 const tGravel=teksturK(256,256,(x,w,h,r)=>{x.fillStyle='#cdbc94';x.fillRect(0,0,w,h);bintik(x,w,h,3200,['#bfae86','#dccca4','#b09f78','#e6d8b4'],1,3,r);});
@@ -47,13 +47,14 @@ const tTanya=teksturK(256,256,(x,w,h)=>{x.textAlign='center';x.textBaseline='mid
 const M=(hex,o={},klip=true)=>new THREE.MeshStandardMaterial(Object.assign({color:C(hex),roughness:.75,metalness:0},o,klip?{clippingPlanes:CUT,clipShadows:true}:{}));
 const capM=hex=>new THREE.MeshBasicMaterial({color:C(hex),side:THREE.BackSide,clippingPlanes:CUT,toneMapped:false});
 const CAPW='#f0c987',CAPF='#b8743c',CAPR='#9475dc',BRASS='#c9993a';
+[tBrick,tStone,tSlate,tPlaster,tGrass,tFloor,tWoodD].forEach(t=>{t.anisotropy=RD.capabilities.getMaxAnisotropy();});
 const mBrick=M('#ffffff',{map:tBrick,roughness:.92}),mStone=M('#ffffff',{map:tStone,roughness:.85}),mPlaster=M('#ffffff',{map:tPlaster,roughness:.95}),mSlate=M('#ffffff',{map:tSlate,roughness:.7}),mFloor=M('#ffffff',{map:tFloor,roughness:.6});
 const wm=f=>{const a=[mBrick,mBrick,mStone,mStone,mBrick,mBrick];a[f]=mPlaster;return a;};const WM={px:wm(0),nx:wm(1),pz:wm(4),nz:wm(5)};
 const mWoodC=M('#ffffff',{map:tWoodD,roughness:.55}),mWhite=M('#f3eee2',{roughness:.6}),mWoodD=M('#ffffff',{map:tWoodD,roughness:.55},false),mBrass=M(BRASS,{metalness:.75,roughness:.32,emissive:C('#3a2706')},false),mBrassC=M(BRASS,{metalness:.75,roughness:.32,emissive:C('#3a2706')});
 const winMats=[];
 const mGlassW=()=>{const m=M('#a9c9ec',{roughness:.05,transparent:true,opacity:.24,emissive:C('#ffb860'),emissiveIntensity:0,depthWrite:false});winMats.push(m);return m;};
 function boxUV(g,sx,sy,sz,tile){const uv=g.attributes.uv,s=[[sz,sy],[sz,sy],[sx,sz],[sx,sz],[sx,sy],[sx,sy]];for(let f=0;f<6;f++)for(let v=0;v<4;v++){const i=f*4+v;uv.setXY(i,uv.getX(i)*s[f][0]/tile,uv.getY(i)*s[f][1]/tile);}}
-function kb(x0,x1,y0,y1,z0,z1,mat,par,cap,tile=3){const sx=x1-x0,sy=y1-y0,sz=z1-z0,g=new THREE.BoxGeometry(sx,sy,sz);boxUV(g,sx,sy,sz,tile);const o=new THREE.Mesh(g,mat);o.castShadow=o.receiveShadow=true;o.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);if(cap)o.add(new THREE.Mesh(g,capM(cap)));par.add(o);return o;}
+function kb(x0,x1,y0,y1,z0,z1,mat,par,cap,tile=4.5){const sx=x1-x0,sy=y1-y0,sz=z1-z0,g=new THREE.BoxGeometry(sx,sy,sz);boxUV(g,sx,sy,sz,tile);const o=new THREE.Mesh(g,mat);o.castShadow=o.receiveShadow=true;o.position.set((x0+x1)/2,(y0+y1)/2,(z0+z1)/2);if(cap)o.add(new THREE.Mesh(g,capM(cap)));par.add(o);return o;}
 function silinder(r,y0,y1,mat,par,pos,seg=24,rb){const o=new THREE.Mesh(new THREE.CylinderGeometry(r,rb||r,y1-y0,seg),mat);o.castShadow=o.receiveShadow=true;o.position.set(pos[0],(y0+y1)/2,pos[1]);par.add(o);return o;}
 function bubut(prof,mat,par,pos,n=28){const o=new THREE.Mesh(new THREE.LatheGeometry(prof.map(([r,y])=>new THREE.Vector2(r,y)),n),mat);o.castShadow=true;if(pos)o.position.set(...pos);par.add(o);return o;}
 function solid(polys,mat,par,cap,uvf){const cen=new THREE.Vector3();let n=0;polys.forEach(p=>p.forEach(v=>{cen.add(new THREE.Vector3(...v));n++;}));cen.divideScalar(n);const pos=[],uv=[];
@@ -76,7 +77,7 @@ const BLD=new THREE.Group();SD.add(BLD);
 const FY=.75;
 kb(-10.4,10.4,0,.6,-7.4,7.4,mStone,BLD,CAPF);
 kb(-8.6,8.6,.6,FY,-5.6,5.6,mFloor,BLD,CAPF);
-function wall(axis,c0,c1,a0,a1,y0,y1,holes,mats){const box=(p,q,r,s)=>axis==='z'?kb(p,q,r,s,c0,c1,mats,BLD,CAPW):kb(c0,c1,r,s,p,q,mats,BLD,CAPW);let cur=a0;
+function wall(axis,c0,c1,a0,a1,y0,y1,holes,mats){const box=(p,q,r,s)=>{const o=axis==='z'?kb(p,q,r,s,c0,c1,mats,BLD,CAPW):kb(c0,c1,r,s,p,q,mats,BLD,CAPW);o.receiveShadow=false;return o;};let cur=a0;
   holes.forEach(([h0,h1,hy0,hy1])=>{if(h0>cur)box(cur,h0,y0,y1);box(h0,h1,y0,hy0);box(h0,h1,hy1,y1);cur=h1;});if(cur<a1)box(cur,a1,y0,y1);}
 const WH=[[-4.4,-2.6,2.4,5.2],[-.9,.9,2.4,5.2],[2.6,4.4,2.4,5.2]];
 wall('z',-7,-5.6,-10,10,0,7.2,[[4.2,6.6,FY,4.8]],WM.pz);
@@ -90,14 +91,14 @@ function jendela(axis,c,a0,a1,y0,y1,out){const t=.16,fr=mWhite,pt=(p,q,r,s,dep,m
 WH.forEach(([a,b,y0,y1])=>{jendela('x',-9.3,a,b,y0,y1,-1);jendela('x',9.3,a,b,y0,y1,1);});
 [[-8.1,-6.3],[-5.3,-3.5],[3.5,5.3],[6.3,8.1]].forEach(([a,b])=>jendela('z',6.3,a,b,2.4,5.2,1));
 /* sudut batu + cornice */
-[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz])=>kb(sx>0?8.9:-10.15,sx>0?10.15:-8.9,.6,7.3,sz>0?5.75:-7.15,sz>0?7.15:-5.75,mStone,BLD,CAPW));
-kb(-10.5,10.5,7.2,7.6,-7.5,7.5,mStone,BLD,CAPW);
+[[-1,-1],[1,-1],[-1,1],[1,1]].forEach(([sx,sz])=>kb(sx>0?8.9:-10.15,sx>0?10.15:-8.9,.6,7.3,sz>0?5.75:-7.15,sz>0?7.15:-5.75,mStone,BLD,CAPW).receiveShadow=false);
+kb(-10.5,10.5,7.2,7.6,-7.5,7.5,mStone,BLD,CAPW).receiveShadow=false;
 /* lantai dalam: wainscot kayu */
 kb(-8.6,-8.45,FY,2.2,-5.6,5.6,mWoodC,BLD);kb(-8.6,4.1,FY,2.2,-5.6,-5.45,mWoodC,BLD);kb(6.7,8.6,FY,2.2,-5.6,-5.45,mWoodC,BLD);
 kb(-8.6,-8.4,2.2,2.32,-5.6,5.6,mBrassC,BLD);kb(-8.6,4.1,2.2,2.32,-5.6,-5.4,mBrassC,BLD);
 /* atap pinggul */
 {const A=[-10.9,7.6,-7.9],B=[10.9,7.6,-7.9],Cc=[10.9,7.6,7.9],D=[-10.9,7.6,7.9],R1=[-5.5,10.2,0],R2=[5.5,10.2,0];
- solid([[A,B,R2,R1],[D,Cc,R2,R1],[A,D,R1],[B,Cc,R2],[A,B,Cc,D]],mSlate,BLD,CAPR,v=>[v[0]/5,(v[1]*1.4+v[2]*.6)/5]);
+ solid([[A,B,R2,R1],[D,Cc,R2,R1],[A,D,R1],[B,Cc,R2],[A,B,Cc,D]],mSlate,BLD,CAPR,v=>[v[0]/9,(v[1]*1.4+v[2]*.6)/9]);
  kb(-5.6,5.6,10.1,10.4,-.25,.25,mStone,BLD,CAPR);}
 kb(-5.0,-3.8,8.4,11.4,-4.1,-2.9,mBrick,BLD,CAPW);kb(3.8,5.0,8.4,11.4,-4.1,-2.9,mBrick,BLD,CAPW);
 /* kubah kecil */

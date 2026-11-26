@@ -20,6 +20,7 @@ Sumber video explainer **Shorts/Reels 9:16 (±40–55 detik)** bergaya **3D isom
 | [`emas/`](emas) | Dari mana asal emas di Bumi? (atom, hujan neutron, tabrakan bintang neutron, hujan asteroid; suara edge-tts) | emas | ±57 dtk |
 | [`pesta/`](pesta) | Pesta untuk penjelajah waktu yang tidak dihadiri siapa pun (Hawking 2009; atap, dinding depan, dan dinding kanan diiris; suara edge-tts) | ungu-magenta | ±58 dtk |
 | [`bintang/`](bintang) | Kenapa melihat bintang berarti melihat masa lalu? (PERJALANAN WAKTU EP 2; bukit diiris, langit jadi lima lapisan jarak; suara edge-tts) | ungu-magenta | ±60 dtk |
+| [`stasiun/`](stasiun) | Perjalanan ke masa depan itu nyata, astronot sudah melakukannya (PERJALANAN WAKTU EP 3; stasiun luar angkasa, dua jam split, jam atom 1971; suara edge-tts) | ungu-magenta | ±58 dtk |
 | [`higgs/`](higgs) | Kenapa partikel Tuhan (boson Higgs) sangat penting? | — | — |
 
 Isi tiap folder: `scene.html` (adegan three.js + subtitle + label), `naskah.md` atau `caption.txt`, `assets/audio/` (voiceover dan efek suara), `thumbnail.jpg` (sampul), dan `potret-adegan1/` (3 potret adegan pembuka).
@@ -59,6 +60,7 @@ Pembuat kode adegan per video disimpan sebagai potongan `.xx_*.js` dan dirakit o
 | `.asm_em.py` | merakit `emas/scene.html` (zoom skala besar bumi berlubang, atom, bintang neutron, Bumi muda, shader urat emas) dari `.em_a/b/d.js` |
 | `.asm_ps.py` | merakit `pesta/scene.html` (gedung kampus tiga bidang potong, ruang pesta, strip tahun) dari `.ps_a/b/d.js` |
 | `.asm_bs.py` | merakit `bintang/scene.html` (bukit tiga lapisan, pengamat, lapisan langit, strip cahaya) dari `.bs_head.js`, `.bs_a/b/d.js` |
+| `.asm_st.py` | merakit `stasiun/scene.html` (Bumi, stasiun berongga, split dua jam, pesawat 1971) dari `.bs_head.js`, `.st_a/b/d.js` |
 | `suara/f0.py` | mengukur nada dasar tiap klip suara (cek konsistensi gender/suara) |
 | `.post_frames.py`, `.post_slides.py` | frame bersih dan 7 slide karusel per video (argumen: nama video, mis. `python .post_slides.py pelari`) |
 

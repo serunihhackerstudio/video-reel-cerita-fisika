@@ -1,0 +1,5 @@
+h=open('.warp_head.html',encoding='utf-8').read()
+j=open('.warp_a.js',encoding='utf-8').read()
+post=open('.warp_post.txt',encoding='utf-8').read()
+j=j.replace('/*POST*/',post)
+open('warp/scene.html','w',encoding='utf-8').write(h+j);print('ok')

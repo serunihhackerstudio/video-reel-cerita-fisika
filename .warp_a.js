@@ -1,0 +1,189 @@
+/* ============ [0] NASKAH & WAKTU ============ */
+const KATA = [
+{w:'Pesawat',t0:.7,t1:1.1},{w:'tercepat',t0:1.15,t1:1.65},{w:'yang',t0:1.7,t1:1.85},{w:'pernah',t0:1.9,t1:2.2},{w:'meninggalkan',t0:2.25,t1:2.9},
+{w:'Tata',t0:2.95,t1:3.2},{w:'Surya,',t0:3.25,t1:3.8},{w:'Voyager',t0:4.2,t1:4.7},{w:'Satu,',t0:4.75,t1:5.2},
+{w:'butuh',t0:5.5,t1:5.85},{w:'sekitar',t0:5.9,t1:6.3},{w:'tujuh',t0:6.35,t1:6.65},{w:'puluh',t0:6.7,t1:6.95},{w:'lima',t0:7.0,t1:7.25},{w:'ribu',t0:7.3,t1:7.6},{w:'tahun',t0:7.65,t1:8.1},
+{w:'menuju',t0:8.4,t1:8.75},{w:'Proxima',t0:8.8,t1:9.35},{w:'Centauri.',t0:9.4,t1:10.1},
+{w:'Bagaimana',t0:10.9,t1:11.4},{w:'kalau',t0:11.45,t1:11.75},{w:'hanya',t0:11.8,t1:12.1},{w:'beberapa',t0:12.15,t1:12.65},{w:'minggu?',t0:12.7,t1:13.4}];
+const kt = w => KATA.find(k => k.w.toLowerCase().startsWith(w)).t0;
+const MOMEN = {judulMasuk:.5, judulKeluar:4.3, angkaMasuk:kt('tujuh')-.5, angkaKeluar:kt('bagaimana')-.1, mingguMasuk:kt('beberapa')-.1, label:kt('proxima'), DUR:15};
+
+/* ============ [1] PALET & FONT ============ */
+const C = h => new THREE.Color(h).convertSRGBToLinear(), V3 = (x,y,z) => new THREE.Vector3(x,y,z), DEG = Math.PI/180;
+const PAL = {teks:'#EEF2FF', aksen:'#B9A8FF', dingin:'#7FA8FF', proxima:'#FF9C6B', emas:'#C99A45', label:'#CFD8FF'};
+const FONT = {judul:'Instrument Serif', sub:'Onest'};
+const ARAH_MATAHARI = V3(-.55,.38,.5).normalize();
+const ARAH_JALAN = V3(1,.2,-.38).normalize();
+
+/*POST*/
+
+/* ============ [3] LANGIT, BINTANG, BUMI ============ */
+const S = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(32, W/H, .05, 9000); S.add(cam);
+const GLSL_NOISE = `float h13(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
+float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
+ return mix(mix(mix(h13(i),h13(i+vec3(1,0,0)),f.x),mix(h13(i+vec3(0,1,0)),h13(i+vec3(1,1,0)),f.x),f.y),
+            mix(mix(h13(i+vec3(0,0,1)),h13(i+vec3(1,0,1)),f.x),mix(h13(i+vec3(0,1,1)),h13(i+vec3(1,1,1)),f.x),f.y),f.z);}
+float fbm(vec3 p){float s=0.,a=.5;for(int i=0;i<6;i++){s+=a*n3(p);p=p*2.07+vec3(1.7,9.2,3.1);a*=.5;}return s;}`;
+const GAL = V3(.25,.9,-.35).normalize();
+const kubah = new THREE.Mesh(new THREE.SphereGeometry(5000,48,24), new THREE.ShaderMaterial({side:THREE.BackSide, depthWrite:false, fog:false,
+  uniforms:{uG:{value:GAL}},
+  vertexShader:'varying vec3 vD;void main(){vD=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader:`uniform vec3 uG;varying vec3 vD;${GLSL_NOISE}
+   void main(){vec3 d=normalize(vD);float g=dot(d,uG);float band=exp(-g*g/.035);
+    float n=fbm(d*3.2+2.)*.8+fbm(d*9.)*.35;float dust=smoothstep(.45,.8,fbm(d*5.5+9.));
+    vec3 c=vec3(.004,.005,.016)+vec3(.022,.02,.05)*band*(.3+n)*(1.-.6*dust)+vec3(.05,.03,.025)*band*band*n*.4;
+    c+=vec3(.008,.01,.03)*fbm(d*2.+5.);gl_FragColor=vec4(c*.8,1.);}`}));
+kubah.frustumCulled = false; S.add(kubah);
+
+(function(){ const N=7000, P=new Float32Array(N*3), Co=new Float32Array(N*3), Sz=new Float32Array(N); const r=rng(11);
+  const b1=V3(1,0,0).cross(GAL).normalize(), b2=GAL.clone().cross(b1);
+  for(let i=0;i<N;i++){ let x,y,z;
+    if(i<N*.45){ const a=r()*6.283,h=(r()+r()+r()-1.5)*.22; const v=b1.clone().multiplyScalar(Math.cos(a)).add(b2.clone().multiplyScalar(Math.sin(a))).add(GAL.clone().multiplyScalar(h)).normalize(); x=v.x;y=v.y;z=v.z; }
+    else { const u=r()*2-1,a=r()*6.283,s=Math.sqrt(1-u*u); x=s*Math.cos(a);y=u;z=s*Math.sin(a); }
+    P[i*3]=x*4000;P[i*3+1]=y*4000;P[i*3+2]=z*4000; const T=r(); const col=T<.15?[.65,.78,1]:T<.7?[1,.96,.9]:T<.9?[1,.82,.6]:[1,.62,.48];
+    const br=Math.pow(r(),5)*1.6+.3; Co[i*3]=col[0]*br;Co[i*3+1]=col[1]*br;Co[i*3+2]=col[2]*br; Sz[i]=1.6+Math.pow(r(),9)*3.6; }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(P,3)); g.setAttribute('color',new THREE.BufferAttribute(Co,3)); g.setAttribute('sz',new THREE.BufferAttribute(Sz,1));
+  const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:'attribute vec3 color;attribute float sz;varying vec3 vC;void main(){vC=color;gl_PointSize=sz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader:'varying vec3 vC;void main(){vec2 d=gl_PointCoord-.5;float a=smoothstep(.5,.0,length(d));gl_FragColor=vec4(vC*a*3.2,1.);}'});
+  const pts=new THREE.Points(g,m); pts.frustumCulled=false; S.add(pts); })();
+
+const sprTex = (() => { const c = kanvas(256,256), x = c.getContext('2d'); const g = x.createRadialGradient(128,128,0,128,128,128);
+  g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(.08,'rgba(255,230,200,.95)'); g.addColorStop(.25,'rgba(255,160,110,.35)'); g.addColorStop(1,'rgba(255,120,80,0)');
+  x.fillStyle=g; x.fillRect(0,0,256,256); return new THREE.CanvasTexture(c); })();
+const PROX = new THREE.Sprite(new THREE.SpriteMaterial({map:sprTex, color:C(PAL.proxima), blending:THREE.AdditiveBlending, depthWrite:false, transparent:true}));
+PROX.position.copy(ARAH_JALAN).multiplyScalar(3600).add(V3(0,160,0)); PROX.scale.setScalar(160); S.add(PROX);
+
+const R_B = 100, PUSAT_B = V3(-20,-158,-250);
+const UB = {uSun:{value:ARAH_MATAHARI}, uT:{value:0}};
+const bumi = new THREE.Mesh(new THREE.SphereGeometry(R_B,160,96), new THREE.ShaderMaterial({uniforms:UB,
+  vertexShader:'varying vec3 vN;varying vec3 vW;varying vec3 vNW;void main(){vN=normalize(position);vNW=normalize(mat3(modelMatrix)*normal);vW=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(vW,1.);}',
+  fragmentShader:`uniform vec3 uSun;uniform float uT;varying vec3 vN;varying vec3 vW;varying vec3 vNW;${GLSL_NOISE}
+   void main(){vec3 n=normalize(vN);vec3 nw=normalize(vNW);vec3 V=normalize(cameraPosition-vW);
+    float h=fbm(n*2.1+4.)*.75+fbm(n*6.)*.25;float land=smoothstep(.505,.54,h);float lat=abs(n.y);
+    float ice=smoothstep(.80,.9,lat+(fbm(n*8.)-.5)*.16);
+    float dry=smoothstep(.35,.7,fbm(n*3.+7.))*smoothstep(.85,.2,lat);
+    vec3 oc=mix(vec3(.01,.06,.17),vec3(.03,.24,.46),smoothstep(.2,.5,h));
+    oc=mix(oc,vec3(.04,.30,.42),smoothstep(.49,.505,h)*(1.-land));
+    vec3 ld=mix(vec3(.05,.17,.06),vec3(.26,.2,.1),dry*.7);ld=mix(ld,vec3(.12,.12,.09),smoothstep(.62,.8,h)*.8);
+    vec3 alb=mix(oc,ld,land);alb=mix(alb,vec3(.88,.92,.96),ice);
+    vec3 cp=n*3.6+vec3(uT*.012,0.,uT*.006);float cl=fbm(cp)*.8+fbm(cp*3.1)*.3;float cov=smoothstep(.6,.88,cl)*.85;
+    float d=dot(nw,uSun);float day=smoothstep(-.06,.32,d);
+    float diff=max(d,0.);
+    vec3 col=alb*(diff*1.9+.015);
+    col=mix(col,vec3(1.)*(diff*1.9+.02),cov*.92);
+    float oceanM=(1.-land)*(1.-ice)*(1.-cov);
+    vec3 H=normalize(uSun+V);col+=vec3(1.,.9,.75)*pow(max(dot(nw,H),0.),70.)*oceanM*day*1.6;
+    float ns=1.-smoothstep(-.12,.08,d);
+    float city=smoothstep(.66,.8,fbm(n*26.))*land*(1.-ice)*smoothstep(.45,.6,fbm(n*4.+2.))*(1.-cov*.85);
+    col+=vec3(1.,.66,.28)*city*ns*2.2;
+    float ter=exp(-pow(d*5.,2.));col+=vec3(.9,.35,.12)*ter*.06*(1.-ice);
+    float fr=pow(1.-max(dot(nw,V),0.),3.);col+=vec3(.25,.5,1.)*fr*smoothstep(-.35,.5,d)*.9;
+    gl_FragColor=vec4(col,1.);}`}));
+bumi.position.copy(PUSAT_B); bumi.rotation.z = 23*DEG; S.add(bumi);
+const atmos = new THREE.Mesh(new THREE.SphereGeometry(R_B*1.05,128,64), new THREE.ShaderMaterial({uniforms:UB, transparent:true, side:THREE.BackSide, depthWrite:false, blending:THREE.AdditiveBlending,
+  vertexShader:'varying vec3 vNW;varying vec3 vW;void main(){vNW=normalize(mat3(modelMatrix)*normal);vW=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(vW,1.);}',
+  fragmentShader:`uniform vec3 uSun;varying vec3 vNW;varying vec3 vW;
+   void main(){vec3 V=normalize(cameraPosition-vW);vec3 nw=normalize(vNW);float f=clamp(-dot(nw,V)/.31,0.,1.);float a=pow(f,2.2);
+    float d=dot(-nw,uSun);float lit=smoothstep(-.5,.5,d)*.8+.2;
+    vec3 c=mix(vec3(.18,.42,1.),vec3(.6,.82,1.),pow(f,3.))*a*lit*1.6;
+    c+=vec3(1.,.5,.2)*pow(f,3.)*exp(-pow(d*3.5,2.))*.35;
+    gl_FragColor=vec4(c,1.);}`}));
+atmos.position.copy(PUSAT_B); S.add(atmos);
+
+/* ============ [5] OBJEK UTAMA: probe antariksa ============ */
+const texFoil = (() => { const c=kanvas(512,512), x=c.getContext('2d'); const r=rng(5); x.fillStyle='#b88a3c'; x.fillRect(0,0,512,512);
+  for(let i=0;i<900;i++){ x.fillStyle=`rgba(${r()<.5?'255,220,140':'90,55,15'},${.05+r()*.18})`; const w=6+r()*34,h=6+r()*30; x.save(); x.translate(r()*512,r()*512); x.rotate(r()*3); x.fillRect(-w/2,-h/2,w,h); x.restore(); }
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; return t; })();
+const texPutih = (() => { const c=kanvas(512,512), x=c.getContext('2d'); const r=rng(8); x.fillStyle='#d9d6cf'; x.fillRect(0,0,512,512);
+  for(let i=0;i<40;i++){ x.strokeStyle=`rgba(80,80,90,${.12+r()*.1})`; x.lineWidth=1.5; x.beginPath(); x.arc(256,256,10+i*6.2,0,6.283); x.stroke(); }
+  for(let i=0;i<24;i++){ const a=i/24*6.283; x.strokeStyle='rgba(80,80,90,.12)'; x.beginPath(); x.moveTo(256,256); x.lineTo(256+Math.cos(a)*300,256+Math.sin(a)*300); x.stroke(); }
+  for(let i=0;i<500;i++){ x.fillStyle=`rgba(${r()<.5?'255,255,255':'60,60,70'},${.04+r()*.07})`; x.fillRect(r()*512,r()*512,3+r()*8,3+r()*8); }
+  return new THREE.CanvasTexture(c); })();
+const mEmas = new THREE.MeshStandardMaterial({map:texFoil, bumpMap:texFoil, bumpScale:.8, metalness:.85, roughness:.38});
+const mPutih = new THREE.MeshStandardMaterial({map:texPutih, bumpMap:texPutih, bumpScale:.4, metalness:.25, roughness:.55, color:0x6c6c6c, side:THREE.DoubleSide});
+const mGelap = new THREE.MeshStandardMaterial({color:0x2b2d33, metalness:.7, roughness:.45});
+const mRTG = new THREE.MeshStandardMaterial({color:0x8a8f99, metalness:.8, roughness:.35});
+const PROBE = new THREE.Group();
+const cyl = (r1,r2,l,m,seg) => new THREE.Mesh(new THREE.CylinderGeometry(r1,r2,l,seg||24), m);
+const bus = cyl(.26,.26,.19,mEmas,10); bus.rotation.z = Math.PI/2; PROBE.add(bus);
+const dishG = new THREE.SphereGeometry(1.0,64,14,0,Math.PI*2,0,.62); dishG.rotateZ(Math.PI/2);
+const dish = new THREE.Mesh(dishG, mPutih); dish.position.x = -.34 + 1; dish.scale.set(.5,1,1); PROBE.add(dish);
+const hub = cyl(.05,.05,.3,mGelap,12); hub.rotation.z = Math.PI/2; hub.position.x = -.42; PROBE.add(hub);
+const boom = (x,y,z,pj,m,r) => { const b = cyl(r,r,pj,m,8); b.position.set(x,y,z); b.rotation.x = Math.PI/2; PROBE.add(b); return b; };
+boom(.1,0,.9,1.75,mGelap,.012);
+boom(.1,0,-.7,1.4,mGelap,.012);
+for(let i=0;i<3;i++){ const rt=cyl(.05,.05,.17,mRTG,14); rt.rotation.x = Math.PI/2; rt.position.set(.1,0,-1.1-i*.19); PROBE.add(rt); }
+const pl = new THREE.Mesh(new THREE.BoxGeometry(.2,.1,.2), mGelap); pl.position.set(.12,.16,-.78); PROBE.add(pl);
+const pl2 = new THREE.Mesh(new THREE.BoxGeometry(.18,.12,.12), mEmas); pl2.position.set(.15,-.14,.55); PROBE.add(pl2);
+boom(.1,0,2.0,.9,mRTG,.006);
+const ant = cyl(.004,.004,1.9,mRTG,6); ant.position.set(.1,.72,.2); PROBE.add(ant);
+const ant2 = ant.clone(); ant2.position.set(.1,-.72,.2); PROBE.add(ant2);
+for(let i=0;i<8;i++){ const a=i/8*6.283; const t=cyl(.012,.012,.07,mGelap,6); t.position.set(.12,Math.cos(a)*.3,Math.sin(a)*.3); t.rotation.z=Math.PI/2; PROBE.add(t); }
+PROBE.scale.setScalar(1.15); S.add(PROBE);
+const matahari = new THREE.DirectionalLight(0xfff0dc, 3.4); S.add(matahari);
+const isi = new THREE.DirectionalLight(C('#4a74ff'), 1.15); isi.position.set(.3,-.8,.9); S.add(isi);
+S.add(new THREE.HemisphereLight(0x6d86d6, 0x14182e, .38));
+
+/* ============ [9] KAMERA ============ */
+const probeAt = t => V3(-4 + 1.1*t + .30*t*t, 1.7 + .14*t + .02*t*t, -15 - .23*t*t);
+const probeDir = t => probeAt(t+.05).sub(probeAt(t-.05)).normalize();
+const camAbs = t => V3(3 - .3*t, 1.2 + .1*t, 2 - .3*t);
+const tgtAbs = t => V3(-2 + .8*t, -10 + .6*t, -60);
+function camRel(t){ const p = probeAt(t), a = (t<9 ? lerp(140,100,E.io(seg(t,3.5,9))) : lerp(100,178,E.io(seg(t,9,14.8))))*DEG, r = lerp(7, 15, E.io(seg(t,3.5,9.5))) + lerp(0,26,E.io(seg(t,9.8,14.8)));
+  return p.clone().add(V3(Math.cos(a)*r, lerp(1.4,3.6,E.io(seg(t,3,9))) + lerp(0,5,seg(t,10,15)), Math.sin(a)*r)); }
+function kamera(t){ const k = E.io(seg(t,3.2,6.6)); const p = probeAt(t);
+  const pos = camAbs(t).lerp(camRel(t), k); const tg = tgtAbs(t).lerp(p, E.io(seg(t,1.8,5.2)));
+  const tg2 = tg.lerp(p.clone().add(ARAH_JALAN.clone().multiplyScalar(50*seg(t,11,15))), E.io(seg(t,10.5,14.5)));
+  cam.position.set(pos.x + nz(t*.5,1)*.05, pos.y + nz(t*.6,2)*.04, pos.z + nz(t*.5,3)*.05); cam.lookAt(tg2); const rg=V3(1,0,0).applyQuaternion(cam.quaternion); const dd=cam.position.distanceTo(tg2); cam.lookAt(tg2.clone().addScaledVector(rg,-dd*.2*E.io(seg(t,3,5.5)))); cam.updateMatrixWorld(); }
+
+/* ============ [10] TEKS ============ */
+const proyeksiDunia = (x,y,z) => { const v = V3(x,y,z).project(cam); return [(v.x*.5+.5)*W, (-v.y*.5+.5)*H]; };
+const L_PROX = label({dx:-170, dy:-150, teks:'Proxima Centauri · 4,24 tahun cahaya', warna:PAL.proxima, font:`'${FONT.judul}'`, ukuran:50, tebal:400});
+const L_VOY = label({dx:150, dy:130, teks:'Voyager 1', warna:PAL.label, font:`'${FONT.judul}'`, ukuran:50, tebal:400});
+let subY = H*.88;
+
+/* ============ [11] SCENE ============ */
+function gambar(t){
+  UB.uT.value = t; bumi.rotation.y = t*.012;
+  const p = probeAt(t); PROBE.position.copy(p);
+  const dir = probeDir(t); PROBE.rotation.set(0, Math.atan2(-dir.z, dir.x), Math.asin(dir.y)); PROBE.rotateX(t*.045);
+  PROBE.updateMatrixWorld();
+  kamera(t);
+  matahari.position.copy(ARAH_MATAHARI).multiplyScalar(300); matahari.target.position.set(0,0,0);
+  REN.setRenderTarget(RT); REN.render(S, cam);
+  pSalin.uniforms.t.value = RT.texture; lewat(pSalin, R2);
+  pTerang.uniforms.t.value = R2.texture; pTerang.uniforms.th.value = 1.0; lewat(pTerang, B4a); blur2(B4a, B4b, 1.2); blur2(B4a, B4b, 2.4);
+  pSalin.uniforms.t.value = B4a.texture; lewat(pSalin, B8a); blur2(B8a, B8b, 1.6); blur2(B8a, B8b, 3.2);
+  const [sx, sy] = proyeksiDunia(...ARAH_MATAHARI.clone().multiplyScalar(4000).add(cam.position).toArray()), arahK = V3(); cam.getWorldDirection(arahK);
+  const ry = .4*sstep(.3,.8,arahK.dot(ARAH_MATAHARI));
+  if (ry>0){ pTerang.uniforms.t.value = R2.texture; pTerang.uniforms.th.value = .55; lewat(pTerang, RSIN); pSinar.uniforms.t.value = RSIN.texture; pSinar.uniforms.sp.value.set(sx/W, 1-sy/H); lewat(pSinar, RRAY); }
+  pSalin.uniforms.t.value = R2.texture; lewat(pSalin, RTS); blur2(RTS, RTSb, 1.5); blur2(RTS, RTSb, 2.5);
+  const U = AKHIR.uniforms;
+  Object.assign(U.tS, {value: RT.texture}); U.tB1.value = B4a.texture; U.tB2.value = B8a.texture; U.tR.value = RRAY.texture; U.tT.value = RTS.texture;
+  U.ry.value = ry; U.fok.value = .5; U.tilt.value = 0; U.ex.value = 1.05; U.bl.value = .7; U.vig.value = .5; U.hangat.value = .15; U.sat.value = 1.08;
+  U.gelap.value = 1 - sstep(0,.5,t)*(1-sstep(MOMEN.DUR-.5, MOMEN.DUR, t));
+  lewat(AKHIR, null);
+
+  const tj = $('#tJudul'); tj.style.top = '130px';
+  const aJ = seg(t,MOMEN.judulMasuk,MOMEN.judulMasuk+.6)*(1-seg(t,MOMEN.judulKeluar,MOMEN.judulKeluar+.6));
+  Object.assign($('#vJudul').style,{left:'160px',width:'1600px',top:'20px',height:'330px',opacity:aJ});
+  const aA = seg(t,MOMEN.angkaMasuk,MOMEN.angkaMasuk+.5)*(1-seg(t,MOMEN.angkaKeluar,MOMEN.angkaKeluar+.5));
+  const ta = $('#tAngka'); ta.style.top = '250px'; ta.style.opacity = aA;
+  const n = Math.round(75000*E.out(seg(t,MOMEN.angkaMasuk,kt('tahun')+.2))); $('#nA').textContent = n.toLocaleString('id-ID');
+  Object.assign($('#vAngka').style,{left:'0px',width:'1100px',top:'150px',height:'520px',opacity:aA});
+  const tm = $('#tMinggu'); tm.style.top = '330px'; tm.style.opacity = seg(t,MOMEN.mingguMasuk,MOMEN.mingguMasuk+.6)*(1-seg(t,MOMEN.DUR-.7,MOMEN.DUR-.2));
+  const [px,py] = proyeksiDunia(...PROX.position.toArray()); L_PROX.atur(t, MOMEN.label+.3, MOMEN.DUR-.8, px, py);
+  const [vx,vy] = proyeksiDunia(p.x, p.y, p.z); L_VOY.atur(t, kt('voyager')-.1, kt('proxima')+.4, vx, vy);
+  Object.assign($('#vSub').style,{left:'260px',width:'1400px',top:(subY-180)+'px',height:'330px',opacity:t>.6&&t<14.4?.9:0});
+}
+
+const SCENE = {
+  dur: MOMEN.DUR, kata: KATA,
+  sub: {gaya:'polos', maks:4, font:`800 52px '${FONT.sub}'`, warna:PAL.teks, aksen:PAL.aksen, kunci:['voyager','satu,','tujuh','puluh','lima','ribu','tahun','proxima','centauri.','minggu?'], y:()=>({x:W/2,y:subY})},
+  audio: {vo:[], sfx:[], music:null},
+  muat: () => Promise.all([document.fonts.load(`400 100px '${FONT.judul}'`), document.fonts.load(`800 60px '${FONT.sub}'`)]),
+  build(tl){ grainOn(.05); wIn(tl,$('#tJudul'),MOMEN.judulMasuk,{st:.08,b:14,d:.9}); wOut(tl,$('#tJudul'),MOMEN.judulKeluar); },
+  frame(t){ gambar(t); }
+};

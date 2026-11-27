@@ -1,0 +1,28 @@
+<!--@TITLE Bisakah kita menjelajahi luar angkasa dengan mesin warp?-->
+<!--@RASIO 16:9-->
+<!--@HEAD-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Onest:wght@500;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+#stage{background:#02030a}
+#gl{position:absolute;left:0;top:0;display:block}
+.selubung{position:absolute;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(2,3,10,.62),rgba(2,3,10,0) 100%)}
+.judul{position:absolute;left:0;width:100%;text-align:center;z-index:6;opacity:0;font:400 84px/1.08 'Instrument Serif',serif;color:#EEF2FF;letter-spacing:.01em;
+  text-shadow:0 3px 4px rgba(2,3,10,.85),0 0 30px rgba(2,3,10,.7),0 0 80px rgba(120,130,255,.3)}
+.judul em{font-style:italic;color:#B9A8FF}
+.angka{position:absolute;left:150px;z-index:6;opacity:0;color:#EEF2FF;text-shadow:0 3px 4px rgba(2,3,10,.9),0 0 30px rgba(2,3,10,.8)}
+.angka b{display:block;font:400 190px/1 'Instrument Serif',serif;letter-spacing:.01em}
+.angka b i{font-style:normal}.angka b span{font-size:78px;margin-left:18px;color:#B9C4FF}
+.angka small{display:block;margin-top:10px;font:500 34px/1.25 'Onest',sans-serif;letter-spacing:.06em;color:#C7CFEA;text-transform:uppercase}
+.angka.minggu b{color:#C9B8FF;text-shadow:0 3px 4px rgba(2,3,10,.9),0 0 40px rgba(130,110,255,.6)}
+#gelap{position:absolute;inset:0;background:#02030a;opacity:0;pointer-events:none;z-index:9}
+</style>
+<!--@BODY-->
+<div class="selubung" id="vJudul"></div>
+<div class="selubung" id="vAngka"></div>
+<div class="selubung" id="vSub"></div>
+<div class="judul" id="tJudul">Bisakah kita menjelajahi luar angkasa<br>dengan <em>mesin warp</em>?</div>
+<div class="angka" id="tAngka"><b><i id="nA">0</i><span>tahun</span></b><small>Voyager 1 · ±17 km/detik · ke Proxima Centauri</small></div>
+<div class="angka minggu" id="tMinggu"><b>beberapa minggu?</b><small>bagaimana kalau bisa secepat itu</small></div>
+<div id="gelap"></div>
+<!--@SCRIPT-->

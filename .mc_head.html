@@ -1,0 +1,24 @@
+<!--@TITLE Bisakah kita melakukan perjalanan waktu dengan mengecilkan tubuh sampai level atom?-->
+<!--@RASIO 16:9-->
+<!--@HEAD-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Outfit:wght@500;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+#stage{background:#07080c}
+#gl{position:absolute;left:0;top:0;display:block}
+.ov{position:absolute;z-index:6;opacity:0;visibility:hidden;color:#F2EDE6;isolation:isolate;text-shadow:0 3px 4px rgba(4,6,10,.9),0 0 30px rgba(4,6,10,.8)}
+.ov:before{content:'';position:absolute;inset:-70px -110px;z-index:-1;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(4,6,10,.55),rgba(4,6,10,0))}
+.ov small{display:block;font:500 28px/1.2 'Outfit',sans-serif;letter-spacing:.14em;color:#CBD3D6;text-transform:uppercase}
+.ov b{display:block;margin-top:8px;font:500 92px/1.05 'Fraunces',serif}
+.ov b i{font-style:italic;color:#7FF0DC}
+.ov .row{margin-bottom:30px}.ov .trk{margin-top:12px;height:26px;border-radius:13px;background:rgba(150,200,210,.16);overflow:hidden}
+.ov .trk i{display:block;height:100%;width:0;border-radius:13px;background:linear-gradient(90deg,#2aa89a,#7ff0dc);font-style:normal}
+.ov .trk i.am{background:linear-gradient(90deg,#c86a3a,#ffb070)}
+.selubung{position:absolute;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(4,6,10,.6),rgba(4,6,10,0) 100%)}
+canvas.jam{position:absolute;z-index:6;opacity:0}
+#gelap{position:absolute;inset:0;background:#04060a;opacity:0;pointer-events:none;z-index:9}
+</style>
+<!--@BODY-->
+<div class="selubung" id="vSub"></div>
+<div id="gelap"></div>
+<!--@SCRIPT-->

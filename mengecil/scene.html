@@ -1,0 +1,399 @@
+<!--@TITLE Bisakah kita melakukan perjalanan waktu dengan mengecilkan tubuh sampai level atom?-->
+<!--@RASIO 16:9-->
+<!--@HEAD-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Outfit:wght@500;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+#stage{background:#07080c}
+#gl{position:absolute;left:0;top:0;display:block}
+.ov{position:absolute;z-index:6;opacity:0;visibility:hidden;color:#F2EDE6;isolation:isolate;text-shadow:0 3px 4px rgba(4,6,10,.9),0 0 30px rgba(4,6,10,.8)}
+.ov:before{content:'';position:absolute;inset:-70px -110px;z-index:-1;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(4,6,10,.55),rgba(4,6,10,0))}
+.ov small{display:block;font:500 28px/1.2 'Outfit',sans-serif;letter-spacing:.14em;color:#CBD3D6;text-transform:uppercase}
+.ov b{display:block;margin-top:8px;font:500 92px/1.05 'Fraunces',serif}
+.ov b i{font-style:italic;color:#7FF0DC}
+.ov .row{margin-bottom:30px}.ov .trk{margin-top:12px;height:26px;border-radius:13px;background:rgba(150,200,210,.16);overflow:hidden}
+.ov .trk i{display:block;height:100%;width:0;border-radius:13px;background:linear-gradient(90deg,#2aa89a,#7ff0dc);font-style:normal}
+.ov .trk i.am{background:linear-gradient(90deg,#c86a3a,#ffb070)}
+.selubung{position:absolute;pointer-events:none;z-index:5;opacity:0;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(4,6,10,.6),rgba(4,6,10,0) 100%)}
+canvas.jam{position:absolute;z-index:6;opacity:0}
+#gelap{position:absolute;inset:0;background:#04060a;opacity:0;pointer-events:none;z-index:9}
+</style>
+<!--@BODY-->
+<div class="selubung" id="vSub"></div>
+<div id="gelap"></div>
+<!--@SCRIPT-->
+/* ============ [0] WAKTU dari suara ============ */
+const TTS=[{"teks": "Di film, seorang tokoh bisa mengecil sampai ke dunia kuantum, lalu waktu berjalan dengan aneh. Tapi, apakah fisika benar-benar mengizinkannya?", "kata": [["Di", 0.115791, 0.260541], ["film", 0.260541, 0.721082], ["seorang", 1.023666, 1.378916], ["tokoh", 1.378958, 1.655249], ["bisa", 1.65525, 1.852625], ["mengecil", 1.852625, 2.273666], ["sampai", 2.273666, 2.589457], ["ke", 2.589458, 2.681583], ["dunia", 2.681583, 2.944749], ["kuantum", 2.94475, 3.576333], ["lalu", 3.865791, 4.155249], ["waktu", 4.15525, 4.418416], ["berjalan", 4.418416, 4.905249], ["dengan", 4.90525, 5.115791], ["aneh", 5.115791, 5.615791], ["Tapi", 6.513166, 7.092124], ["apakah", 7.39475, 7.776333], ["fisika", 7.776333, 8.157874], ["benar-benar", 8.157875, 8.671041], ["mengizinkannya", 8.671041, 9.618416]]}, {"teks": "Bayangkan tubuhmu mulai menyusut. Dari tinggi satu koma tujuh meter, kamu mengecil sampai seukuran semut, sekitar tiga milimeter. Lalu menembus kulit, dan masuk ke dalam sebuah sel, selebar puluhan mikrometer. Di dalamnya ada DNA, heliks selebar dua nanometer. Dan akhirnya, kamu tiba di satu atom, selebar sepersepuluh nanometer. Di setiap level, dunia berubah total.", "kata": [["Bayangkan", 0.1, 0.678958], ["tubuhmu", 0.678958, 1.152624], ["mulai", 1.152625, 1.415791], ["menyusut", 1.415791, 2.099999], ["Dari", 2.985541, 3.274999], ["tinggi", 3.275, 3.551333], ["satu", 3.551333, 3.814458], ["koma", 3.814458, 4.011833], ["tujuh", 4.011833, 4.288166], ["meter", 4.288166, 4.801332], ["kamu", 5.103958, 5.340791], ["mengecil", 5.340791, 5.748666], ["sampai", 5.748666, 6.038124], ["seukuran", 6.038166, 6.432874], ["semut", 6.432875, 6.919708], ["sekitar", 7.156583, 7.603958], ["tiga", 7.603958, 7.932874], ["milimeter", 7.932875, 8.669708], ["Lalu", 9.565791, 9.815791], ["menembus", 9.815791, 10.184207], ["kulit", 10.184208, 10.684208], ["dan", 10.947375, 11.157875], ["masuk", 11.157875, 11.434208], ["ke", 11.434208, 11.499999], ["dalam", 11.5, 11.710541], ["sebuah", 11.710541, 12.039457], ["sel", 12.039458, 12.486833], ["selebar", 12.763166, 13.184207], ["puluhan", 13.184208, 13.578958], ["mikrometer", 13.578958, 14.381583], ["Di", 15.261833, 15.446041], ["dalamnya", 15.446041, 15.893416], ["ada", 15.893416, 16.090791], ["DNA", 16.090791, 16.735541], ["heliks", 17.038166, 17.367124], ["selebar", 17.367125, 17.748666], ["dua", 17.748666, 17.998666], ["nanometer", 17.998666, 18.735499], ["Dan", 19.617125, 19.853958], ["akhirnya", 19.853958, 20.524999], ["kamu", 20.814458, 21.064458], ["tiba", 21.064458, 21.353916], ["di", 21.353958, 21.419749], ["satu", 21.41975, 21.656583], ["atom", 21.656583, 22.182916], ["selebar", 22.446041, 22.919707], ["sepersepuluh", 22.91975, 23.551333], ["nanometer", 23.551333, 24.274999], ["Di", 25.156583, 25.327624], ["setiap", 25.327625, 25.66975], ["level", 25.66975, 26.235541], ["dunia", 26.485541, 26.853957], ["berubah", 26.853958, 27.209208], ["total", 27.209208, 27.801333]]}, {"teks": "Masalah pertama, atom tidak bisa dikecilkan. Tubuhmu terdiri dari sekitar tujuh miliar miliar miliar atom. Kalau jumlah atomnya dikurangi, otakmu tidak punya cukup neuron untuk berpikir. Otak semut saja punya sekitar dua ratus lima puluh ribu neuron, sedangkan otak manusia delapan puluh enam miliar. Kalau atomnya dipadatkan, massa tubuhmu tetap sama, jadi kamu menjadi sangat padat dan sangat berat.", "kata": [["Masalah", 0.101333, 0.509208], ["pertama", 0.509208, 1.193416], ["atom", 1.496041, 1.824999], ["tidak", 1.825, 2.035541], ["bisa", 2.035541, 2.259207], ["dikecilkan", 2.259208, 3.061833], ["Tubuhmu", 3.946041, 4.380249], ["terdiri", 4.38025, 4.827625], ["dari", 4.827625, 5.011833], ["sekitar", 5.011833, 5.393416], ["tujuh", 5.393416, 5.722374], ["miliar", 5.722375, 6.038166], ["miliar", 6.038166, 6.406582], ["miliar", 6.406583, 6.748666], ["atom", 6.748666, 7.301291], ["Kalau", 8.182875, 8.446041], ["jumlah", 8.446041, 8.735499], ["atomnya", 8.735541, 9.103957], ["dikurangi", 9.103958, 9.814499], ["otakmu", 10.13025, 10.564458], ["tidak", 10.564458, 10.814458], ["punya", 10.814458, 11.024999], ["cukup", 11.025, 11.288166], ["neuron", 11.288166, 11.643416], ["untuk", 11.643416, 11.880249], ["berpikir", 11.88025, 12.564458], ["Otak", 13.460541, 13.710541], ["semut", 13.710541, 13.934207], ["saja", 13.934208, 14.342083], ["punya", 14.342125, 14.60525], ["sekitar", 14.60525, 14.973666], ["dua", 14.973666, 15.157874], ["ratus", 15.157875, 15.447333], ["lima", 15.447375, 15.618416], ["puluh", 15.618416, 15.815791], ["ribu", 15.815791, 15.999999], ["neuron", 16.0, 16.539458], ["sedangkan", 16.842125, 17.342125], ["otak", 17.342125, 17.578958], ["manusia", 17.578958, 18.026333], ["delapan", 18.026333, 18.368416], ["puluh", 18.368416, 18.552624], ["enam", 18.552625, 18.75], ["miliar", 18.75, 19.289458], ["Kalau", 20.184208, 20.407874], ["atomnya", 20.407875, 20.789458], ["dipadatkan", 20.789458, 21.552624], ["massa", 21.85525, 22.157875], ["tubuhmu", 22.157875, 22.552625], ["tetap", 22.552625, 22.802625], ["sama", 22.802625, 23.35525], ["jadi", 23.64475, 23.921041], ["kamu", 23.921041, 24.144707], ["menjadi", 24.14475, 24.473666], ["sangat", 24.473666, 24.749999], ["padat", 24.75, 25.118416], ["dan", 25.118416, 25.289457], ["sangat", 25.289458, 25.565791], ["berat", 25.565791, 25.947374]]}, {"teks": "Lalu, di level atom, aturan alam berubah. Elektron bukan bola kecil yang mengorbit, melainkan awan probabilitas. Sebuah partikel bisa menembus penghalang yang seharusnya mustahil ditembus, disebut efek terowongan kuantum. Dan menurut prinsip ketidakpastian Heisenberg, kita tidak bisa mengetahui posisi dan kecepatan partikel sekaligus dengan pasti. Dunia di sana terlihat kabur, dan bergetar.", "kata": [["Lalu", 0.101333, 0.706583], ["di", 1.009208, 1.180249], ["level", 1.18025, 1.43025], ["atom", 1.43025, 1.943416], ["aturan", 2.232875, 2.64075], ["alam", 2.640791, 2.877624], ["berubah", 2.877625, 3.46975], ["Elektron", 4.368416, 4.802624], ["bukan", 4.802625, 5.026291], ["bola", 5.026333, 5.197374], ["kecil", 5.197375, 5.486833], ["yang", 5.486833, 5.605249], ["mengorbit", 5.60525, 6.236833], ["melainkan", 6.526333, 7.026333], ["awan", 7.026333, 7.328958], ["probabilitas", 7.328958, 8.302624], ["Sebuah", 9.197375, 9.552625], ["partikel", 9.552625, 10.026291], ["bisa", 10.026333, 10.263166], ["menembus", 10.263166, 10.605249], ["penghalang", 10.60525, 11.052625], ["yang", 11.052625, 11.184208], ["seharusnya", 11.184208, 11.684208], ["mustahil", 11.684208, 12.105249], ["ditembus", 12.10525, 12.723666], ["disebut", 13.0, 13.421041], ["efek", 13.421041, 13.736832], ["terowongan", 13.736833, 14.184208], ["kuantum", 14.184208, 14.828958], ["Dan", 15.723666, 15.921041], ["menurut", 15.921041, 16.223666], ["prinsip", 16.223666, 16.578916], ["ketidakpastian", 16.578958, 17.302624], ["Heisenberg", 17.302625, 18.026291], ["kita", 18.328958, 18.552624], ["tidak", 18.552625, 18.763166], ["bisa", 18.763166, 18.999999], ["mengetahui", 19.0, 19.447375], ["posisi", 19.447375, 19.960541], ["dan", 19.960541, 20.131582], ["kecepatan", 20.131583, 20.578958], ["partikel", 20.578958, 21.052624], ["sekaligus", 21.052625, 21.618416], ["dengan", 21.618416, 21.868416], ["pasti", 21.868416, 22.460541], ["Dunia", 23.340791, 23.761832], ["di", 23.761833, 23.853958], ["sana", 23.853958, 24.130249], ["terlihat", 24.13025, 24.538125], ["kabur", 24.538166, 25.103957], ["dan", 25.367125, 25.643416], ["bergetar", 25.643416, 26.340791]]}, {"teks": "Lalu, apakah waktu berjalan beda di sana? Tidak mundur. Persamaan dasar fisika memang tidak membedakan maju dan mundur. Tapi ada entropi, ukuran ketidakteraturan, yang cenderung bertambah. Gelas yang jatuh bisa pecah menjadi ribuan keping, tapi kepingan itu tidak pernah menyatu kembali. Inilah panah waktu, dan ia tetap maju, di dunia besar maupun kecil.", "kata": [["Lalu", 0.101333, 0.693458], ["apakah", 0.982875, 1.364458], ["waktu", 1.364458, 1.627624], ["berjalan", 1.627625, 2.061833], ["beda", 2.061833, 2.298666], ["di", 2.298666, 2.377624], ["sana", 2.377625, 2.903958], ["Tidak", 3.786833, 4.181583], ["mundur", 4.181583, 4.799999], ["Persamaan", 5.682875, 6.222333], ["dasar", 6.222375, 6.485541], ["fisika", 6.485541, 6.946041], ["memang", 6.946041, 7.248666], ["tidak", 7.248666, 7.472332], ["membedakan", 7.472375, 7.985541], ["maju", 7.985541, 8.380249], ["dan", 8.38025, 8.564458], ["mundur", 8.564458, 9.130249], ["Tapi", 10.026333, 10.315791], ["ada", 10.315791, 10.526332], ["entropi", 10.526333, 11.249999], ["ukuran", 11.539458, 11.934208], ["ketidakteraturan", 11.934208, 12.907874], ["yang", 13.184208, 13.407874], ["cenderung", 13.407875, 13.776291], ["bertambah", 13.776333, 14.486874], ["Gelas", 15.367125, 15.696041], ["yang", 15.696041, 15.814457], ["jatuh", 15.814458, 16.169708], ["bisa", 16.16975, 16.38025], ["pecah", 16.38025, 16.682875], ["menjadi", 16.682875, 17.025], ["ribuan", 17.025, 17.327625], ["keping", 17.327625, 17.840791], ["tapi", 18.182875, 18.459208], ["kepingan", 18.459208, 18.774999], ["itu", 18.775, 19.025], ["tidak", 19.025, 19.275], ["pernah", 19.275, 19.577625], ["menyatu", 19.577625, 19.91975], ["kembali", 19.91975, 20.525], ["Inilah", 21.421041, 21.789457], ["panah", 21.789458, 22.039458], ["waktu", 22.039458, 22.618416], ["dan", 22.921041, 23.131582], ["ia", 23.131583, 23.289458], ["tetap", 23.289458, 23.539458], ["maju", 23.539458, 24.092083], ["di", 24.368416, 24.526291], ["dunia", 24.526333, 24.789458], ["besar", 24.789458, 25.105249], ["maupun", 25.10525, 25.434208], ["kecil", 25.434208, 25.960541]]}, {"teks": "Perjalanan waktu yang terbukti nyata adalah dilatasi waktu menurut relativitas Einstein. Semakin cepat kamu bergerak, atau semakin dekat dengan gravitasi kuat, waktu berjalan semakin lambat. Astronot di Stasiun Luar Angkasa Internasional melompat ke masa depan sekitar lima milidetik tiap enam bulan. Dan jam di satelit GPS harus dikoreksi sekitar tiga puluh delapan mikrodetik per hari, atau navigasi bisa meleset belasan kilometer.", "kata": [["Perjalanan", 0.101333, 0.627624], ["waktu", 0.627625, 0.890791], ["yang", 0.890791, 1.035541], ["terbukti", 1.035541, 1.417124], ["nyata", 1.417125, 1.838166], ["adalah", 1.838166, 2.193416], ["dilatasi", 2.193416, 2.627624], ["waktu", 2.627625, 2.943416], ["menurut", 2.943416, 3.285541], ["relativitas", 3.285541, 3.917124], ["Einstein", 3.917125, 4.6145], ["Semakin", 5.513166, 5.921041], ["cepat", 5.921041, 6.197374], ["kamu", 6.197375, 6.381583], ["bergerak", 6.381583, 6.960541], ["atau", 7.223666, 7.460499], ["semakin", 7.460541, 7.842124], ["dekat", 7.842125, 8.092125], ["dengan", 8.092125, 8.328958], ["gravitasi", 8.328958, 8.815791], ["kuat", 8.815791, 9.236832], ["waktu", 9.5, 9.842125], ["berjalan", 9.842125, 10.315791], ["semakin", 10.315791, 10.710541], ["lambat", 10.710541, 11.223707], ["Astronot", 12.103958, 12.630249], ["di", 12.63025, 12.709208], ["Stasiun", 12.709208, 13.103958], ["Luar", 13.103958, 13.301333], ["Angkasa", 13.301333, 13.630249], ["Internasional", 13.63025, 14.38025], ["melompat", 14.38025, 14.722375], ["ke", 14.722375, 14.788166], ["masa", 14.788166, 15.024999], ["depan", 15.025, 15.367125], ["sekitar", 15.367125, 15.775], ["lima", 15.775, 16.011833], ["milidetik", 16.011833, 16.551291], ["tiap", 16.551333, 16.801333], ["enam", 16.801333, 17.011833], ["bulan", 17.011833, 17.524999], ["Dan", 18.421041, 18.671041], ["jam", 18.671041, 18.881582], ["di", 18.881583, 18.947374], ["satelit", 18.947375, 19.289458], ["GPS", 19.289458, 19.828916], ["harus", 19.828958, 20.052624], ["dikoreksi", 20.052625, 20.513166], ["sekitar", 20.513166, 20.921041], ["tiga", 20.921041, 21.171041], ["puluh", 21.171041, 21.342082], ["delapan", 21.342125, 21.64475], ["mikrodetik", 21.64475, 22.131583], ["per", 22.131583, 22.236833], ["hari", 22.236833, 22.710499], ["atau", 23.0, 23.276333], ["navigasi", 23.276333, 23.855249], ["bisa", 23.85525, 24.10525], ["meleset", 24.10525, 24.4605], ["belasan", 24.460541, 24.842124], ["kilometer", 24.842125, 25.5395]]}, {"teks": "Jadi, mengecil tidak membawa kita ke masa lalu. Tapi dunia atom tetap tempat paling aneh di alam semesta. Kalau kamu bisa memilih, kamu ingin pergi ke masa depan, atau ke masa lalu?", "kata": [["Jadi", 0.101333, 0.759208], ["mengecil", 1.061833, 1.496041], ["tidak", 1.496041, 1.706582], ["membawa", 1.706583, 2.061833], ["kita", 2.061833, 2.338166], ["ke", 2.338166, 2.417124], ["masa", 2.417125, 2.667125], ["lalu", 2.667125, 3.140791], ["Tapi", 4.025, 4.327625], ["dunia", 4.327625, 4.577625], ["atom", 4.577625, 4.959208], ["tetap", 4.959208, 5.209208], ["tempat", 5.209208, 5.485541], ["paling", 5.485541, 5.696041], ["aneh", 5.696041, 6.011832], ["di", 6.011833, 6.117083], ["alam", 6.117125, 6.314458], ["semesta", 6.314458, 6.972333], ["Kalau", 7.853958, 8.103958], ["kamu", 8.103958, 8.301333], ["bisa", 8.301333, 8.524999], ["memilih", 8.525, 9.13025], ["kamu", 9.393416, 9.617082], ["ingin", 9.617125, 9.827625], ["pergi", 9.827625, 10.090791], ["ke", 10.090791, 10.169749], ["masa", 10.16975, 10.393416], ["depan", 10.393416, 10.880249], ["atau", 11.13025, 11.419708], ["ke", 11.41975, 11.498666], ["masa", 11.498666, 11.735499], ["lalu", 11.735541, 12.209207]]}];
+const START=[.7,14.5,45.5,73.5,102.5,131.5,160];
+const KATA=[],KS=[];
+TTS.forEach((o,k)=>{const tk=o.teks.split(' ');KS[k]=[];o.kata.forEach((q,i)=>{const e={w:tk[i],t0:+(START[k]+q[1]).toFixed(3),t1:+(START[k]+q[2]).toFixed(3)};KATA.push(e);KS[k].push(e);});o.start=START[k];});
+const kw=(k,w,n)=>{const m=KS[k].filter(e=>e.w.toLowerCase().replace(/[^a-z0-9]/g,'').startsWith(w));return m[n||0].t0;};
+const DUR=178;
+const C = h => new THREE.Color(h).convertSRGBToLinear(), V3 = (x,y,z) => new THREE.Vector3(x,y,z), DEG = Math.PI/180;
+const PAL = {teks:'#F2EDE6', aksen:'#7FF0DC', hangat:'#FFB066', ungu:'#9a86ff'};
+const FONT = {judul:'Fraunces', sub:'Outfit'};
+
+/* ============ [2] RENDERER + PASCA-PROSES ============
+   Adegan dirender ke target HalfFloat (HDR linear) → bright-pass → blur bertingkat (bloom) → god-ray radial
+   → komposit akhir: ACES + gamma + split-tone + tilt-shift + vinyet. Target 8-bit = kotak gelap/banding. */
+const REN = new THREE.WebGLRenderer({antialias: false, preserveDrawingBuffer: true, powerPreference: 'high-performance'});
+REN.setPixelRatio(1); REN.setSize(W, H); REN.domElement.id = 'gl'; $('#stage').prepend(REN.domElement);
+REN.shadowMap.enabled = true; REN.shadowMap.type = THREE.PCFSoftShadowMap;       // tone mapping dikerjakan di shader akhir
+const HF = THREE.HalfFloatType, LF = THREE.LinearFilter;
+const RT = new THREE.WebGLMultisampleRenderTarget(W, H, {type: HF, minFilter: LF, magFilter: LF}); RT.samples = 4;
+const rtBaru = (w, h) => new THREE.WebGLRenderTarget(w | 0, h | 0, {type: HF, minFilter: LF, magFilter: LF, depthBuffer: false});
+const R2 = rtBaru(W / 2, H / 2), B4a = rtBaru(W / 4, H / 4), B4b = rtBaru(W / 4, H / 4), B8a = rtBaru(W / 8, H / 8), B8b = rtBaru(W / 8, H / 8);
+const RSIN = rtBaru(W / 4, H / 4), RRAY = rtBaru(W / 4, H / 4), RTS = rtBaru(W / 4, H / 4), RTSb = rtBaru(W / 4, H / 4);
+const QS = new THREE.Scene(), QC = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1), QM = new THREE.Mesh(new THREE.PlaneGeometry(2, 2)); QM.frustumCulled = false; QS.add(QM);
+const VSQ = 'varying vec2 vUv;void main(){vUv=uv;gl_Position=vec4(position.xy,0.,1.);}';
+const sq = (fs, u) => new THREE.ShaderMaterial({uniforms: u, vertexShader: VSQ, fragmentShader: fs, depthTest: false, depthWrite: false});
+const lewat = (mat, tujuan) => { QM.material = mat; REN.setRenderTarget(tujuan); REN.render(QS, QC); };
+const pSalin = sq('uniform sampler2D t;varying vec2 vUv;void main(){gl_FragColor=texture2D(t,vUv);}', {t: {value: null}});
+const pTerang = sq('uniform sampler2D t;uniform float th;varying vec2 vUv;void main(){vec3 c=max(texture2D(t,vUv).rgb,0.);float l=max(c.r,max(c.g,c.b));gl_FragColor=vec4(c*max(l-th,0.)/max(l,1e-4),1.);}', {t: {value: null}, th: {value: 1}});
+const pBlur = sq(`uniform sampler2D t;uniform vec2 d;varying vec2 vUv;void main(){vec3 c=texture2D(t,vUv).rgb*.227;
+  c+=(texture2D(t,vUv+d*1.385).rgb+texture2D(t,vUv-d*1.385).rgb)*.316;c+=(texture2D(t,vUv+d*3.231).rgb+texture2D(t,vUv-d*3.231).rgb)*.0703;gl_FragColor=vec4(c,1.);}`, {t: {value: null}, d: {value: new THREE.Vector2()}});
+const pSinar = sq(`uniform sampler2D t;uniform vec2 sp;varying vec2 vUv;void main(){vec2 d=(vUv-sp)*.9/48.;vec2 p=vUv;vec3 a=vec3(0.);float w=1.;
+  for(int i=0;i<48;i++){p-=d;a+=texture2D(t,clamp(p,0.,1.)).rgb*w;w*=.958;}gl_FragColor=vec4(a/48.,1.);}`, {t: {value: null}, sp: {value: new THREE.Vector2()}});
+const AKHIR = sq(`uniform sampler2D tS,tB1,tB2,tR,tT;uniform float ex,bl,ry,tilt,fok,sat,vig,hangat,gelap;varying vec2 vUv;
+  vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}
+  void main(){vec2 o=(vUv-.5)*vec2(.0013,.0008);
+   vec3 c=vec3(texture2D(tS,vUv+o).r,texture2D(tS,vUv).g,texture2D(tS,vUv-o).b);
+   c=mix(c,texture2D(tT,vUv).rgb,tilt*smoothstep(.14,.44,abs(vUv.y-fok)));          // tilt-shift: atas & bawah sedikit kabur
+   c+=texture2D(tB1,vUv).rgb*bl*.6+texture2D(tB2,vUv).rgb*bl+texture2D(tR,vUv).rgb*ry;
+   c=aces(max(c,0.)*ex);c=pow(c,vec3(1./2.2));
+   float l=dot(c,vec3(.299,.587,.114));c=mix(vec3(l),c,sat);
+   c*=mix(vec3(1.),vec3(1.05,1.,.92),hangat*l);c=mix(c,c*vec3(.9,1.01,1.07),(1.-l)*.4);   // sorot hangat, bayangan teal
+   vec2 d=vUv-.5;c*=mix(1.-vig,1.,smoothstep(.95,.28,length(d*vec2(1.,1.12))));
+   gl_FragColor=vec4(clamp(c*(1.-gelap),0.,1.),1.);}`,
+  {tS: {value: null}, tB1: {value: null}, tB2: {value: null}, tR: {value: null}, tT: {value: null}, ex: {value: 1}, bl: {value: .55}, ry: {value: 0},
+   tilt: {value: .55}, fok: {value: .5}, sat: {value: 1.04}, vig: {value: .45}, hangat: {value: .5}, gelap: {value: 0}});
+function blur2(a, b, s) { const w = a.width, h = a.height; pBlur.uniforms.t.value = a.texture; pBlur.uniforms.d.value.set(s / w, 0); lewat(pBlur, b); pBlur.uniforms.t.value = b.texture; pBlur.uniforms.d.value.set(0, s / h); lewat(pBlur, a); }
+
+
+const S = new THREE.Scene();
+const cam = new THREE.PerspectiveCamera(32, W/H, .05, 3000); S.add(cam);
+const GLSL_NOISE = `float h13(vec3 p){p=fract(p*.3183099+.1);p*=17.;return fract(p.x*p.y*p.z*(p.x+p.y+p.z));}
+float n3(vec3 x){vec3 i=floor(x),f=fract(x);f=f*f*(3.-2.*f);
+ return mix(mix(mix(h13(i),h13(i+vec3(1,0,0)),f.x),mix(h13(i+vec3(0,1,0)),h13(i+vec3(1,1,0)),f.x),f.y),
+            mix(mix(h13(i+vec3(0,0,1)),h13(i+vec3(1,0,1)),f.x),mix(h13(i+vec3(0,1,1)),h13(i+vec3(1,1,1)),f.x),f.y),f.z);}
+float fbm(vec3 p){float s=0.,a=.5;for(int i=0;i<6;i++){s+=a*n3(p);p=p*2.07+vec3(1.7,9.2,3.1);a*=.5;}return s;}`;
+const KUB = {uMix:{value:0}};
+const kubah = new THREE.Mesh(new THREE.SphereGeometry(1500,32,16), new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,fog:false,uniforms:KUB,
+  vertexShader:'varying vec3 vD;void main(){vD=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+  fragmentShader:`uniform float uMix;varying vec3 vD;${GLSL_NOISE} void main(){vec3 d=normalize(vD);float h=d.y*.5+.5;
+   vec3 warm=mix(vec3(.07,.038,.02),vec3(.012,.008,.005),smoothstep(.3,.9,h))+vec3(.06,.03,.012)*exp(-pow((d.y-.05)*5.,2.));
+   vec3 cold=mix(vec3(.012,.05,.06),vec3(.003,.012,.02),smoothstep(.3,.95,h))+vec3(.006,.03,.03)*fbm(d*3.+2.);
+   gl_FragColor=vec4(mix(warm,cold,uMix),1.);}`})); kubah.frustumCulled=false; S.add(kubah);
+let STARS; (function(){ const N=5000,P=new Float32Array(N*3),Co=new Float32Array(N*3),Sz=new Float32Array(N); const r=rng(11);
+  for(let i=0;i<N;i++){ const u=r()*2-1,a=r()*6.283,q=Math.sqrt(1-u*u); P[i*3]=q*Math.cos(a)*1300;P[i*3+1]=u*1300;P[i*3+2]=q*Math.sin(a)*1300; const T=r(); const col=T<.2?[.7,.8,1]:T<.75?[1,.96,.9]:[1,.8,.6]; const br=Math.pow(r(),5)*1.4+.3; Co[i*3]=col[0]*br;Co[i*3+1]=col[1]*br;Co[i*3+2]=col[2]*br; Sz[i]=1.5+Math.pow(r(),9)*3; }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(P,3)); g.setAttribute('color',new THREE.BufferAttribute(Co,3)); g.setAttribute('sz',new THREE.BufferAttribute(Sz,1));
+  const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexShader:'attribute vec3 color;attribute float sz;varying vec3 vC;void main(){vC=color;gl_PointSize=sz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec3 vC;void main(){vec2 d=gl_PointCoord-.5;float a=smoothstep(.5,.0,length(d));gl_FragColor=vec4(vC*a*2.4,1.);}'});
+  STARS=new THREE.Points(g,m); STARS.frustumCulled=false; S.add(STARS); })();
+
+/* lampu */
+const kunci = new THREE.DirectionalLight(C('#ffb27a'), 2.4); kunci.position.set(6,5,8); S.add(kunci);
+const rim = new THREE.DirectionalLight(C('#6fe0d0'), 2.2); rim.position.set(-6,4,-7); S.add(rim);
+const hemi = new THREE.HemisphereLight(0x8a7a6a,0x0a0a10,.3); S.add(hemi);
+/* ============ HELPER ============ */
+function catmull(a,b,c,d,k){ return b.map((_,i)=>.5*(2*b[i]+(c[i]-a[i])*k+(2*a[i]-5*b[i]+4*c[i]-d[i])*k*k+(3*b[i]-a[i]-3*c[i]+d[i])*k*k*k)); }
+function trk(t,K){ const n=K.length; let i=0; while(i<n-2&&t>K[i+1][0]) i++; const k=E.s(clamp((t-K[i][0])/(K[i+1][0]-K[i][0]))); const g=(j,x)=>K[clamp(j,0,n-1)][x];
+  return [catmull(g(i-1,1),g(i,1),g(i+1,1),g(i+2,1),k), catmull(g(i-1,2),g(i,2),g(i+1,2),g(i+2,2),k)]; }
+let TT=0, FOV=32;
+function setCam(pos,tg,shake){ const sh=shake||0; cam.position.set(pos.x+nz(TT*.9,1)*sh,pos.y+nz(TT*1.1,2)*sh,pos.z+nz(TT*.8,3)*sh);
+  const d=cam.position.distanceTo(tg); cam.fov=FOV; cam.near=Math.max(.02,d*.002); cam.far=Math.max(3000,d*40); cam.updateProjectionMatrix(); cam.lookAt(tg); cam.updateMatrixWorld(); }
+const vOf = a => V3(a[0],a[1],a[2]);
+const pj = v => { const w=v.clone().project(cam); return [(w.x*.5+.5)*W,(-w.y*.5+.5)*H]; };
+const OV=[]; function ov(html,css,a,b,fi,fo){ const e=document.createElement('div'); e.className='ov'; e.style.cssText=css; e.innerHTML=html; $('#stage').appendChild(e); const o={e,a,b,fi:fi||.7,fo:fo||.6}; OV.push(o); return o; }
+function ovUpd(t){ OV.forEach(o=>{ const k=seg(t,o.a,o.a+o.fi)*(1-seg(t,o.b-o.fo,o.b)); o.e.style.opacity=k.toFixed(3); o.e.style.visibility=k>.002?'visible':'hidden'; }); }
+const LBL=[]; function lab(teks,warna,dx,dy,a,b,pos,ukuran){ const l=label({dx,dy,teks,warna,font:`'${FONT.judul}'`,ukuran:ukuran||50,tebal:500}); LBL.push({l,a,b,pos}); return l; }
+function lblUpd(t){ LBL.forEach(o=>{ const p=(t>=o.a-.2&&t<=o.b+.2)?o.pos():null; if(p) o.l.atur(t,o.a,o.b,p[0],p[1]); else o.l.atur(t,-9,-8,0,0); }); }
+const SPRW = (() => { const c=kanvas(256,256), x=c.getContext('2d'); const g=x.createRadialGradient(128,128,0,128,128,128);
+  g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(.1,'rgba(255,255,255,.85)'); g.addColorStop(.3,'rgba(255,255,255,.25)'); g.addColorStop(1,'rgba(255,255,255,0)'); x.fillStyle=g; x.fillRect(0,0,256,256); return new THREE.CanvasTexture(c); })();
+const mkSpr = (col,mult) => { const s=new THREE.Sprite(new THREE.SpriteMaterial({map:SPRW,color:C(col).multiplyScalar(mult||1),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true})); s.visible=false; S.add(s); return s; };
+const ARAH_MATAHARI = V3(-.55,.38,.5).normalize();
+const R_B = 100, PUSAT_B = V3(-20,-158,-250);
+const UB = {uSun:{value:ARAH_MATAHARI}, uT:{value:0}};
+const bumi = new THREE.Mesh(new THREE.SphereGeometry(R_B,160,96), new THREE.ShaderMaterial({uniforms:UB,
+  vertexShader:'varying vec3 vN;varying vec3 vW;varying vec3 vNW;void main(){vN=normalize(position);vNW=normalize(mat3(modelMatrix)*normal);vW=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(vW,1.);}',
+  fragmentShader:`uniform vec3 uSun;uniform float uT;varying vec3 vN;varying vec3 vW;varying vec3 vNW;${GLSL_NOISE}
+   void main(){vec3 n=normalize(vN);vec3 nw=normalize(vNW);vec3 V=normalize(cameraPosition-vW);
+    float h=fbm(n*2.1+4.)*.75+fbm(n*6.)*.25;float land=smoothstep(.505,.54,h);float lat=abs(n.y);
+    float ice=smoothstep(.80,.9,lat+(fbm(n*8.)-.5)*.16);
+    float dry=smoothstep(.35,.7,fbm(n*3.+7.))*smoothstep(.85,.2,lat);
+    vec3 oc=mix(vec3(.01,.06,.17),vec3(.03,.24,.46),smoothstep(.2,.5,h));
+    oc=mix(oc,vec3(.04,.30,.42),smoothstep(.49,.505,h)*(1.-land));
+    vec3 ld=mix(vec3(.05,.17,.06),vec3(.26,.2,.1),dry*.7);ld=mix(ld,vec3(.12,.12,.09),smoothstep(.62,.8,h)*.8);
+    vec3 alb=mix(oc,ld,land);alb=mix(alb,vec3(.88,.92,.96),ice);
+    vec3 cp=n*3.6+vec3(uT*.012,0.,uT*.006);float cl=fbm(cp)*.8+fbm(cp*3.1)*.3;float cov=smoothstep(.6,.88,cl)*.85;
+    float d=dot(nw,uSun);float day=smoothstep(-.06,.32,d);
+    float diff=max(d,0.);
+    vec3 col=alb*(diff*1.9+.015);
+    col=mix(col,vec3(1.)*(diff*1.9+.02),cov*.92);
+    float oceanM=(1.-land)*(1.-ice)*(1.-cov);
+    vec3 H=normalize(uSun+V);col+=vec3(1.,.9,.75)*pow(max(dot(nw,H),0.),70.)*oceanM*day*1.6;
+    float ns=1.-smoothstep(-.12,.08,d);
+    float city=smoothstep(.66,.8,fbm(n*26.))*land*(1.-ice)*smoothstep(.45,.6,fbm(n*4.+2.))*(1.-cov*.85);
+    col+=vec3(1.,.66,.28)*city*ns*2.2;
+    float ter=exp(-pow(d*5.,2.));col+=vec3(.9,.35,.12)*ter*.06*(1.-ice);
+    float fr=pow(1.-max(dot(nw,V),0.),3.);col+=vec3(.25,.5,1.)*fr*smoothstep(-.35,.5,d)*.9;
+    gl_FragColor=vec4(col,1.);}`}));
+bumi.position.copy(PUSAT_B); bumi.rotation.z = 23*DEG; S.add(bumi);
+const atmos = new THREE.Mesh(new THREE.SphereGeometry(R_B*1.05,128,64), new THREE.ShaderMaterial({uniforms:UB, transparent:true, side:THREE.BackSide, depthWrite:false, blending:THREE.AdditiveBlending,
+  vertexShader:'varying vec3 vNW;varying vec3 vW;void main(){vNW=normalize(mat3(modelMatrix)*normal);vW=(modelMatrix*vec4(position,1.)).xyz;gl_Position=projectionMatrix*viewMatrix*vec4(vW,1.);}',
+  fragmentShader:`uniform vec3 uSun;varying vec3 vNW;varying vec3 vW;
+   void main(){vec3 V=normalize(cameraPosition-vW);vec3 nw=normalize(vNW);float f=clamp(-dot(nw,V)/.31,0.,1.);float a=pow(f,2.2);
+    float d=dot(-nw,uSun);float lit=smoothstep(-.5,.5,d)*.8+.2;
+    vec3 c=mix(vec3(.18,.42,1.),vec3(.6,.82,1.),pow(f,3.))*a*lit*1.6;
+    c+=vec3(1.,.5,.2)*pow(f,3.)*exp(-pow(d*3.5,2.))*.35;
+    gl_FragColor=vec4(c,1.);}`}));
+atmos.position.copy(PUSAT_B); S.add(atmos);
+bumi.visible=atmos.visible=false;
+
+/* ---- siluet manusia dari kapsul & elipsoid (bisa diambil sampelnya) ---- */
+const FIGP=[['e',[0,1.58,0],[.095,.115,.1]],['c',[0,1.47,0],[0,1.53,0],.045,.045],['e',[0,1.25,0],[.19,.27,.11]],['e',[0,.95,0],[.17,.13,.11]],
+ ['c',[-.21,1.38,0],[-.29,1.08,0],.052,.045],['c',[-.29,1.08,0],[-.33,.80,0],.043,.034],['e',[-.335,.74,0],[.035,.06,.025]],
+ ['c',[.21,1.38,0],[.29,1.08,0],.052,.045],['c',[.29,1.08,0],[.33,.80,0],.043,.034],['e',[.335,.74,0],[.035,.06,.025]],
+ ['c',[-.09,.9,0],[-.1,.5,0],.09,.062],['c',[-.1,.5,0],[-.1,.08,0],.06,.04],['e',[-.1,.03,.06],[.04,.03,.11]],
+ ['c',[.09,.9,0],[.1,.5,0],.09,.062],['c',[.1,.5,0],[.1,.08,0],.06,.04],['e',[.1,.03,.06],[.04,.03,.11]]];
+function figur(mat){ const g=new THREE.Group(); FIGP.forEach(p=>{ if(p[0]==='e'){ const m=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),mat); m.position.set(...p[1]); m.scale.set(...p[2]); g.add(m); }
+  else { const a=V3(...p[1]),b=V3(...p[2]),L=a.distanceTo(b); const m=new THREE.Mesh(new THREE.CylinderGeometry(p[4],p[3],L,16,1),mat); m.position.copy(a).add(b).multiplyScalar(.5); m.quaternion.setFromUnitVectors(V3(0,1,0),b.clone().sub(a).normalize()); g.add(m);
+    [a,b].forEach((q,i)=>{ const s=new THREE.Mesh(new THREE.SphereGeometry(i?p[4]:p[3],14,10),mat); s.position.copy(q); g.add(s); }); } }); return g; }
+function dalamFigur(x,y,z){ for(const p of FIGP){ if(p[0]==='e'){ const c=p[1],r=p[2]; if(((x-c[0])/r[0])**2+((y-c[1])/r[1])**2+((z-c[2])/r[2])**2<=1) return true; }
+  else { const a=V3(...p[1]),b=V3(...p[2]),ab=b.clone().sub(a),L2=ab.lengthSq(),q=V3(x,y,z).sub(a); const t=clamp(q.dot(ab)/L2); const rad=p[3]+(p[4]-p[3])*t; if(q.distanceTo(ab.multiplyScalar(t))<=rad) return true; } } return false; }
+function sampelFigur(N,seed){ const r=rng(seed), P=new Float32Array(N*3); let n=0,g=0; while(n<N&&g++<N*60){ const x=(r()-.5)*.8,y=r()*1.7,z=(r()-.4)*.32; if(dalamFigur(x,y,z)){ P[n*3]=x;P[n*3+1]=y;P[n*3+2]=z;n++; } } return P; }
+function rimMat(hot){ const m=new THREE.ShaderMaterial({transparent:true,uniforms:{uK:{value:1},uC:{value:C(hot||'#ffb066')}},vertexShader:'varying vec3 vN;void main(){vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'uniform float uK;uniform vec3 uC;varying vec3 vN;void main(){float r=pow(1.-clamp(abs(vN.z),0.,1.),2.3);vec3 base=vec3(.03,.022,.018)+vec3(.05,.04,.035)*clamp(vN.y,0.,1.);gl_FragColor=vec4(base+uC*r*1.9,uK);}'}); Object.defineProperty(m,'opacity',{get(){return this.uniforms.uK.value;},set(v){ this.uniforms.uK.value=v; }}); return m; }
+const matTubuh = rimMat('#ffb066');
+const poolTex=(col)=>{ const c=kanvas(256,256),x=c.getContext('2d'); const g=x.createRadialGradient(128,128,0,128,128,128); g.addColorStop(0,col); g.addColorStop(.5,'rgba(255,150,70,.12)'); g.addColorStop(1,'rgba(0,0,0,0)'); x.fillStyle=g; x.fillRect(0,0,256,256); return new THREE.CanvasTexture(c); };
+
+/* ============ ADEGAN A: hook + zoom tanpa putus ============ */
+const GA=new THREE.Group(); GA.visible=false; S.add(GA);
+const ST=[0,1,2,3,4,5].map(()=>{ const g=new THREE.Group(); GA.add(g); return {g,mats:[]}; });
+const reg=(i,o)=>{ [].concat(o.material).forEach(m=>{ m.transparent=true; ST[i].mats.push(m); }); ST[i].g.add(o); return o; };
+{ const f=figur(matTubuh); f.position.y=-.85*1.9; f.scale.setScalar(1.9); ST[0].g.add(f); ST[0].mats.push(matTubuh); ST[0].fig=f;
+  const lt=new THREE.Mesh(new THREE.PlaneGeometry(10,10),new THREE.MeshBasicMaterial({map:poolTex('rgba(255,170,90,.55)'),transparent:true,depthWrite:false})); lt.rotation.x=-Math.PI/2; lt.position.y=-1.62; reg(0,lt); }
+{ const dm=new THREE.MeshStandardMaterial({color:C('#3b1d10'),roughness:.32,metalness:.3,transparent:true,emissive:C('#1a0a04'),emissiveIntensity:.5});
+  const ell=(c,r)=>{ const m=new THREE.Mesh(new THREE.SphereGeometry(1,32,20),dm); m.position.set(...c); m.scale.set(...r); ST[1].g.add(m); };
+  ell([-1.0,0,0],[.85,.58,.58]); ell([0,.06,0],[.5,.34,.34]); ell([.85,.02,0],[.45,.38,.38]);
+  for(let s=-1;s<=1;s+=2)for(let i=0;i<3;i++){ const x=-.2+i*.35, a=V3(x,.05,s*.2), b=V3(x+(i-1)*.25,-.1,s*1.25), c=V3(x+(i-1)*.5,-.62,s*1.9);
+    [[a,b],[b,c]].forEach(([p,q])=>{ const L=p.distanceTo(q); const m=new THREE.Mesh(new THREE.CylinderGeometry(.035,.045,L,10),dm); m.position.copy(p).add(q).multiplyScalar(.5); m.quaternion.setFromUnitVectors(V3(0,1,0),q.clone().sub(p).normalize()); ST[1].g.add(m); }); }
+  for(let s=-1;s<=1;s+=2){ const a=V3(1.15,.18,s*.18), b=V3(1.8,.55,s*.55); const L=a.distanceTo(b); const m=new THREE.Mesh(new THREE.CylinderGeometry(.02,.03,L,8),dm); m.position.copy(a).add(b).multiplyScalar(.5); m.quaternion.setFromUnitVectors(V3(0,1,0),b.clone().sub(a).normalize()); ST[1].g.add(m); }
+  ST[1].mats.push(dm);
+  const lf=new THREE.Mesh(new THREE.CircleGeometry(5,48),new THREE.MeshStandardMaterial({color:C('#12281a'),roughness:.8,transparent:true})); lf.rotation.x=-Math.PI/2; lf.position.y=-.64; reg(1,lf); }
+{ const cm=new THREE.MeshStandardMaterial({color:C('#a86a70'),roughness:.45,metalness:0,transparent:true,opacity:.7,emissive:C('#3a1a30'),emissiveIntensity:.45}); const nm=new THREE.MeshStandardMaterial({color:C('#6b4a9a'),emissive:C('#4a2a8a'),emissiveIntensity:.6,roughness:.4,transparent:true});
+  ST[2].mats.push(cm,nm); for(let q=-3;q<=3;q++)for(let r=-3;r<=3;r++){ if(Math.abs(q+r)>3) continue; const x=(q+r*.5)*1.05, z=r*.91; const c=new THREE.Mesh(new THREE.SphereGeometry(.52,32,20),cm); c.scale.y=.55; c.position.set(x,0,z); ST[2].g.add(c); const n=new THREE.Mesh(new THREE.SphereGeometry(.17,16,12),nm); n.position.set(x,.03,z); ST[2].g.add(n); } }
+{ const mem=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{uK:{value:1}},vertexShader:'varying vec3 vN;varying vec3 vW;void main(){vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}',
+    fragmentShader:'uniform float uK;varying vec3 vN;varying vec3 vW;void main(){vec3 V=normalize(cameraPosition-vW);float f=pow(1.-abs(dot(normalize(vN),V)),2.2);gl_FragColor=vec4(vec3(.2,.9,.8)*(f*1.1+.04)*uK,1.);}'});
+  ST[3].mem=mem; const cell=new THREE.Mesh(new THREE.SphereGeometry(2.3,64,40),mem); ST[3].g.add(cell); ST[3].mats.push({set opacity(v){ mem.uniforms.uK.value=v; },get opacity(){ return mem.uniforms.uK.value; },transparent:true});
+  const nuc=new THREE.MeshStandardMaterial({color:C('#6b7cff'),emissive:C('#3a4fd8'),emissiveIntensity:.7,roughness:.45,transparent:true}); ST[3].mats.push(nuc); const n=new THREE.Mesh(new THREE.SphereGeometry(.8,48,32),nuc); ST[3].g.add(n);
+  const mit=new THREE.MeshStandardMaterial({color:C('#ff9a6a'),emissive:C('#d05a20'),emissiveIntensity:.55,roughness:.4,transparent:true}); ST[3].mats.push(mit); const rg=rng(5);
+  for(let i=0;i<9;i++){ const a=rg()*6.283,rd=1.25+rg()*.7,m=new THREE.Mesh(new THREE.SphereGeometry(.18,16,12),mit); m.scale.set(1.7,.8,.8); m.position.set(Math.cos(a)*rd,(rg()-.5)*1.4,Math.sin(a)*rd); m.rotation.set(rg()*3,rg()*3,rg()*3); ST[3].g.add(m); }
+  const pm=new THREE.PointsMaterial({size:.05,map:SPRW,color:C('#7ff0dc').multiplyScalar(1.4),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}); ST[3].mats.push(pm); const P=new Float32Array(900*3); for(let i=0;i<900;i++){ const v=V3(rg()-.5,rg()-.5,rg()-.5).normalize().multiplyScalar(.9+rg()*1.2); P.set([v.x,v.y,v.z],i*3); } const pg=new THREE.BufferGeometry(); pg.setAttribute('position',new THREE.BufferAttribute(P,3)); ST[3].g.add(new THREE.Points(pg,pm)); }
+{ const N=110, bm=new THREE.MeshStandardMaterial({color:C('#4adfc8'),emissive:C('#1ab8a0'),emissiveIntensity:.8,roughness:.35,transparent:true}), bm2=bm.clone(); bm2.color=C('#c070ff'); bm2.emissive=C('#8a30e0'); ST[4].mats.push(bm,bm2);
+  const rm=[0,1,2,3].map(i=>{ const m=new THREE.MeshStandardMaterial({color:C(['#ffd36a','#ff6a6a','#6aa8ff','#6aff9a'][i]),emissive:C(['#c09020','#c02020','#2060c0','#20c060'][i]),emissiveIntensity:.7,transparent:true}); ST[4].mats.push(m); return m; });
+  for(let i=0;i<N;i++){ const u=i/N, a=u*6.283*5.5, y=(u-.5)*7.0, R=.62; [[0,bm],[Math.PI,bm2]].forEach(([ph,m])=>{ const s=new THREE.Mesh(new THREE.SphereGeometry(.09,10,8),m); s.position.set(Math.cos(a+ph)*R,y,Math.sin(a+ph)*R); ST[4].g.add(s); });
+    if(i%2===0){ const p1=V3(Math.cos(a)*R,y,Math.sin(a)*R),p2=V3(Math.cos(a+Math.PI)*R,y,Math.sin(a+Math.PI)*R),L=p1.distanceTo(p2); const c=new THREE.Mesh(new THREE.CylinderGeometry(.03,.03,L,6),rm[(i/2|0)%4]); c.position.copy(p1).add(p2).multiplyScalar(.5); c.quaternion.setFromUnitVectors(V3(0,1,0),p2.clone().sub(p1).normalize()); ST[4].g.add(c); } } }
+{ const pm=new THREE.PointsMaterial({size:.05,map:SPRW,color:C('#7aa8ff').multiplyScalar(1.7),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}); const N=3200,P=new Float32Array(N*3),r=rng(23);
+  for(let i=0;i<N;i++){ const u=r()*2-1,a=r()*6.283,q=Math.sqrt(1-u*u),rad=.5+Math.pow(r(),1.5)*2.3; P[i*3]=q*Math.cos(a)*rad;P[i*3+1]=u*rad;P[i*3+2]=q*Math.sin(a)*rad; }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(P,3)); ST[5].cl=new THREE.Points(g,pm); ST[5].g.add(ST[5].cl); ST[5].mats.push(pm);
+  const nm=new THREE.MeshBasicMaterial({color:new THREE.Color(3,2.3,1.7),transparent:true}); ST[5].g.add(new THREE.Mesh(new THREE.SphereGeometry(.06,16,12),nm)); ST[5].mats.push(nm); }
+const ZT=[[17.6,21.2],[23.4,25.8],[25.6,27.8],[29.8,31.9],[34.2,36.6]];
+const SK=[[0,'1,7 m','manusia'],[.55,'3 milimeter','semut'],[1.5,'50 mikrometer','sel kulit'],[2.5,'1 mikrometer','di dalam sel'],[3.5,'2 nanometer','heliks DNA'],[4.5,'0,1 nanometer','atom']];
+const SKL=ov('<small id="skn">manusia</small><b id="skv">1,7 m</b>','right:150px;top:120px;text-align:right',17.0,43.6);
+const FOSS=mkSpr('#ffd9a0',1.4); FOSS.scale.set(5,5,1); FOSS.position.set(0,.4,-3);
+ov('<small>Pembahasan sains</small><b>Mengecilkan tubuh sampai<br>level <i>atom</i></b>','left:150px;top:150px',.6,5.6);
+ov('<b style="font-style:italic">apakah fisika<br>mengizinkannya?</b>','left:150px;top:150px',8.2,13.8);
+function sA(t){ GA.visible=true; kubah.visible=true; hemi.intensity=.3;
+  let z=0; ZT.forEach(([a,b])=>{ z+=E.io(seg(t,a,b)); });
+  ST.forEach((s,i)=>{ const sc=Math.pow(520,z-i); s.g.visible=sc<40&&sc>.0006; s.g.scale.setScalar(sc);
+    const al=(z<i)?sstep(i-1.15,i-.5,z):(1-sstep(i+.1,i+.75,z)); s.mats.forEach(m=>{ m.opacity=al; }); s.g.rotation.y=t*.12*(i%2?-1:1); s.g.rotation.x=(i==0||i==1)?0:.35*Math.sin(t*.2+i); });
+  ST[0].g.rotation.y=Math.sin(t*.3)*.25; ST[1].g.rotation.x=.12; ST[4].g.rotation.x=0; ST[4].g.rotation.z=.25;
+  const sh=sstep(7.0,10,t)*(1-sstep(13.5,14.6,t)); ST[0].fig.position.y=-.85*1.9+.03*Math.sin(t*30)*sh*0;
+  ST[5].cl.rotation.y=t*.4; FOSS.visible=z<.8&&true; FOSS.material.opacity=1-sstep(.2,.8,z);
+  KUB.uMix.value=clamp(z/4.2)*.95; kunci.intensity=lerp(2.4,1.2,clamp(z/3)); kunci.color.copy(C('#ffb27a')).lerp(C('#6fe0d0'),clamp(z/3)); rim.intensity=2.2; hemi.color.set(0x8a7a6a); hemi.intensity=lerp(.4,.6,clamp(z/4));
+  const D=lerp(7.4,7,clamp(z/5)), az=t*.07+Math.PI*.12*(1-clamp(z)); const el=lerp(.12,.35,clamp(z));
+  setCam(V3(Math.sin(az)*D,1.0+D*el,Math.cos(az)*D),V3(0,lerp(.1,0,clamp(z)),0),.01);
+  PP={ex:1.02,bl:.7+.25*clamp(z/4),vig:.6,hangat:lerp(.45,.05,clamp(z/2)),sat:lerp(1.05,1.15,clamp(z/3)),tilt:0};
+  const si=z<.5?0:z<1.5?1:z<2.5?2:z<3.5?3:z<4.5?4:5; $('#skv').textContent=SK[si][1]; $('#skn').textContent=SK[si][2]; }
+
+/* ============ ADEGAN 3: massa & atom ============ */
+const G3=new THREE.Group(); G3.visible=false; S.add(G3);
+const fl3G=new THREE.PlaneGeometry(40,40,120,120); fl3G.rotateX(-Math.PI/2); const gridTex=(c1,c2)=>{ const c=kanvas(512,512),x=c.getContext('2d'); x.fillStyle=c1; x.fillRect(0,0,512,512); x.strokeStyle=c2; x.lineWidth=3; for(let i=0;i<=8;i++){ x.beginPath(); x.moveTo(i*64,0); x.lineTo(i*64,512); x.moveTo(0,i*64); x.lineTo(512,i*64); x.stroke(); } const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(10,10); t.anisotropy=8; return t; };
+const fl3=new THREE.Mesh(fl3G,new THREE.MeshStandardMaterial({map:gridTex('#0b1a1f','rgba(127,240,220,.55)'),roughness:.85,metalness:.05,color:0xffffff,emissive:C('#06161a'),emissiveIntensity:.6})); G3.add(fl3);
+const mF3=rimMat('#ffb066');
+const FIG3=figur(mF3); FIG3.position.set(-3,0,0); G3.add(FIG3);
+const AT=new THREE.Points((()=>{ const g=new THREE.BufferGeometry(); const P=sampelFigur(9000,77); g.setAttribute('position',new THREE.BufferAttribute(P,3)); return g; })(),new THREE.PointsMaterial({size:.022,map:SPRW,color:C('#7ff0dc').multiplyScalar(1.6),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})); AT.position.set(-3,0,0); G3.add(AT);
+function jaringan(n,R,sc,seed,col){ const r=rng(seed), P=[]; for(let i=0;i<n;i++){ const v=V3(r()-.5,r()-.5,r()-.5).normalize().multiplyScalar(Math.pow(r(),.45)*R); v.y*=.72; P.push(v); }
+  const L=[]; for(let i=0;i<n;i++){ const d=P.map((p,j)=>[j,p.distanceTo(P[i])]).sort((a,b)=>a[1]-b[1]).slice(1,3); d.forEach(([j])=>L.push(P[i].x,P[i].y,P[i].z,P[j].x,P[j].y,P[j].z)); }
+  const g=new THREE.Group(); const pg=new THREE.BufferGeometry(); pg.setAttribute('position',new THREE.Float32BufferAttribute(P.flatMap(p=>[p.x,p.y,p.z]),3)); const pm=new THREE.PointsMaterial({size:sc,map:SPRW,color:C(col).multiplyScalar(2),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false}); g.add(new THREE.Points(pg,pm));
+  const lg=new THREE.BufferGeometry(); lg.setAttribute('position',new THREE.Float32BufferAttribute(L,3)); const lm=new THREE.LineBasicMaterial({color:C(col).multiplyScalar(.9),transparent:true,opacity:.4,blending:THREE.AdditiveBlending,depthWrite:false}); g.add(new THREE.LineSegments(lg,lm)); g.userData.m=[pm,lm]; return g; }
+const BRH=jaringan(900,1.15,.05,3,'#7ff0dc'); BRH.position.set(2.4,1.9,0); G3.add(BRH);
+const BRA=jaringan(45,.2,.07,4,'#ffb066'); BRA.position.set(4.6,1.9,0); G3.add(BRA);
+const mFS=rimMat('#ffb066'); const FIG3S=figur(mFS); FIG3S.scale.setScalar(.06); FIG3S.position.set(-3,0,0); FIG3S.visible=false; G3.add(FIG3S);
+ov('<small>JUMLAH ATOM TUBUH MANUSIA</small><b>≈ 7 × 10<sup style="font-size:.55em">27</sup></b>','left:150px;top:150px',50.6,53.4);
+ov('<small>KURANGI JUMLAH ATOM</small><b>otak kehabisan <i>neuron</i></b>','left:150px;top:150px',53.7,58.0);
+ov('<small>JUMLAH NEURON</small><b>86 miliar vs 250 ribu</b>','left:150px;top:150px',58.6,65.0);
+ov('<small>ATOM DIPADATKAN · TUBUH SEUKURAN SEMUT · MASSA TETAP ±70 KG</small><b>≈ 180 juta kali lebih <i>padat</i></b>','left:150px;top:150px',66.0,72.8);
+lab('otak manusia','#7ff0dc',0,-100,60.3,65,()=>pj(BRH.position.clone().add(V3(0,1.3,0))),46);
+lab('otak semut','#ffb066',0,-90,60.3,65,()=>pj(BRA.position.clone().add(V3(0,.6,0))),46);
+function s3(t){ G3.visible=true; kubah.visible=true; KUB.uMix.value=.85;
+  const fa=sstep(49.4,51,t), nat=1-fa*.0; mF3.opacity=1-fa; FIG3.visible=fa<.99; AT.visible=fa>0.01; AT.material.opacity=fa;
+  const cnt=Math.round(lerp(9000,50,E.io(seg(t,53.7,56.8)))); AT.geometry.setDrawRange(0,cnt); const back=sstep(65.4,66.4,t);
+  AT.material.opacity=fa*(1-back); const dk=E.io(seg(t,65.7,68.2)); FIG3S.visible=back>0; FIG3S.scale.setScalar(lerp(1,.05,dk)); mFS.opacity=back; if(back>0) FIG3.visible=false;
+  const hb=sstep(55.6,57.2,t)*(1-sstep(65.2,66.4,t)); BRH.visible=BRA.visible=hb>0; BRH.userData.m.concat(BRA.userData.m).forEach((m,i)=>{ m.opacity=(i%2?.4:1)*hb*(.7+.3*Math.sin(t*5+i)); }); BRH.rotation.y=t*.15; BRA.rotation.y=-t*.2;
+  const dent=2.6*E.io(seg(t,67.6,70.2)); const P=fl3G.attributes.position; for(let i=0;i<P.count;i++){ const x=P.getX(i),z=P.getZ(i); const r2=Math.pow(x+3,2)+z*z; P.setY(i,-dent/Math.sqrt(1+r2/.25)); } P.needsUpdate=true; fl3G.computeVertexNormals();
+  FIG3S.position.set(-3,-dent*.92+.02,0);
+  const K=[[45.5,[-1,1.5,6.5],[-3,.9,0]],[52,[-2,1.4,5.5],[-3,.9,0]],[56,[.5,1.8,7.2],[1.4,1.5,0]],[64.6,[1,1.9,8.2],[3.2,1.6,0]],[66.4,[-3.6,1.2,4],[-3,.7,0]],[69.5,[-3.3,.7,2.2],[-3,-.3,0]],[73,[-3.2,.8,2.3],[-3,-.45,0]]];
+  const tr=trk(t,K); setCam(vOf(tr[0]),vOf(tr[1]),.008); kunci.intensity=2.0; kunci.color.set(0xffb27a); rim.intensity=2.4; hemi.intensity=.35; hemi.color.set(0x5a6a70);
+  PP={ex:1.0,bl:.8,vig:.6,hangat:.1,sat:1.1,tilt:0}; }
+/* ============ ADEGAN 4: dunia kuantum ============ */
+const G4=new THREE.Group(); G4.visible=false; S.add(G4);
+const CL=(()=>{ const N=6000,P=new Float32Array(N*3),Co=new Float32Array(N*3); const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(P,3)); g.setAttribute('color',new THREE.BufferAttribute(Co,3));
+  const p=new THREE.Points(g,new THREE.PointsMaterial({size:.09,map:SPRW,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})); p.frustumCulled=false; G4.add(p); return p; })();
+const NUC4=new THREE.Mesh(new THREE.SphereGeometry(.08,16,12),new THREE.MeshBasicMaterial({color:new THREE.Color(3,2.3,1.6)})); G4.add(NUC4);
+const EL4=new THREE.Mesh(new THREE.SphereGeometry(.09,16,12),new THREE.MeshBasicMaterial({color:new THREE.Color(.8,2.4,3.6)})); G4.add(EL4);
+const ORB4=new THREE.Line((()=>{ const p=[]; for(let i=0;i<=128;i++){ const a=i/128*6.283; p.push(Math.cos(a)*1.8,0,Math.sin(a)*1.8); } const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(p,3)); return g; })(),new THREE.LineBasicMaterial({color:C('#6fb0ff').multiplyScalar(1.4),transparent:true,opacity:.6})); G4.add(ORB4);
+const TX0=16; /* penghalang terowongan */
+const BAR=new THREE.Mesh(new THREE.BoxGeometry(.7,3.4,3.4),new THREE.MeshStandardMaterial({color:C('#3a8f9a'),transparent:true,opacity:.28,roughness:.1,metalness:.3,emissive:C('#1a6a74'),emissiveIntensity:.6})); BAR.position.set(TX0,0,0); G4.add(BAR);
+const WV=[0,1,2].map(i=>{ const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(240*3),3)); const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:C(['#7ff0dc','#ffb066','#9a86ff'][i]).multiplyScalar(2.2),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})); l.frustumCulled=false; G4.add(l); return l; });
+const PART4=new THREE.Mesh(new THREE.SphereGeometry(.14,16,12),new THREE.MeshBasicMaterial({color:new THREE.Color(.8,3,3.4)})); G4.add(PART4);
+const HX0=32; const HZ=mkSpr('#9fe8ff',1.3); G4.add(HZ); S.remove(HZ); HZ.position.set(HX0,0,0);
+const HARR=[]; for(let i=0;i<22;i++){ const a=new THREE.ArrowHelper(V3(1,0,0),V3(HX0,0,0),1,0x7ff0dc,.14,.1); G4.add(a); HARR.push(a); }
+ov('<small>DI LEVEL ATOM</small><b>aturan alam <i>berubah</i></b>','left:150px;top:150px',74.4,78.0);
+ov('<small>BUKAN BOLA KECIL YANG MENGORBIT</small><b>melainkan <i>awan probabilitas</i></b>','left:150px;top:150px',78.4,83.0);
+ov('<small>PENGHALANG YANG SEHARUSNYA MUSTAHIL DITEMBUS</small><b>efek terowongan kuantum</b>','left:150px;top:150px',83.4,89.0);
+ov('<small>PRINSIP KETIDAKPASTIAN HEISENBERG</small><b>Δx · Δp ≥ ħ/2</b>','left:150px;top:150px',89.4,96.4);
+ov('<small>DUNIA KUANTUM</small><b>kabur, <i>bergetar</i></b>','left:150px;top:150px',96.8,101.2);
+function wave(pos,xc,k,A,w,dir){ for(let i=0;i<240;i++){ const x=xc-6+i*.05; const e=Math.exp(-Math.pow((x-xc)/w,2)); pos[i*3]=x; pos[i*3+1]=A*e*Math.sin(k*(x-xc)*dir); pos[i*3+2]=0; } }
+function s4(t){ G4.visible=true; kubah.visible=true; KUB.uMix.value=.97;
+  { const P=CL.geometry.attributes.position.array, Co=CL.geometry.attributes.color.array, r=rng(Math.floor(t*14)+1), N=6000; const cloud=sstep(79.6,81.4,t), bohr=1-cloud;
+    for(let i=0;i<N;i++){ const u=r()*2-1,a=r()*6.283,q=Math.sqrt(1-u*u); const rad=(.4+Math.pow(r(),1.3)*2.4)*(1+.06*Math.sin(t*20+i)); const on=r()<(.2+.8*cloud)?1:0;
+      P[i*3]=q*Math.cos(a)*rad;P[i*3+1]=u*rad;P[i*3+2]=q*Math.sin(a)*rad; const f=on*(.35+r()*.9)*Math.max(.15,cloud); Co[i*3]=.9*f;Co[i*3+1]=2.2*f;Co[i*3+2]=2.0*f; }
+    CL.geometry.attributes.position.needsUpdate=CL.geometry.attributes.color.needsUpdate=true; CL.visible=t<84.4; NUC4.visible=t<84.4;
+    const a=t*3; EL4.visible=t<81.6&&t>77.2; EL4.position.set(Math.cos(a)*1.8,0,Math.sin(a)*1.8); EL4.scale.setScalar(bohr+.001); ORB4.visible=t<81.6&&t>77.2; ORB4.material.opacity=.6*bohr; }
+  const tp=t-84.0, hit=.9; const vv=5.0; const xi=TX0-6.4+vv*Math.min(tp,hit+0.001);
+  const inc=t>=82.4&&t<84.8+hit, ref=t>=84.9, trn=t>=84.9;
+  WV[0].visible=t>=83.8&&t<86.4; wave(WV[0].geometry.attributes.position.array,TX0-5+vv*(Math.min(t,84.9)-83.8)*.9,9,1.0*(1-sstep(84.2,85.2,t)),.7,1); WV[0].geometry.attributes.position.needsUpdate=true;
+  WV[1].visible=t>=84.9&&t<94; wave(WV[1].geometry.attributes.position.array,TX0-.4-vv*.9*(t-84.9),9,.8,.7,-1); WV[1].geometry.attributes.position.needsUpdate=true;
+  WV[2].visible=t>=84.9&&t<94; wave(WV[2].geometry.attributes.position.array,TX0+.4+vv*.9*(t-84.9),9,.4,.7,1); WV[2].geometry.attributes.position.needsUpdate=true;
+  BAR.visible=t>=83.0&&t<94.2; PART4.position.set(TX0+1.6+Math.min(3,(t-84.9)*3*.8),.1*Math.sin(t*30),0); PART4.visible=t>=84.9&&t<94&&(Math.sin(t*40)>-.3);
+  const hs=t>=89.2; HZ.visible=hs&&t<101.5; HZ.scale.setScalar(lerp(2.6,.45,E.io(seg(t,91.8,95.4)))*(1+.15*Math.sin(t*25)))*0;
+  const hsz=lerp(2.6,.45,E.io(seg(t,91.8,95.4))); HZ.scale.setScalar(hsz*(1+.08*Math.sin(t*25)));
+  HARR.forEach((a,i)=>{ a.visible=hs&&t<101.5; const th=i/HARR.length*6.283, sp=lerp(.5,2.8,E.io(seg(t,91.8,95.4))); const d=V3(Math.cos(th),Math.sin(th*1.7),Math.sin(th)).normalize(); a.setDirection(d); a.setLength(sp*(.7+.3*Math.sin(t*9+i)),.14,.1); a.position.set(HX0,0,0); });
+  const K=[[73.5,[0,.8,7],[0,0,0]],[78,[2.5,1.4,5.5],[0,0,0]],[82.6,[2.2,1.0,5.2],[0,0,0]],[84.6,[TX0-3,1.2,6.6],[TX0-.5,0,0]],[89,[TX0+6,1.5,6],[TX0+2,0,0]],[90.5,[HX0-1.5,1.0,5.5],[HX0,0,0]],[96,[HX0+1.5,.6,4.6],[HX0,0,0]],[102,[HX0+2,.8,4.5],[HX0,0,0]]];
+  const tr=trk(t,K); const wob=.03+.05*sstep(95,100,t); setCam(vOf(tr[0]),vOf(tr[1]),wob);
+  kunci.intensity=.8; rim.intensity=1.0; hemi.intensity=.2; hemi.color.set(0x406070); PP={ex:1.05,bl:1.0,vig:.65,hangat:0,sat:1.15,tilt:.55}; }
+/* ============ ADEGAN 5: jam pasir, tabrakan, gelas pecah ============ */
+const G5=new THREE.Group(); G5.visible=false; S.add(G5);
+const fl5=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({map:gridTex('#0b1a1f','rgba(127,240,220,.35)'),roughness:.8,metalness:.1,emissive:C('#06161a'),emissiveIntensity:.5})); fl5.rotation.x=-Math.PI/2; G5.add(fl5);
+const glassM=new THREE.MeshStandardMaterial({color:C('#bfe8f0'),transparent:true,opacity:.2,roughness:.05,metalness:.2,side:THREE.DoubleSide,emissive:C('#2a6a74'),emissiveIntensity:.2,depthWrite:false});
+const HG=new THREE.Group(); G5.add(HG); HG.position.set(0,0,0);
+{ const prof=[]; for(let i=0;i<=20;i++){ const u=i/20; prof.push(new THREE.Vector2(.08+.9*Math.sin(Math.PI*Math.min(1,u*1.1)*.5)**1.4*(u<.9?1:1)*0+ (u<.5? .08+ (1.0-.08)*Math.sin(u*Math.PI) : .08), (u)*1.1)); }
+  const pt=[]; for(let i=0;i<=24;i++){ const u=i/24; pt.push(new THREE.Vector2(.06+.95*Math.pow(Math.sin(Math.PI*u),.7)*(1-u*.0), u*1.2)); }
+  const top=new THREE.Mesh(new THREE.LatheGeometry(pt.map(p=>new THREE.Vector2(p.x,p.y)),48),glassM); top.position.y=1.2; HG.add(top);
+  const bot=new THREE.Mesh(new THREE.LatheGeometry(pt.map(p=>new THREE.Vector2(p.x,1.2-p.y)),48),glassM); bot.position.y=0; HG.add(bot);
+  const woodM=new THREE.MeshStandardMaterial({color:C('#6a4a2e'),roughness:.6,metalness:.1,emissive:C('#2a1608'),emissiveIntensity:.3});
+  [0,2.4].forEach(y=>{ const d=new THREE.Mesh(new THREE.CylinderGeometry(1.15,1.15,.12,48),woodM); d.position.y=y-.05+(y?.1:0); HG.add(d); });
+  for(let i=0;i<3;i++){ const a=i/3*6.283; const p=new THREE.Mesh(new THREE.CylinderGeometry(.04,.04,2.4,12),woodM); p.position.set(Math.cos(a)*1.0,1.2,Math.sin(a)*1.0); HG.add(p); } }
+const sandM=()=>new THREE.PointsMaterial({size:.035,map:SPRW,color:C('#ffcf8a').multiplyScalar(1.6),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false});
+const sandG=n=>{ const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(new Float32Array(n*3),3)); return g; };
+const SAND_T=new THREE.Points(sandG(900),sandM()), SAND_B=new THREE.Points(sandG(900),sandM()), SAND_S=new THREE.Points(sandG(140),sandM()); [SAND_T,SAND_B,SAND_S].forEach(s=>{ s.frustumCulled=false; HG.add(s); });
+function sandUpd(t){ const p=clamp((t-102.5)/26,0,.95); const set=(pts,n,f)=>{ const P=pts.geometry.attributes.position.array, r=rng(7); for(let i=0;i<n;i++){ const a=r()*6.283, u=Math.sqrt(r()), y01=r(); f(P,i,a,u,y01); } pts.geometry.attributes.position.needsUpdate=true; };
+  const hT=(1-p)*.95, hB=p*.95;
+  set(SAND_T,900,(P,i,a,u,y)=>{ const h=hT*y; const rad=Math.min(.9,.15+(1-y)*.75*Math.max(.08,hT))*u+.0; P[i*3]=Math.cos(a)*rad;P[i*3+1]=1.2+.08+h*.55*(1)+0; P[i*3+2]=Math.sin(a)*rad; if(hT<.03){ P[i*3+1]=-9; } });
+  set(SAND_B,900,(P,i,a,u,y)=>{ const h=hB*(1-y*y)*.75; const rad=(.9*(1-y))*u*Math.min(1,hB*1.2+.05); P[i*3]=Math.cos(a)*rad;P[i*3+1]=.1+Math.max(0,h*(1-u)); P[i*3+2]=Math.sin(a)*rad; if(hB<.03){ P[i*3+1]=-9; } });
+  { const P=SAND_S.geometry.attributes.position.array, r=rng(9); for(let i=0;i<140;i++){ const f=((r()+t*1.1)%1); P[i*3]=(r()-.5)*.03;P[i*3+1]=1.15-f*(1.15-.15-hB*.55);P[i*3+2]=(r()-.5)*.03; } SAND_S.geometry.attributes.position.needsUpdate=true; SAND_S.visible=p<.95; } }
+const BA=new THREE.Mesh(new THREE.SphereGeometry(.35,32,20),new THREE.MeshStandardMaterial({color:C('#ffb066'),roughness:.3,metalness:.4,emissive:C('#a04a10'),emissiveIntensity:.5})), BB=new THREE.Mesh(new THREE.SphereGeometry(.35,32,20),new THREE.MeshStandardMaterial({color:C('#7ff0dc'),roughness:.3,metalness:.4,emissive:C('#108a78'),emissiveIntensity:.5})); BA.position.y=.35; BB.position.y=.35; G5.add(BA,BB);
+function bolaUpd(t){ const c=(t-108.2)%4, ph=c<2?c:4-c; const x=ph<1?lerp(-4.2,-.4,ph):-.4; const xb=ph<1?.4:lerp(.4,4.2,(ph-1)); BA.position.x=x+7; BB.position.x=xb+7; BA.rotation.z=-x*2; BB.rotation.z=-xb*2; $('#mnd').textContent=c<2?'▶  maju':'◀  mundur'; }
+const GL=new THREE.Group(); G5.add(GL); { const pr=[[.0,0],[.5,0],[.5,.04],[.05,.07],[.04,.7],[.38,.95],[.4,1.5],[.34,1.52],[.32,1.0],[.0,.78]].map(a=>new THREE.Vector2(a[0],a[1])); const gm=new THREE.Mesh(new THREE.LatheGeometry(pr,48),new THREE.MeshStandardMaterial({color:C('#cfeff5'),transparent:true,opacity:.35,roughness:.05,metalness:.2,side:THREE.DoubleSide,emissive:C('#2a7a84'),emissiveIntensity:.25,depthWrite:false})); GL.add(gm); GL.userData.m=gm; }
+const NS=70, SHM=new THREE.InstancedMesh(new THREE.TetrahedronGeometry(1,0),new THREE.MeshStandardMaterial({color:C('#cfeff5'),transparent:true,opacity:.7,roughness:.05,metalness:.3,emissive:C('#2a7a84'),emissiveIntensity:.3,flatShading:true}),NS); SHM.frustumCulled=false; G5.add(SHM);
+const GX0=-5, TI=119.0, SIM=[]; { const r=rng(13); const sh=[]; for(let i=0;i<NS;i++){ const a=r()*6.283,h=.1+r()*1.2,rd=.05+r()*.4; sh.push({p:V3(GX0+Math.cos(a)*rd,h+.15,Math.sin(a)*rd),v:V3(Math.cos(a)*(1+r()*3.2),1+r()*3.2,Math.sin(a)*(1+r()*3.2)),s:.04+r()*.1,q:V3(r()*6,r()*6,r()*6),w:V3((r()-.5)*14,(r()-.5)*14,(r()-.5)*14)}); }
+  const dt=1/60; for(let k=0;k<900;k++){ SIM.push(sh.map(o=>[o.p.x,o.p.y,o.p.z,o.q.x,o.q.y,o.q.z])); sh.forEach(o=>{ o.v.y-=9.8*dt; o.p.addScaledVector(o.v,dt); o.q.addScaledVector(o.w,dt); if(o.p.y<o.s){ o.p.y=o.s; o.v.y*=-.32; o.v.x*=.7; o.v.z*=.7; o.w.multiplyScalar(.75); if(Math.abs(o.v.y)<.4) o.v.y=0; } }); } SIM.sizes=sh.map(o=>o.s); }
+const _o=new THREE.Object3D();
+function glasUpd(t){ const fall=t>=118.1; const y=fall?Math.max(.0,3.0-4.9*Math.pow(Math.min(t-118.1,.85),2)):3.0; GL.position.set(GX0,y,0); GL.rotation.z=fall?.3*(t-118.1):0; const broke=t>=TI; GL.visible=!broke&&t>=114;
+  SHM.visible=broke; if(broke){ const k=Math.min(SIM.length-1,Math.floor((t-TI)*60)); for(let i=0;i<NS;i++){ const s=SIM[k][i]; _o.position.set(s[0],s[1],s[2]); _o.rotation.set(s[3],s[4],s[5]); _o.scale.setScalar(SIM.sizes[i]); _o.updateMatrix(); SHM.setMatrixAt(i,_o.matrix); } SHM.instanceMatrix.needsUpdate=true; } }
+ov('<small>PERSAMAAN DASAR FISIKA</small><b>maju atau mundur: <i id="mnd">▶  maju</i></b>','left:150px;top:150px',108.2,112.6);
+ov('<small>ENTROPI · UKURAN KETIDAKTERATURAN</small><b>cenderung <i>bertambah</i></b>','left:150px;top:150px',112.8,117.2);
+ov('<small>PECAH BISA · MENYATU KEMBALI TIDAK</small>','left:150px;top:150px',120.3,123.6);
+ov('<small>PANAH WAKTU</small><b>entropi = <i>panah waktu</i> →</b>','left:150px;top:150px',123.9,130.6);
+ov('<small>JAM PASIR · DUNIA KECIL MAUPUN BESAR</small>','left:150px;top:150px',103.0,108.0);
+const EN=ov('<small>ENTROPI</small><div class="trk" style="width:420px"><i id="enb" class="am"></i></div>','right:150px;top:150px',112.8,130.6);
+function s5(t){ G5.visible=true; kubah.visible=true; KUB.uMix.value=.75; sandUpd(t); bolaUpd(t); glasUpd(t);
+  const eb=clamp((t-112.8)/16)*.35+(t>=TI?E.out(clamp((t-TI)/6))*.6:0); $('#enb').style.width=(eb*100).toFixed(1)+'%';
+  const K=[[102.5,[0,1.5,7.5],[0,1.1,0]],[107,[.5,1.6,7],[0,1.1,0]],[109.5,[7.5,1.6,8],[7,.6,0]],[113,[2.5,1.8,9],[1.5,1.0,0]],[116.5,[-3.2,2,6.4],[GX0,1.3,0]],[119.2,[-3.8,1.6,5.4],[GX0,.5,0]],[124,[-1,2.6,8],[GX0+.5,.4,0]],[131,[0,3.2,10],[-2,.4,0]]];
+  const tr=trk(t,K); setCam(vOf(tr[0]),vOf(tr[1]),.012+.02*Math.exp(-Math.abs(t-TI)*2)); kunci.intensity=1.6; kunci.color.set(0xffc58a); rim.intensity=2.0; hemi.intensity=.25; hemi.color.set(0x405a64);
+  PP={ex:1.02,bl:.8,vig:.6,hangat:.15,sat:1.1,tilt:0}; }
+/* ============ ADEGAN 6: dilatasi waktu ============ */
+const G6=new THREE.Group(); G6.visible=false; S.add(G6);
+const ISS=new THREE.Group(); { const wm=new THREE.MeshStandardMaterial({color:C('#e8e8ee'),metalness:.6,roughness:.4}), sm=new THREE.MeshStandardMaterial({color:C('#1a2f6a'),metalness:.7,roughness:.3,emissive:C('#0a1a4a'),emissiveIntensity:.5}), gm=new THREE.MeshStandardMaterial({color:C('#bfa060'),metalness:.8,roughness:.4});
+  ISS.add(new THREE.Mesh(new THREE.BoxGeometry(14,.35,.35),wm)); [-5.5,-2.5,2.5,5.5].forEach(x=>[-1,1].forEach(s=>{ const p=new THREE.Mesh(new THREE.BoxGeometry(2.6,.04,6.5),sm); p.position.set(x,0,s*4); ISS.add(p); }));
+  [[0,0,0,1.0,3.2],[ -2,0,0,.7,2.6],[2,0,0,.7,2.6]].forEach(([x,y,z,r,l])=>{ const m=new THREE.Mesh(new THREE.CylinderGeometry(r*.5,r*.5,l,20),wm); m.rotation.z=Math.PI/2; m.position.set(x,y-.6,z); ISS.add(m); }); const rm=new THREE.Mesh(new THREE.BoxGeometry(.5,.6,3),gm); rm.position.set(0,0,0); ISS.add(rm); } G6.add(ISS);
+const GPSA=[0,1,2,3].map(i=>{ const g=new THREE.Group(); const b=new THREE.Mesh(new THREE.BoxGeometry(2.4,2.4,3),new THREE.MeshStandardMaterial({color:C('#c9a24a'),metalness:.8,roughness:.35})); g.add(b); [-1,1].forEach(s=>{ const p=new THREE.Mesh(new THREE.BoxGeometry(6,.06,2.6),new THREE.MeshStandardMaterial({color:C('#1a2f6a'),metalness:.7,roughness:.3,emissive:C('#0a1a4a'),emissiveIntensity:.5})); p.position.set(s*4.8,0,0); g.add(p); }); G6.add(g); return g; });
+const ORBL=(r,inc,col)=>{ const p=[]; for(let i=0;i<=200;i++){ const a=i/200*6.283; p.push(r*Math.cos(a),r*Math.sin(a)*Math.sin(inc),r*Math.sin(a)*Math.cos(inc)); } const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(p,3)); const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:C(col).multiplyScalar(1.3),transparent:true,opacity:.5})); G6.add(l); return l; };
+ORBL(112,51.6*DEG,'#7ff0dc'); ORBL(205,55*DEG,'#ffb066');
+const orbPos=(r,inc,a,rot)=>{ const p=V3(r*Math.cos(a),r*Math.sin(a)*Math.sin(inc),r*Math.sin(a)*Math.cos(inc)); p.applyAxisAngle(V3(0,1,0),rot||0); return p; };
+const JE=document.createElement('canvas'); JE.width=JE.height=260; JE.className='jam'; JE.style.cssText='left:150px;top:520px'; $('#stage').appendChild(JE);
+const JO=document.createElement('canvas'); JO.width=JO.height=260; JO.className='jam'; JO.style.cssText='left:470px;top:520px'; $('#stage').appendChild(JO);
+function jam(cv,t,rate,lbl,col){ const x=cv.getContext('2d'); x.clearRect(0,0,260,260); x.strokeStyle=col; x.lineWidth=5; x.shadowColor=col; x.shadowBlur=14; x.beginPath(); x.arc(130,120,98,0,6.283); x.stroke(); x.shadowBlur=0;
+  for(let i=0;i<12;i++){ const a=i/12*6.283; x.beginPath(); x.moveTo(130+Math.sin(a)*84,120-Math.cos(a)*84); x.lineTo(130+Math.sin(a)*94,120-Math.cos(a)*94); x.lineWidth=3; x.stroke(); }
+  const s=t*rate*.8, m=s/60; x.lineCap='round'; x.strokeStyle='#F2EDE6'; x.lineWidth=7; x.beginPath(); x.moveTo(130,120); x.lineTo(130+Math.sin(m*6.283)*50,120-Math.cos(m*6.283)*50); x.stroke();
+  x.strokeStyle=col; x.lineWidth=4; x.beginPath(); x.moveTo(130,120); x.lineTo(130+Math.sin(s*6.283/10)*82,120-Math.cos(s*6.283/10)*82); x.stroke();
+  x.fillStyle='#F2EDE6'; x.font='500 26px Outfit'; x.textAlign='center'; x.fillText(lbl,130,248); }
+ov('<small>DILATASI WAKTU</small><b>terbukti secara ilmiah</b>','left:150px;top:150px',133.5,136.9);
+ov('<small>BERGERAK CEPAT · GRAVITASI KUAT</small><b>waktu <i>melambat</i></b>','left:150px;top:150px',137.0,143.4);
+ov('<small>ISS · ±7,7 KM/DETIK</small><b>+ ±5 milidetik / 6 bulan</b>','left:150px;top:150px',143.8,149.6);
+ov('<small>SATELIT GPS</small><b>+ 38 mikrodetik / hari</b><div style="margin-top:12px;font:500 28px Outfit;letter-spacing:.08em;color:#CBD3D6">TANPA KOREKSI: MELESET ±11 KM PER HARI</div>','left:150px;top:150px',150.0,157.6);
+lab('ISS','#7ff0dc',60,-60,143.8,149.6,()=>pj(ISS.position),46);
+lab('satelit GPS','#ffb066',60,-60,150.2,157.6,()=>pj(GPSA[0].position),46);
+function s6(t){ G6.visible=true; bumi.visible=atmos.visible=true; bumi.position.set(0,0,0); atmos.position.set(0,0,0); STARS.visible=true; kubah.visible=true; KUB.uMix.value=1; UB.uT.value=t; bumi.rotation.y=t*.02; UB.uSun.value.copy(ARAH_MATAHARI);
+  const a=t*.3; ISS.position.copy(orbPos(112,51.6*DEG,a)); ISS.rotation.y=.4; ISS.scale.setScalar(1.3);
+  GPSA.forEach((g,i)=>{ g.position.copy(orbPos(205,55*DEG,t*.07+i*1.57,i*1.57)); g.lookAt(0,0,0); });
+  const iss=ISS.position;
+  const K=[[131.5,[-60,40,330],[0,0,0]],[137,[120,60,300],[0,0,0]],[142.5,[200,30,200],[0,0,0]]];
+  let pos,tg; if(t<143.2){ const tr=trk(t,K); pos=vOf(tr[0]); tg=vOf(tr[1]); } else if(t<149.8){ const k=E.io(seg(t,143.2,145.4)); const out=iss.clone().normalize(), sd=V3().crossVectors(out,V3(0,1,0)).normalize(); const off=out.clone().multiplyScalar(14).add(sd.multiplyScalar(18)).add(V3(0,5,0)); const p1=iss.clone().add(off), t1=iss.clone(); pos=V3(200,30,200).lerp(p1,k); tg=V3(0,0,0).lerp(t1,k); } else { const k=E.io(seg(t,149.8,152.4)); const p1=V3(120,330,380), g=GPSA[0].position.clone(); pos=(iss.clone().add(iss.clone().normalize().multiplyScalar(14)).add(V3().crossVectors(iss.clone().normalize(),V3(0,1,0)).normalize().multiplyScalar(18)).add(V3(0,5,0))).lerp(p1,k); tg=iss.clone().lerp(V3(0,40,0),k); }
+  setCam(pos,tg,.01); FOV=32; kunci.position.copy(ARAH_MATAHARI).multiplyScalar(50); kunci.intensity=3.2; rim.intensity=.5; hemi.intensity=.2; hemi.color.set(0x405060);
+  PP={ex:1.0,bl:.8,vig:.55,hangat:.2,sat:1.05,tilt:0};
+  const ja=sstep(137.6,138.6,t)*(1-sstep(157.0,157.8,t)); JE.style.opacity=JO.style.opacity=ja.toFixed(3); if(ja>.01){ jam(JE,t-137,1,'di Bumi','#ffb066'); jam(JO,t-137,.86,'di orbit','#7ff0dc'); }
+  [JE,JO].forEach(c=>c.style.top='560px'); }
+/* ============ ADEGAN 7: penutup ============ */
+const G7=new THREE.Group(); G7.visible=false; S.add(G7);
+const AT7=new THREE.Points(ST[5].cl.geometry,new THREE.PointsMaterial({size:.05,map:SPRW,color:C('#ffd9a0').multiplyScalar(1.8),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})); AT7.position.set(2.8,1.4,0); G7.add(AT7);
+const NU7=new THREE.Mesh(new THREE.SphereGeometry(.07,16,12),new THREE.MeshBasicMaterial({color:new THREE.Color(4,3,2)})); NU7.position.copy(AT7.position); G7.add(NU7);
+const HG7=HG.clone(); HG7.position.set(-2.8,0,0); G7.add(HG7);
+const fl7=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:C('#1c120c'),roughness:.7,metalness:.2})); fl7.rotation.x=-Math.PI/2; G7.add(fl7);
+const HW=mkSpr('#ffb066',.8); G7.add(HW); S.remove(HW); HW.position.set(0,2,-6); HW.scale.set(26,16,1);
+ov('<b style="font-size:84px">Mengecil tidak membawa kita<br>ke <i>masa lalu</i></b>','left:150px;top:150px',160.2,164.0);
+ov('<small>TAPI DUNIA ATOM TETAP</small><b>tempat paling <i>aneh</i> di alam semesta</b>','left:150px;top:150px',164.2,167.6);
+ov('<b style="font-size:96px;font-style:italic;text-align:center">ke masa depan,<br>atau ke masa lalu?</b>','left:0;right:0;top:230px;text-align:center',168.2,177.4,.9,.5);
+function s7(t){ G7.visible=true; kubah.visible=true; KUB.uMix.value=.12; HW.visible=true; sandUpd(t+0); HG7.children.forEach(c=>{}); AT7.rotation.y=t*.4; AT7.visible=true; AT7.scale.setScalar(2.1);
+  const K=[[160,[-.5,1.6,9],[0,1.2,0]],[168,[1.5,1.8,8.2],[.2,1.3,0]],[178,[3,2.4,10.5],[0,1.2,0]]];
+  const tr=trk(t,K); setCam(vOf(tr[0]),vOf(tr[1]),.012); kunci.intensity=1.5; kunci.color.set(0xffb27a); rim.intensity=1.2; rim.color.set(0xffd9a0); hemi.intensity=.35; hemi.color.set(0x8a7a6a);
+  PP={ex:1.05,bl:.85,vig:.55,hangat:.55,sat:1.1,tilt:0}; }
+
+/* ============ DISPATCH ============ */
+const SC=[0,45,73,102,131,159.5,178], DIPS=[45,73,102,131,159.5];
+let PP={ex:1,bl:.7,vig:.55,hangat:.3,sat:1.08,tilt:0};
+function hideAll(){ [GA,G3,G4,G5,G6,G7,bumi,atmos,FOSS].forEach(o=>o.visible=false); STARS.visible=false; FOV=32; rim.color.set(0x6fe0d0); kunci.color.set(0xffb27a); kunci.position.set(6,5,8); }
+let subY=H*.88;
+function gambar(t){ TT=t; hideAll();
+  const k=Math.max(0,SC.findIndex((v,i)=>i<6&&t>=v&&t<SC[i+1])); [sA,s3,s4,s5,s6,s7][k](t);
+  if(k!==5){ JE.style.opacity=0; JO.style.opacity=0; } if(k!==4){ JE.style.opacity=0; JO.style.opacity=0; }
+  kubah.position.copy(cam.position); STARS.position.copy(cam.position);
+  REN.setRenderTarget(RT); REN.render(S, cam);
+  pSalin.uniforms.t.value = RT.texture; lewat(pSalin, R2);
+  pTerang.uniforms.t.value = R2.texture; pTerang.uniforms.th.value = 1.0; lewat(pTerang, B4a); blur2(B4a, B4b, 1.2); blur2(B4a, B4b, 2.4);
+  pSalin.uniforms.t.value = B4a.texture; lewat(pSalin, B8a); blur2(B8a, B8b, 1.6); blur2(B8a, B8b, 3.2);
+  pSalin.uniforms.t.value = R2.texture; lewat(pSalin, RTS); blur2(RTS, RTSb, 1.5); blur2(RTS, RTSb, 2.5);
+  const U=AKHIR.uniforms; Object.assign(U.tS,{value:RT.texture}); U.tB1.value=B4a.texture; U.tB2.value=B8a.texture; U.tR.value=RRAY.texture; U.tT.value=RTS.texture;
+  U.ry.value=0; U.fok.value=.5; U.tilt.value=PP.tilt; U.ex.value=PP.ex; U.bl.value=PP.bl; U.vig.value=PP.vig; U.hangat.value=PP.hangat; U.sat.value=PP.sat;
+  let g=1-sstep(0,.5,t); DIPS.forEach(d=>{ g=Math.max(g,1-Math.abs(t-d)/.5); }); g=Math.max(g,sstep(177,178,t)); U.gelap.value=clamp(g);
+  lewat(AKHIR,null); ovUpd(t); lblUpd(t);
+  Object.assign($('#vSub').style,{left:'260px',width:'1400px',top:(subY-180)+'px',height:'330px',opacity:t>.6&&t<177?.85:0});
+}
+const SCENE = {
+  dur: DUR, kata: KATA,
+  sub:{gaya:'polos',maks:4,font:`800 52px '${FONT.sub}'`,warna:PAL.teks,aksen:PAL.aksen,kunci:['kuantum,','mengizinkannya?','atom.','atom,','dnA,','dna,','semut,','sel,','neuron','miliar.','berat.','padat','probabilitas.','terowongan','kuantum.','heisenberg,','bergetar.','entropi,','waktu,','dilatasi','einstein.','lambat.','gps','masa','lalu?','depan,','aneh'],y:()=>({x:W/2,y:subY})},
+  audio: {"vo": [{"src": "assets/audio/vo-01.mp3", "at": 0.7, "teks": "Di film, seorang tokoh bisa mengecil sampai ke dunia kuantum, lalu waktu berjalan dengan aneh. Tapi, apakah fisika benar-benar mengizinkannya?"}, {"src": "assets/audio/vo-02.mp3", "at": 14.5, "teks": "Bayangkan tubuhmu mulai menyusut. Dari tinggi satu koma tujuh meter, kamu mengecil sampai seukuran semut, sekitar tiga milimeter. Lalu menembus kulit, dan masuk ke dalam sebuah sel, selebar puluhan mikrometer. Di dalamnya ada DNA, heliks selebar dua nanometer. Dan akhirnya, kamu tiba di satu atom, selebar sepersepuluh nanometer. Di setiap level, dunia berubah total."}, {"src": "assets/audio/vo-03.mp3", "at": 45.5, "teks": "Masalah pertama, atom tidak bisa dikecilkan. Tubuhmu terdiri dari sekitar tujuh miliar miliar miliar atom. Kalau jumlah atomnya dikurangi, otakmu tidak punya cukup neuron untuk berpikir. Otak semut saja punya sekitar dua ratus lima puluh ribu neuron, sedangkan otak manusia delapan puluh enam miliar. Kalau atomnya dipadatkan, massa tubuhmu tetap sama, jadi kamu menjadi sangat padat dan sangat berat."}, {"src": "assets/audio/vo-04.mp3", "at": 73.5, "teks": "Lalu, di level atom, aturan alam berubah. Elektron bukan bola kecil yang mengorbit, melainkan awan probabilitas. Sebuah partikel bisa menembus penghalang yang seharusnya mustahil ditembus, disebut efek terowongan kuantum. Dan menurut prinsip ketidakpastian Heisenberg, kita tidak bisa mengetahui posisi dan kecepatan partikel sekaligus dengan pasti. Dunia di sana terlihat kabur, dan bergetar."}, {"src": "assets/audio/vo-05.mp3", "at": 102.5, "teks": "Lalu, apakah waktu berjalan beda di sana? Tidak mundur. Persamaan dasar fisika memang tidak membedakan maju dan mundur. Tapi ada entropi, ukuran ketidakteraturan, yang cenderung bertambah. Gelas yang jatuh bisa pecah menjadi ribuan keping, tapi kepingan itu tidak pernah menyatu kembali. Inilah panah waktu, dan ia tetap maju, di dunia besar maupun kecil."}, {"src": "assets/audio/vo-06.mp3", "at": 131.5, "teks": "Perjalanan waktu yang terbukti nyata adalah dilatasi waktu menurut relativitas Einstein. Semakin cepat kamu bergerak, atau semakin dekat dengan gravitasi kuat, waktu berjalan semakin lambat. Astronot di Stasiun Luar Angkasa Internasional melompat ke masa depan sekitar lima milidetik tiap enam bulan. Dan jam di satelit GPS harus dikoreksi sekitar tiga puluh delapan mikrodetik per hari, atau navigasi bisa meleset belasan kilometer."}, {"src": "assets/audio/vo-07.mp3", "at": 160, "teks": "Jadi, mengecil tidak membawa kita ke masa lalu. Tapi dunia atom tetap tempat paling aneh di alam semesta. Kalau kamu bisa memilih, kamu ingin pergi ke masa depan, atau ke masa lalu?"}], "sfx": [{"src": "assets/audio/sfx-boom.wav", "at": 0.3, "vol": 0.3}, {"src": "assets/audio/sfx-desing.wav", "at": 17.4, "vol": 0.45}, {"src": "assets/audio/sfx-desing.wav", "at": 23.2, "vol": 0.4}, {"src": "assets/audio/sfx-desing.wav", "at": 25.4, "vol": 0.4}, {"src": "assets/audio/sfx-desing.wav", "at": 29.6, "vol": 0.4}, {"src": "assets/audio/sfx-desing.wav", "at": 34.0, "vol": 0.45}, {"src": "assets/audio/sfx-whoosh.wav", "at": 44.5, "vol": 0.4}, {"src": "assets/audio/sfx-shimmer.wav", "at": 49.4, "vol": 0.25}, {"src": "assets/audio/sfx-whoosh.wav", "at": 72.5, "vol": 0.4}, {"src": "assets/audio/sfx-qhum.wav", "at": 73.5, "vol": 0.3}, {"src": "assets/audio/sfx-zap.wav", "at": 84.9, "vol": 0.4}, {"src": "assets/audio/sfx-shimmer.wav", "at": 86.5, "vol": 0.3}, {"src": "assets/audio/sfx-whoosh.wav", "at": 101.5, "vol": 0.4}, {"src": "assets/audio/sfx-detak.wav", "at": 102.5, "vol": 0.25}, {"src": "assets/audio/sfx-pecah.wav", "at": 119.0, "vol": 0.7}, {"src": "assets/audio/sfx-whoosh.wav", "at": 130.4, "vol": 0.4}, {"src": "assets/audio/sfx-detak.wav", "at": 137.6, "vol": 0.22}, {"src": "assets/audio/sfx-ping.wav", "at": 150.8, "vol": 0.4}, {"src": "assets/audio/sfx-ping.wav", "at": 152.8, "vol": 0.3}, {"src": "assets/audio/sfx-whoosh.wav", "at": 158.8, "vol": 0.4}, {"src": "assets/audio/sfx-hum.wav", "at": 160.1, "vol": 0.12}], "music": {"src": "assets/audio/music.wav", "vol": 0.5}},
+  muat:()=>Promise.all([document.fonts.load(`500 100px '${FONT.judul}'`),document.fonts.load(`italic 500 100px '${FONT.judul}'`),document.fonts.load(`800 60px '${FONT.sub}'`),document.fonts.load(`500 24px 'Outfit'`)]),
+  build(tl){ grainOn(.05); },
+  frame(t){ gambar(t); }
+};

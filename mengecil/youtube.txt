@@ -1,0 +1,27 @@
+JUDUL:
+Bisakah kita melakukan perjalanan waktu dengan mengecilkan tubuh sampai level atom? (Penjelasan Sains 3D)
+
+DESKRIPSI:
+Di film, seorang tokoh bisa mengecil sampai dunia kuantum, lalu waktu berjalan dengan aneh. Apakah fisika benar-benar mengizinkannya? Video ini mengajak kamu menyusut dari manusia ke semut, sel, DNA, sampai atom, lalu membahas kenapa atom tidak bisa dikecilkan, apa yang aneh di dunia kuantum, apa itu panah waktu (entropi), dan perjalanan waktu yang benar-benar terbukti: dilatasi waktu pada ISS dan satelit GPS.
+
+Bab:
+0:00 Hook: apakah fisika mengizinkannya?
+0:14 Perjalanan mengecil: manusia sampai atom
+0:45 Masalah pertama: massa dan atom
+1:13 Dunia kuantum
+1:42 Apakah waktu berbeda di sana? Entropi
+2:11 Perjalanan waktu yang nyata: dilatasi waktu
+2:39 Penutup
+
+Catatan:
+- ISS: ±7,7 km/detik, selisih waktu bersih ≈ 9 milidetik per tahun (≈ 5 ms per 6 bulan). GPS: +38 mikrodetik per hari tanpa koreksi, galat ±11 km per hari.
+- Skala di layar adalah gambaran. Kepadatan ≈ 180 juta kali (1,7 m → 3 mm, massa tetap) adalah hitungan sederhana.
+
+Sumber:
+- NIST, relativitas GPS: https://www.nist.gov/node/1879246
+- Ashby (2002), Physics Today 55(5): https://physicstoday.aip.org/features/relativity-and-the-global-positioning-system
+- Dilatasi waktu ISS: https://www.physicsforums.com/threads/time-dilation-effect-corrections-to-clocks-on-iss.1004438
+- Jumlah atom tubuh: https://science.howstuffworks.com/atoms-in-person.htm
+- Azevedo et al. (2009), J. Comp. Neurol. 513, 532 · Griffiths, Introduction to Quantum Mechanics · Carroll, From Eternity to Here
+
+#SerunihStudio #PerjalananWaktu #Kuantum #Fisika #Sains #Edukasi #Explainer #3D

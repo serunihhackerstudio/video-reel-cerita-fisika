@@ -22,6 +22,7 @@ V = [
  ('bintang', '2026-11-26_bintang-masa-lalu.mp4', 21.9, 14.0, 'SAINS · ASTRONOMI', 'MELIHAT BINTANG', 'MASA LALU', 'SETIAP MALAM', (217,60,245), (255,255,255)),
  ('pesta', '2026-11-26_pesta-penjelajah-waktu.mp4', 10.8, 14.0, 'SAINS · FISIKA', 'PESTA PENJELAJAH', 'WAKTU', 'TANPA TAMU', (217,60,245), (255,255,255)),
  ('emas', '2026-11-25_asal-emas.mp4', 30.6, 14.0, 'SAINS · ASTRONOMI', 'DARI MANA ASAL', 'EMAS', 'DI BUMI?', (247,193,61), (50,34,0)),
+ ('mimpi', '2026-11-27_mimpi-semesta-lain.mp4', 34.8, 14.0, 'SAINS · MIMPI', 'DREAMWALKING', 'SEMESTA LAIN', 'LEWAT MIMPI?', (25,230,161), (4,30,26)),
 ]
 import sys
 SEL = sys.argv[1:]

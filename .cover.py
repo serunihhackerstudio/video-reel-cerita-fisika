@@ -22,6 +22,7 @@ C = {
  'bintang': ('post/bintang/f6.jpg', 'SAINS · ASTRONOMI', 'MELIHAT BINTANG', 'MASA LALU', 'SETIAP MALAM', 'CAHAYA BUTUH WAKTU', (217,60,245), (255,255,255)),
  'pesta': ('post/pesta/f6.jpg', 'SAINS · FISIKA', 'PESTA PENJELAJAH', 'WAKTU', 'TANPA TAMU', 'HAWKING · 2009', (217,60,245), (255,255,255)),
  'emas': ('post/emas/f6.jpg', 'SAINS · ASTRONOMI', 'DARI MANA ASAL', 'EMAS', 'DI BUMI?', 'LEBIH TUA DARI BUMI', (247,193,61), (50,34,0)),
+ 'mimpi': ('post/mimpi/f6.jpg', 'SAINS · FISIKA', 'DREAMWALKING', 'SEMESTA LAIN', 'LEWAT MIMPI?', 'FIKSI vs SAINS', (25,230,161), (4,30,26)),
 }
 def pill(d, cx, cy, text, font, bg, fg, radius=None, padx=None, pady=None, stroke=0):
     """Blok berisi teks dengan teks tepat di tengah (kapital: pakai tinggi huruf kapital, bukan tinggi font)."""

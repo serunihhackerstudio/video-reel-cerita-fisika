@@ -23,6 +23,7 @@ Sumber video explainer **Shorts/Reels 9:16 (±40–55 detik)** bergaya **3D isom
 | [`stasiun/`](stasiun) | Perjalanan ke masa depan itu nyata, astronot sudah melakukannya (PERJALANAN WAKTU EP 3; stasiun luar angkasa, dua jam split, jam atom 1971; suara edge-tts) | ungu-magenta | ±58 dtk |
 | [`kembar/`](kembar) | Paradoks kembar: kenapa kembar astronaut pulang lebih muda? (PERJALANAN WAKTU EP 4; roket dan rumah diiris, dua kalender split, kolom muon; suara edge-tts) | ungu-magenta | ±59 dtk |
 | [`gravitasi/`](gravitasi) | Kenapa waktu berjalan lebih lambat di dekat gravitasi kuat? (PERJALANAN WAKTU EP 5; gedung dan kolom Bumi diiris, jam lantai dasar vs puncak, jam atom, corong ruang-waktu black hole; suara edge-tts) | ungu-magenta | ±56,5 dtk |
+| [`mimpi/`](mimpi) | Bisakah kita menjelajahi semesta lain lewat mimpi? (dreamwalking; kamar tidur dan gelembung semesta, otak diiris, tiga gambaran multiverse berlabel hipotesis, mimpi sadar + perekam gerak mata; suara edge-tts) | hijau zamrud | ±77 dtk |
 | [`higgs/`](higgs) | Kenapa partikel Tuhan (boson Higgs) sangat penting? | — | — |
 
 Isi tiap folder: `scene.html` (adegan three.js + subtitle + label), `naskah.md` atau `caption.txt`, `assets/audio/` (voiceover dan efek suara), `thumbnail.jpg` (sampul), dan `potret-adegan1/` (3 potret adegan pembuka).
@@ -65,6 +66,7 @@ Pembuat kode adegan per video disimpan sebagai potongan `.xx_*.js` dan dirakit o
 | `.asm_st.py` | merakit `stasiun/scene.html` (Bumi, stasiun berongga, split dua jam, pesawat 1971) dari `.bs_head.js`, `.st_a/b/d.js` |
 | `.asm_tw.py` | merakit `kembar/scene.html` (landasan, roket berongga, rumah, strip lintasan, kolom muon) dari `.bs_head.js`, `.tw_a/b/d.js` |
 | `.asm_gr.py` | merakit `gravitasi/scene.html` (gedung berongga + kolom Bumi berlapis, jam atom, corong ruang-waktu) dari `.bs_head.js`, `.tw_a.js`, `.gr_b.js`, `.gr_d.js` |
+| `.asm_mm.py` | merakit `mimpi/scene.html` (kamar tidur, kepala berbidang potong, gelembung semesta, pohon/gelembung/lembaran multiverse) dari `.bs_head.js`, `.tw_a.js`, `.mm_b.js`, `.mm_d.js` |
 | `suara/f0.py` | mengukur nada dasar tiap klip suara (cek konsistensi gender/suara) |
 | `.post_frames.py`, `.post_slides.py` | frame bersih dan 7 slide karusel per video (argumen: nama video, mis. `python .post_slides.py pelari`) |
 

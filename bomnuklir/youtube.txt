@@ -1,0 +1,27 @@
+JUDUL:
+Kenapa bom nuklir bisa menghasilkan daya ledak yang luar biasa? (Penjelasan Sains 3D)
+
+DESKRIPSI:
+Sebuah benda sebesar bola softball bisa melepaskan energi puluhan ribu ton TNT. Dari mana energi sebesar itu? Video ini menjelaskan secara konseptual: beda reaksi kimia dan reaksi inti, masuk ke dalam atom, rumus E = mc² Einstein, dan reaksi berantai. Kami juga mengenang Hiroshima dan Nagasaki 1945 dengan hormat, lalu menutup dengan sisi lain ilmu yang sama: energi untuk listrik. Video ini bersifat edukasi dan tidak memuat detail pembuatan senjata.
+
+Bab:
+0:00 Hook: bola seukuran softball, puluhan ribu ton TNT
+0:10 Ledakan kimia vs reaksi inti
+0:42 Masuk ke dalam atom
+1:10 E = mc²
+1:40 Fisi dan reaksi berantai
+2:10 Dampaknya
+2:40 Energi untuk menerangi dunia
+
+Catatan:
+- 1 kiloton = 1.000 ton TNT. Hiroshima ≈ 15 kiloton, Nagasaki ≈ 21 kiloton.
+- 1 kg uranium (jika semuanya terbelah) ≈ 8 × 10^13 joule; 1 kg TNT ≈ 4,2 × 10^6 joule (≈ 20 juta kali). Ini batas teoretis, bom nyata hanya membelah sebagian kecil bahan.
+- Visual reaksi berantai diperlambat jutaan kali dan dibuat konseptual. Bola dan awan jamur adalah ilustrasi generik.
+
+Sumber:
+- Hasil ledakan: https://en.wikipedia.org/wiki/Nuclear_weapon_yield · https://en.wikipedia.org/wiki/Little_Boy · https://en.wikipedia.org/wiki/Fat_Man · https://www.osti.gov/servlets/purl/1489669
+- Massa yang berubah menjadi energi: https://wearethemighty.com/history/how-much-mass-is-destroyed-in-a-nuclear-weapons-explosion
+- Einstein (1905), Annalen der Physik 18, 639
+- Korban 1945: RERF, https://www.rerf.or.jp
+
+#SerunihStudio #Nuklir #EMC2 #Fisika #Sains #Edukasi #Explainer #3D

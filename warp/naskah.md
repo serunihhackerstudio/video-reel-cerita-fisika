@@ -1,26 +1,32 @@
-# Bisakah kita menjelajahi luar angkasa dengan mesin warp? (YouTube 16:9, ±3 menit)
+# Bisakah kita menjelajahi luar angkasa dengan mesin warp? (YouTube 16:9, 180 dtk)
 
-Gaya: 3D realistik sinematik (Sejarah 3D Sinematik, varian ruang angkasa). Font Instrument Serif + Onest. Aksen ungu-biru #B9A8FF, Proxima #FF9C6B.
-Status: HANYA adegan 1 yang sudah dibangun. Naskah adegan 2-7 di bawah masih rancangan (menunggu persetujuan gambar), suara belum dibuat.
+Gaya: 3D realistik sinematik. Font Instrument Serif + Onest. Aksen ungu-biru #B9A8FF, Proxima #FF9C6B.
+Suara: edge-tts id-ID-ArdiNeural (+3%), gratis. SFX dan musik ambient dibuat lokal (numpy). Musik memuncak di babak 5 dan "hening di luar angkasa" (musik turun) di 113,4 dan 156,3 dtk.
 
-## Adegan 1 (0:00-0:15) — sudah dibangun
-"Pesawat tercepat yang pernah meninggalkan Tata Surya, Voyager Satu, butuh sekitar tujuh puluh lima ribu tahun menuju Proxima Centauri. Bagaimana kalau hanya beberapa minggu?"
+| # | Waktu | Adegan | Narasi |
+|---|---|---|---|
+| 1 | 0:00-0:14 | Bumi dari orbit, probe Voyager, Proxima | Pesawat tercepat yang pernah meninggalkan Tata Surya, Voyager Satu, butuh sekitar tujuh puluh lima ribu tahun menuju Proxima Centauri. Bagaimana kalau perjalanan itu hanya beberapa minggu? |
+| 2 | 0:14-0:43 | Zoom out: Bumi → Tata Surya → Proxima (penggaris tahun cahaya) → Bima Sakti | Untuk memahami masalahnya, lihat dulu betapa luasnya alam semesta. Dari Bumi, kita mundur melewati Matahari dan planet-planet. Lalu melewati batas Tata Surya, menuju bintang terdekat. Jaraknya empat koma dua empat tahun cahaya. Satu tahun cahaya adalah jarak yang ditempuh cahaya dalam setahun, sekitar sembilan koma empat enam triliun kilometer. Dan galaksi Bima Sakti, rumah kita, lebarnya sekitar seratus ribu tahun cahaya. |
+| 3 | 0:43-1:09 | Pesawat berpacu dengan berkas cahaya, grafik energi menuju tak terhingga | Masalahnya ada pada batas kecepatan alam semesta. Menurut Einstein, tidak ada benda bermassa yang bisa mencapai kecepatan cahaya, sekitar tiga ratus ribu kilometer per detik. Semakin cepat sebuah pesawat melaju, semakin besar energi yang dibutuhkan untuk mempercepatnya lagi. Untuk mencapai kecepatan cahaya, energinya menjadi tak terhingga. Jadi, berpacu dengan cahaya adalah perlombaan yang pasti kalah. |
+| 4 | 1:09-1:31 | Kisi ruang-waktu melengkung, galaksi menjauh, pesawat + foton di dalam ruang | Tapi ada celah dalam aturan itu. Ruang dan waktu sendiri bisa melengkung dan mengembang. Buktinya, alam semesta terus mengembang sejak Big Bang, dan galaksi yang sangat jauh menjauh dari kita lebih cepat daripada cahaya. Tidak ada aturan yang dilanggar, sebab batas kecepatan cahaya berlaku untuk benda di dalam ruang, bukan untuk ruangnya sendiri. |
+| 5 | 1:31-2:05 | Alcubierre Drive: gelembung warp, kisi menyusut/mengembang, pesawat meluncur, perbandingan waktu tempuh | Tahun seribu sembilan ratus sembilan puluh empat, fisikawan Miguel Alcubierre mengusulkan ide berani. Bayangkan sebuah pesawat di dalam gelembung warp. Ruang di depan gelembung menyusut, sementara ruang di belakangnya mengembang. Gelembung itu meluncur seperti peselancar di atas gelombang ruang-waktu. Pesawatnya sendiri diam di dalam gelembung, jadi aturan Einstein tetap aman. Dan para penumpang tidak merasakan percepatan sama sekali. Kalau gelembungnya cukup cepat, perjalanan ke Proxima Centauri bisa ditempuh dalam hitungan minggu, bukan puluhan ribu tahun. |
+| 6 | 2:05-2:37 | Redup dan tegang: energi negatif, indikator energi, Jupiter, gelembung goyah, ledakan radiasi | Sayangnya, ada hambatan besar. Gelembung warp membutuhkan energi negatif, atau materi eksotis, yang belum pernah ditemukan dalam jumlah berarti. Perhitungan awal menyebut energinya melampaui seluruh massa alam semesta teramati. Setelah disempurnakan, kebutuhannya turun menjadi setara massa planet raksasa seperti Jupiter. Tetap saja, mustahil untuk sekarang. Belum lagi, kita belum tahu cara mengendalikan gelembung itu, dan saat berhenti, ia bisa melepaskan ledakan radiasi berbahaya. |
+| 7 | 2:37-3:00 | Hangat dan penuh harapan: pesawat menatap Proxima | Namun penelitian terus berjalan. NASA dan para fisikawan masih menelaah ide ini, dan usulan teori terbaru mencoba memangkas kebutuhan energinya, bahkan tanpa energi negatif. Belum ada yang berhasil membangunnya. Tapi suatu hari nanti, mungkin kita akan menatap bintang itu dari dekat. Mungkin suatu hari nanti? |
 
-## Rancangan adegan 2-7 (belum dibangun)
-2. (0:15-0:40) Zoom out Bumi → Tata Surya → Proxima → Bima Sakti. "Satu tahun cahaya sekitar 9,46 triliun kilometer." Proxima 4,24 tahun cahaya (±40 triliun km). Bima Sakti selebar ±100.000 tahun cahaya.
-3. (0:40-1:05) Relativitas khusus: makin cepat, makin besar energi; benda bermassa tak bisa mencapai kecepatan cahaya (299.792 km/detik). Berkas cahaya berpacu dengan pesawat.
-4. (1:05-1:30) Ruang-waktu bisa melengkung dan mengembang (alam semesta mengembang sejak Big Bang). Batas kecepatan berlaku untuk benda DI DALAM ruang, bukan untuk ruangnya.
-5. (1:30-2:05) Alcubierre Drive (1994): ruang di depan menyusut, di belakang mengembang; pesawat diam di dalam gelembung warp; penumpang tidak merasakan percepatan. Perbandingan waktu tempuh roket biasa vs warp.
-6. (2:05-2:40) Hambatan: butuh energi negatif / materi eksotis yang belum pernah ditemukan dalam jumlah berarti; kebutuhan energi awal sangat besar; gelembung sulit dikendalikan; risiko ledakan radiasi saat berhenti.
-7. (2:40-3:00) Riset lanjutan (NASA dan usulan teori baru yang memangkas energi); penutup: pesawat menatap bintang, "mungkin suatu hari nanti?"
+## Catatan fakta yang berbeda dari brief awal
+- Brief: "pesawat tercepat buatan manusia butuh puluhan ribu tahun". Pemegang rekor kecepatan, Parker Solar Probe (±692.000 km/jam, hanya saat jatuh ke Matahari), kalau bisa bertahan di kecepatan itu butuh ±6.600 tahun (hitungan sendiri). Angka "puluhan ribu tahun" cocok untuk Voyager 1 (±17 km/detik, ±73.000-77.000 tahun). Narasi memakai Voyager 1 dan kalimat "yang pernah meninggalkan Tata Surya".
+- Brief: energi "setara massa planet raksasa". Itu hasil penyempurnaan. Estimasi awal jauh lebih besar. Narasi adegan 6 menyebut kedua tahap.
+- Perbandingan waktu tempuh di adegan 5: warp "contoh 100× kecepatan cahaya" ⇒ 4,24 tahun / 100 ≈ 15 hari (hitungan sendiri; Alcubierre tidak menetapkan batas kecepatan, angka 100× hanya ilustrasi, ditandai di layar).
+- Adegan 2: Tata Surya digambar tidak sesuai skala (ditandai di layar). Sisa skala (4,24 tahun cahaya, 100.000 tahun cahaya) memakai penggaris/garis ukur, bukan skala nyata.
+- Adegan 3: kecepatan pesawat 30%→99,95% cahaya dan grafik energi memakai rumus relativitas khusus (energi kinetik = (γ − 1)mc²). Angka kecepatan di layar adalah ilustrasi, bukan data misi.
 
-## Cek fakta — temuan yang mengubah naskah
-- **Permintaan awal: "pesawat tercepat buatan manusia butuh puluhan ribu tahun".** Tidak tepat untuk pemegang rekor. Parker Solar Probe (tercepat, ±692.000 km/jam, 192 km/detik, hanya saat jatuh ke arah Matahari) kalau bisa bertahan di kecepatan itu butuh ±6.600 tahun (hitungan sendiri: 4,24 tahun cahaya ≈ 4,0×10^13 km). "Puluhan ribu tahun" cocok untuk Voyager 1 (±17 km/detik, ±73.000-77.000 tahun). Maka adegan 1 memakai Voyager 1 dengan kalimat "pesawat tercepat yang pernah meninggalkan Tata Surya". Perlu persetujuan Anda untuk wording ini.
-- **Energi Alcubierre.** Tulisan awal Alcubierre: butuh energi negatif sangat besar (kajian lanjutan menyebut melebihi massa-energi alam semesta teramati). "Setara massa planet raksasa" adalah angka versi yang sudah diperbaiki (Jupiter-scale), bukan angka awal. Naskah adegan 6 akan memakai urutan: awalnya astronomis, setelah penyempurnaan turun ke skala massa Jupiter, model Bobrick & Martire (2021) tanpa energi negatif tetap butuh energi sangat besar.
-- Voyager 1 ±61.000 km/jam (±17 km/detik), jarak Proxima ±4,24-4,25 tahun cahaya.
-
-## Sumber (sementara; daftar lengkap menyusul di naskah akhir)
-- NASA/JHUAPL, Parker Solar Probe rekor kecepatan: https://www.jhuapl.edu/news/news-releases/181030-parker-solar-probe-sets-new-records ; https://bgr.com/science/behold-the-fastest-object-humans-have-ever-built/
-- Voyager 1 → Proxima ±73.000 tahun (kutipan NASA Goddard): https://spacedaily.com/m-the-voyagers-fly-astonishingly-fast-yet-space-is-so-vast-it-makes-a-mockery-of-their-speed-aimed-at-the-nearest-star-one-would-still-take-around-77000-years-to-arrive-though-in-truth-neither-is-e/
-- Alcubierre drive: https://en.wikipedia.org/wiki/Alcubierre_drive ; Bobrick & Martire 2021, Class. Quantum Grav. "Introducing physical warp drives"; Lentz 2021, Class. Quantum Grav.
-- Yang belum diverifikasi dan harus dicek sebelum adegan 2-7: lebar Bima Sakti, angka tepat 1 tahun cahaya (9,46 triliun km sudah baku), angka energi Pfenning & Ford 1997, status riset NASA terbaru.
+## Sumber
+- Parker Solar Probe, rekor kecepatan: https://www.jhuapl.edu/news/news-releases/181030-parker-solar-probe-sets-new-records ; https://bgr.com/science/behold-the-fastest-object-humans-have-ever-built/
+- Voyager 1 ke Proxima ±73.000 tahun (kutipan NASA Goddard): https://spacedaily.com/m-the-voyagers-fly-astonishingly-fast-yet-space-is-so-vast-it-makes-a-mockery-of-their-speed-aimed-at-the-nearest-star-one-would-still-take-around-77000-years-to-arrive-though-in-truth-neither-is-e/
+- Alcubierre, M. (1994). "The warp drive: hyper-fast travel within general relativity", Classical and Quantum Gravity 11, L73. Ringkasan: https://en.wikipedia.org/wiki/Alcubierre_drive
+- Energi (versi awal melebihi massa alam semesta teramati; versi sempurnaan skala Jupiter): ringkasan di https://en.wikipedia.org/wiki/Alcubierre_drive dan https://bigthink.com/hard-science/alcubierre-drive/ ; Pfenning & Ford (1997), Class. Quantum Grav. 14, 1743.
+- Bobrick & Martire (2021), "Introducing physical warp drives", Class. Quantum Grav. 38, 105009 (tanpa energi negatif; tetap butuh energi sangat besar). Lentz (2021), "Breaking the warp barrier", Class. Quantum Grav. 38, 075015.
+- Radiasi saat gelembung berhenti: Finazzi, Liberati & Barceló (2009), Phys. Rev. D 79, 124017.
+- Alam semesta mengembang dan galaksi jauh surut lebih cepat dari cahaya: Davis & Lineweaver (2004), PASA 21, 97.
+- Relativitas khusus (Einstein, 1905); kecepatan cahaya 299.792 km/detik (definisi SI); 1 tahun cahaya ≈ 9,46 triliun km; Proxima Centauri ±4,24 tahun cahaya; Bima Sakti ±100.000 tahun cahaya.
+- Kutipan jurnal di atas ditulis dari pengetahuan saya, belum dibuka satu per satu. Nomor volume/halaman sebaiknya diperiksa sebelum dipublikasikan.

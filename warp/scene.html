@@ -16,6 +16,18 @@
 .angka small{display:block;margin-top:10px;font:500 34px/1.25 'Onest',sans-serif;letter-spacing:.06em;color:#C7CFEA;text-transform:uppercase}
 .angka.minggu b{color:#C9B8FF;text-shadow:0 3px 4px rgba(2,3,10,.9),0 0 40px rgba(130,110,255,.6)}
 #gelap{position:absolute;inset:0;background:#02030a;opacity:0;pointer-events:none;z-index:9}
+
+.ov{position:absolute;z-index:6;opacity:0;visibility:hidden;color:#EEF2FF;isolation:isolate;text-shadow:0 3px 4px rgba(2,3,10,.9),0 0 30px rgba(2,3,10,.8)}
+.ov:before{content:'';position:absolute;inset:-70px -110px;z-index:-1;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(2,3,10,.55),rgba(2,3,10,0))}
+.ov small{display:block;font:500 28px/1.2 'Onest',sans-serif;letter-spacing:.14em;color:#C7CFEA;text-transform:uppercase}
+.ov b{display:block;margin-top:8px;font:400 92px/1.05 'Instrument Serif',serif;letter-spacing:.005em}
+.ov b.akh{font-style:italic;font-size:130px;color:#E3DAFF;text-shadow:0 3px 4px rgba(2,3,10,.9),0 0 50px rgba(160,130,255,.55)}
+.ov em{display:block;margin-top:22px;font:500 26px 'Onest',sans-serif;letter-spacing:.06em;color:#AEB8E0;font-style:normal}
+.ov .row{margin-bottom:34px}.ov .row b{font-size:64px}
+.ov .trk{margin-top:12px;height:26px;border-radius:13px;background:rgba(150,165,230,.16);overflow:hidden}
+.ov .trk i{display:block;height:100%;width:0;border-radius:13px;background:linear-gradient(90deg,#5d6fc9,#9fb4ff)}
+.ov .trk i.vi{background:linear-gradient(90deg,#8f7bff,#e6a0ff);box-shadow:0 0 18px #b08cff}
+.ov .trk i.am{background:linear-gradient(90deg,#c86a3a,#ffb070);box-shadow:0 0 18px #ff9a5a}
 </style>
 <!--@BODY-->
 <div class="selubung" id="vJudul"></div>
@@ -27,15 +39,13 @@
 <div id="gelap"></div>
 <!--@SCRIPT-->
 /* ============ [0] NASKAH & WAKTU ============ */
-const KATA = [
-{w:'Pesawat',t0:.7,t1:1.1},{w:'tercepat',t0:1.15,t1:1.65},{w:'yang',t0:1.7,t1:1.85},{w:'pernah',t0:1.9,t1:2.2},{w:'meninggalkan',t0:2.25,t1:2.9},
-{w:'Tata',t0:2.95,t1:3.2},{w:'Surya,',t0:3.25,t1:3.8},{w:'Voyager',t0:4.2,t1:4.7},{w:'Satu,',t0:4.75,t1:5.2},
-{w:'butuh',t0:5.5,t1:5.85},{w:'sekitar',t0:5.9,t1:6.3},{w:'tujuh',t0:6.35,t1:6.65},{w:'puluh',t0:6.7,t1:6.95},{w:'lima',t0:7.0,t1:7.25},{w:'ribu',t0:7.3,t1:7.6},{w:'tahun',t0:7.65,t1:8.1},
-{w:'menuju',t0:8.4,t1:8.75},{w:'Proxima',t0:8.8,t1:9.35},{w:'Centauri.',t0:9.4,t1:10.1},
-{w:'Bagaimana',t0:10.9,t1:11.4},{w:'kalau',t0:11.45,t1:11.75},{w:'hanya',t0:11.8,t1:12.1},{w:'beberapa',t0:12.15,t1:12.65},{w:'minggu?',t0:12.7,t1:13.4}];
-const kt = w => KATA.find(k => k.w.toLowerCase().startsWith(w)).t0;
-const MOMEN = {judulMasuk:.5, judulKeluar:4.3, angkaMasuk:kt('tujuh')-.5, angkaKeluar:kt('bagaimana')-.1, mingguMasuk:kt('beberapa')-.1, label:kt('proxima'), DUR:15};
-
+const TTS=[{"teks": "Pesawat tercepat yang pernah meninggalkan Tata Surya, Voyager Satu, butuh sekitar tujuh puluh lima ribu tahun menuju Proxima Centauri. Bagaimana kalau perjalanan itu hanya beberapa minggu?", "kata": [["Pesawat", 0.110666, 0.426207], ["tercepat", 0.426208, 0.802416], ["yang", 0.802416, 0.923791], ["pernah", 0.923791, 1.130082], ["meninggalkan", 1.130083, 1.603374], ["Tata", 1.603416, 1.785416], ["Surya", 1.785416, 2.319416], ["Voyager", 2.586416, 2.986874], ["Satu", 2.986875, 3.533], ["butuh", 3.812125, 4.115541], ["sekitar", 4.115541, 4.443207], ["tujuh", 4.443208, 4.722333], ["puluh", 4.722333, 4.880083], ["lima", 4.880083, 5.025708], ["ribu", 5.025708, 5.171333], ["tahun", 5.171375, 5.511166], ["menuju", 5.511166, 5.850957], ["Proxima", 5.850958, 6.275708], ["Centauri", 6.275708, 6.918916], ["Bagaimana", 7.731291, 8.338082], ["kalau", 8.338125, 8.532291], ["perjalanan", 8.532291, 8.957041], ["itu", 8.957041, 9.224041], ["hanya", 9.224041, 9.454624], ["beberapa", 9.454625, 9.782291], ["minggu", 9.782291, 10.267707]]}, {"teks": "Untuk memahami masalahnya, lihat dulu betapa luasnya alam semesta. Dari Bumi, kita mundur melewati Matahari dan planet-planet. Lalu melewati batas Tata Surya, menuju bintang terdekat. Jaraknya empat koma dua empat tahun cahaya. Satu tahun cahaya adalah jarak yang ditempuh cahaya dalam setahun, sekitar sembilan koma empat enam triliun kilometer. Dan galaksi Bima Sakti, rumah kita, lebarnya sekitar seratus ribu tahun cahaya.", "kata": [["Untuk", 0.110666, 0.365541], ["memahami", 0.365541, 0.729624], ["masalahnya", 0.729625, 1.482041], ["lihat", 1.761166, 2.028166], ["dulu", 2.028166, 2.258749], ["betapa", 2.25875, 2.537875], ["luasnya", 2.537875, 2.926208], ["alam", 2.926208, 3.120374], ["semesta", 3.120375, 3.739291], ["Dari", 4.551708, 4.818708], ["Bumi", 4.818708, 5.316291], ["kita", 5.595375, 5.825958], ["mundur", 5.825958, 6.092958], ["melewati", 6.092958, 6.469166], ["Matahari", 6.469166, 6.966749], ["dan", 6.96675, 7.185208], ["planet-planet", 7.185208, 7.949791], ["Lalu", 8.774291, 9.016999], ["melewati", 9.017, 9.393208], ["batas", 9.393208, 9.660208], ["Tata", 9.660208, 9.854374], ["Surya", 9.854375, 10.388375], ["menuju", 10.667458, 11.031541], ["bintang", 11.031541, 11.347082], ["terdekat", 11.347083, 11.881083], ["Jaraknya", 12.69525, 13.22925], ["empat", 13.22925, 13.484083], ["koma", 13.484083, 13.714666], ["dua", 13.714666, 13.896707], ["empat", 13.896708, 14.127291], ["tahun", 14.127291, 14.369999], ["cahaya", 14.370041, 14.952582], ["Satu", 15.776708, 16.055833], ["tahun", 16.055833, 16.286416], ["cahaya", 16.286416, 16.699041], ["adalah", 16.699041, 16.990291], ["jarak", 16.990291, 17.293707], ["yang", 17.293708, 17.415041], ["ditempuh", 17.415041, 17.706291], ["cahaya", 17.706291, 18.070374], ["dalam", 18.070375, 18.288833], ["setahun", 18.288833, 18.895624], ["sekitar", 19.162625, 19.538833], ["sembilan", 19.538833, 19.915041], ["koma", 19.915041, 20.121332], ["empat", 20.121375, 20.364083], ["enam", 20.364083, 20.582541], ["triliun", 20.582541, 20.982999], ["kilometer", 20.983, 21.626208], ["Dan", 22.451458, 22.657749], ["galaksi", 22.65775, 23.009708], ["Bima", 23.009708, 23.191749], ["Sakti", 23.19175, 23.737875], ["rumah", 23.992708, 24.259708], ["kita", 24.259708, 24.769416], ["lebarnya", 25.048541, 25.485416], ["sekitar", 25.485458, 25.837374], ["seratus", 25.837375, 26.213583], ["ribu", 26.213583, 26.407749], ["tahun", 26.40775, 26.662625], ["cahaya", 26.662625, 27.245166]]}, {"teks": "Masalahnya ada pada batas kecepatan alam semesta. Menurut Einstein, tidak ada benda bermassa yang bisa mencapai kecepatan cahaya, sekitar tiga ratus ribu kilometer per detik. Semakin cepat sebuah pesawat melaju, semakin besar energi yang dibutuhkan untuk mempercepatnya lagi. Untuk mencapai kecepatan cahaya, energinya menjadi tak terhingga. Jadi, berpacu dengan cahaya adalah perlombaan yang pasti kalah.", "kata": [["Masalahnya", 0.099291, 0.693916], ["ada", 0.693916, 0.900207], ["pada", 0.90025, 1.070125], ["batas", 1.070125, 1.337125], ["kecepatan", 1.337125, 1.798291], ["alam", 1.798291, 2.004582], ["semesta", 2.004625, 2.623541], ["Menurut", 3.446583, 3.737833], ["Einstein", 3.737875, 4.30825], ["tidak", 4.5995, 4.793666], ["ada", 4.793708, 4.951458], ["benda", 4.951458, 5.169916], ["bermassa", 5.169916, 5.594666], ["yang", 5.594666, 5.740291], ["bisa", 5.740291, 5.946582], ["mencapai", 5.946583, 6.322791], ["kecepatan", 6.322833, 6.747583], ["cahaya", 6.747583, 7.342249], ["sekitar", 7.584958, 7.985416], ["tiga", 7.985416, 8.215999], ["ratus", 8.216, 8.470875], ["ribu", 8.470875, 8.689333], ["kilometer", 8.689333, 9.101958], ["per", 9.101958, 9.223291], ["detik", 9.223291, 9.623791], ["Semakin", 10.449041, 10.837374], ["cepat", 10.837375, 11.067958], ["sebuah", 11.067958, 11.347083], ["pesawat", 11.347083, 11.674749], ["melaju", 11.67475, 12.220875], ["semakin", 12.5, 12.876208], ["besar", 12.876208, 13.106791], ["energi", 13.106791, 13.470874], ["yang", 13.470875, 13.580083], ["dibutuhkan", 13.580083, 14.114083], ["untuk", 14.114083, 14.368916], ["mempercepatnya", 14.368916, 14.963582], ["lagi", 14.963583, 15.424749], ["Untuk", 16.25, 16.492708], ["mencapai", 16.492708, 16.868916], ["kecepatan", 16.868916, 17.305791], ["cahaya", 17.305833, 17.900499], ["energinya", 18.19175, 18.713583], ["menjadi", 18.713583, 19.089791], ["tak", 19.089791, 19.271832], ["terhingga", 19.271833, 19.915041], ["Jadi", 20.728875, 21.347791], ["berpacu", 21.626958, 22.039583], ["dengan", 22.039583, 22.245874], ["cahaya", 22.245875, 22.622083], ["adalah", 22.622083, 22.889083], ["perlombaan", 22.889083, 23.350249], ["yang", 23.35025, 23.495875], ["pasti", 23.495875, 23.799291], ["kalah", 23.799291, 24.284707]]}, {"teks": "Tapi ada celah dalam aturan itu. Ruang dan waktu sendiri bisa melengkung dan mengembang. Buktinya, alam semesta terus mengembang sejak Big Bang, dan galaksi yang sangat jauh menjauh dari kita lebih cepat daripada cahaya. Tidak ada aturan yang dilanggar, sebab batas kecepatan cahaya berlaku untuk benda di dalam ruang, bukan untuk ruangnya sendiri.", "kata": [["Tapi", 0.099291, 0.414791], ["ada", 0.414791, 0.596832], ["celah", 0.596833, 0.875958], ["dalam", 0.875958, 1.094416], ["aturan", 1.094416, 1.385666], ["itu", 1.385666, 1.834707], ["Ruang", 2.647083, 2.999041], ["dan", 2.999041, 3.144666], ["waktu", 3.144666, 3.387374], ["sendiri", 3.387375, 3.8], ["bisa", 3.8, 4.030583], ["melengkung", 4.030583, 4.443208], ["dan", 4.443208, 4.588833], ["mengembang", 4.588833, 5.195624], ["Buktinya", 6.008, 6.724], ["alam", 7.015291, 7.221582], ["semesta", 7.221583, 7.585666], ["terus", 7.585666, 7.828374], ["mengembang", 7.828416, 8.180332], ["sejak", 8.180333, 8.495874], ["Big", 8.495875, 8.665791], ["Bang", 8.665791, 9.041999], ["dan", 9.321125, 9.527416], ["galaksi", 9.527416, 9.879374], ["yang", 9.879375, 9.976458], ["sangat", 9.976458, 10.231291], ["jauh", 10.231291, 10.449749], ["menjauh", 10.44975, 10.862375], ["dari", 10.862375, 11.008], ["kita", 11.008, 11.202166], ["lebih", 11.202166, 11.384207], ["cepat", 11.384208, 11.675458], ["daripada", 11.6755, 12.039583], ["cahaya", 12.039583, 12.622124], ["Tidak", 13.446583, 13.628624], ["ada", 13.628625, 13.77425], ["aturan", 13.774291, 14.065541], ["yang", 14.065541, 14.174749], ["dilanggar", 14.17475, 14.769416], ["sebab", 15.048541, 15.327666], ["batas", 15.327666, 15.594666], ["kecepatan", 15.594666, 16.007291], ["cahaya", 16.007291, 16.322832], ["berlaku", 16.322833, 16.747583], ["untuk", 16.747583, 16.953874], ["benda", 16.953875, 17.233], ["di", 17.233, 17.317958], ["dalam", 17.317958, 17.548541], ["ruang", 17.548541, 17.985416], ["bukan", 18.228166, 18.531541], ["untuk", 18.531541, 18.749999], ["ruangnya", 18.75, 19.029125], ["sendiri", 19.029125, 19.587375]]}, {"teks": "Tahun seribu sembilan ratus sembilan puluh empat, fisikawan Miguel Alcubierre mengusulkan ide berani. Bayangkan sebuah pesawat di dalam gelembung warp. Ruang di depan gelembung menyusut, sementara ruang di belakangnya mengembang. Gelembung itu meluncur seperti peselancar di atas gelombang ruang-waktu. Pesawatnya sendiri diam di dalam gelembung, jadi aturan Einstein tetap aman. Dan para penumpang tidak merasakan percepatan sama sekali. Kalau gelembungnya cukup cepat, perjalanan ke Proxima Centauri bisa ditempuh dalam hitungan minggu, bukan puluhan ribu tahun.", "kata": [["Tahun", 0.110666, 0.353374], ["seribu", 0.353416, 0.644666], ["sembilan", 0.644666, 0.948041], ["ratus", 0.948041, 1.166499], ["sembilan", 1.1665, 1.445625], ["puluh", 1.445625, 1.603375], ["empat", 1.603416, 2.040291], ["fisikawan", 2.319416, 2.816999], ["Miguel", 2.817, 3.10825], ["Alcubierre", 3.10825, 3.727166], ["mengusulkan", 3.727166, 4.248999], ["ide", 4.249041, 4.528166], ["berani", 4.528166, 5.062166], ["Bayangkan", 5.8745, 6.396333], ["sebuah", 6.396375, 6.69975], ["pesawat", 6.69975, 7.136625], ["di", 7.136666, 7.233749], ["dalam", 7.23375, 7.488583], ["gelembung", 7.488583, 7.816249], ["warp", 7.81625, 8.204583], ["Ruang", 9.017708, 9.296833], ["di", 9.296833, 9.357499], ["depan", 9.357541, 9.612374], ["gelembung", 9.612375, 9.903625], ["menyusut", 9.903625, 10.474], ["sementara", 10.741, 11.153625], ["ruang", 11.153625, 11.420625], ["di", 11.420625, 11.493458], ["belakangnya", 11.493458, 11.954624], ["mengembang", 11.954625, 12.561416], ["Gelembung", 13.3745, 13.726458], ["itu", 13.726458, 13.969166], ["meluncur", 13.969166, 14.369666], ["seperti", 14.369666, 14.660916], ["peselancar", 14.660916, 15.219166], ["di", 15.219166, 15.328374], ["atas", 15.328416, 15.571124], ["gelombang", 15.571125, 15.947333], ["ruang-waktu", 15.947333, 16.663333], ["Pesawatnya", 17.487875, 17.936875], ["sendiri", 17.936875, 18.300958], ["diam", 18.300958, 18.543666], ["di", 18.543708, 18.616499], ["dalam", 18.6165, 18.834958], ["gelembung", 18.834958, 19.368958], ["jadi", 19.672333, 19.951458], ["aturan", 19.951458, 20.230583], ["Einstein", 20.230583, 20.655333], ["tetap", 20.655333, 20.898041], ["aman", 20.898041, 21.395624], ["Dan", 22.209458, 22.464333], ["para", 22.464333, 22.622083], ["penumpang", 22.622083, 23.083249], ["tidak", 23.08325, 23.277416], ["merasakan", 23.277416, 23.726457], ["percepatan", 23.726458, 24.236166], ["sama", 24.236166, 24.466749], ["sekali", 24.46675, 25.037125], ["Kalau", 25.861666, 26.080082], ["gelembungnya", 26.080083, 26.553374], ["cukup", 26.553416, 26.796124], ["cepat", 26.796125, 27.245166], ["perjalanan", 27.512125, 28.021833], ["ke", 28.021833, 28.094666], ["Proxima", 28.094666, 28.446582], ["Centauri", 28.446583, 28.895624], ["bisa", 28.895625, 29.114083], ["ditempuh", 29.114083, 29.502416], ["dalam", 29.502416, 29.708707], ["hitungan", 29.70875, 30.024291], ["minggu", 30.024291, 30.509707], ["bukan", 30.752416, 31.080082], ["puluhan", 31.080083, 31.419874], ["ribu", 31.419916, 31.614082], ["tahun", 31.614083, 32.135916]]}, {"teks": "Sayangnya, ada hambatan besar. Gelembung warp membutuhkan energi negatif, atau materi eksotis, yang belum pernah ditemukan dalam jumlah berarti. Perhitungan awal menyebut energinya melampaui seluruh massa alam semesta teramati. Setelah disempurnakan, kebutuhannya turun menjadi setara massa planet raksasa seperti Jupiter. Tetap saja, mustahil untuk sekarang. Belum lagi, kita belum tahu cara mengendalikan gelembung itu, dan saat berhenti, ia bisa melepaskan ledakan radiasi berbahaya.", "kata": [["Sayangnya", 0.099291, 0.875999], ["ada", 1.130833, 1.373541], ["hambatan", 1.373541, 1.749749], ["besar", 1.74975, 2.247333], ["Gelembung", 3.059, 3.435208], ["warp", 3.435208, 3.653624], ["membutuhkan", 3.653625, 4.0905], ["energi", 4.090541, 4.418207], ["negatif", 4.418208, 5.049291], ["atau", 5.304125, 5.571125], ["materi", 5.571125, 5.8745], ["eksotis", 5.8745, 6.529833], ["yang", 6.772583, 6.942458], ["belum", 6.942458, 7.100208], ["pernah", 7.10025, 7.342958], ["ditemukan", 7.342958, 7.791999], ["dalam", 7.792, 8.010416], ["jumlah", 8.010416, 8.289541], ["berarti", 8.289583, 8.872124], ["Perhitungan", 9.685208, 10.146374], ["awal", 10.146375, 10.4255], ["menyebut", 10.4255, 10.753166], ["energinya", 10.753166, 11.262874], ["melampaui", 11.262875, 11.845375], ["seluruh", 11.845375, 12.173041], ["massa", 12.173041, 12.391499], ["alam", 12.3915, 12.634208], ["semesta", 12.634208, 13.010416], ["teramati", 13.010416, 13.690041], ["Setelah", 14.514583, 14.830083], ["disempurnakan", 14.830083, 15.643208], ["kebutuhannya", 15.946583, 16.480583], ["turun", 16.480583, 16.759708], ["menjadi", 16.759708, 17.075249], ["setara", 17.07525, 17.34225], ["massa", 17.34225, 17.597083], ["planet", 17.597083, 17.851958], ["raksasa", 17.851958, 18.361666], ["seperti", 18.361666, 18.701457], ["Jupiter", 18.701458, 19.296124], ["Tetap", 20.109958, 20.376958], ["saja", 20.376958, 20.959499], ["mustahil", 21.238583, 21.748291], ["untuk", 21.748291, 21.954582], ["sekarang", 21.954625, 22.525], ["Belum", 23.3495, 23.555791], ["lagi", 23.555833, 24.053416], ["kita", 24.320375, 24.550958], ["belum", 24.550958, 24.732999], ["tahu", 24.733, 24.927166], ["cara", 24.927166, 25.157749], ["mengendalikan", 25.15775, 25.643166], ["gelembung", 25.643208, 25.922333], ["itu", 25.922333, 26.359208], ["dan", 26.626208, 26.832499], ["saat", 26.832541, 27.050957], ["berhenti", 27.050958, 27.669874], ["ia", 27.92475, 28.094666], ["bisa", 28.094666, 28.313124], ["melepaskan", 28.313125, 28.786416], ["ledakan", 28.786416, 29.174749], ["radiasi", 29.17475, 29.5995], ["berbahaya", 29.5995, 30.29125]]}, {"teks": "Namun penelitian terus berjalan. NASA dan para fisikawan masih menelaah ide ini, dan usulan teori terbaru mencoba memangkas kebutuhan energinya, bahkan tanpa energi negatif. Belum ada yang berhasil membangunnya. Tapi suatu hari nanti, mungkin kita akan menatap bintang itu dari dekat. Mungkin suatu hari nanti?", "kata": [["Namun", 0.099625, 0.463708], ["penelitian", 0.463708, 0.997708], ["terus", 0.997708, 1.252541], ["berjalan", 1.252541, 1.944291], ["NASA", 2.767, 3.05825], ["dan", 3.05825, 3.19175], ["para", 3.19175, 3.32525], ["fisikawan", 3.32525, 3.834958], ["masih", 3.834958, 4.077666], ["menelaah", 4.077666, 4.417457], ["ide", 4.417458, 4.599499], ["ini", 4.5995, 5.02425], ["dan", 5.315541, 5.509707], ["usulan", 5.509708, 5.837374], ["teori", 5.837375, 6.043666], ["terbaru", 6.043708, 6.395624], ["mencoba", 6.395625, 6.771833], ["memangkas", 6.771833, 7.148041], ["kebutuhan", 7.148041, 7.548541], ["energinya", 7.548541, 8.264541], ["bahkan", 8.531541, 8.932041], ["tanpa", 8.932041, 9.186874], ["energi", 9.186875, 9.514541], ["negatif", 9.514583, 10.169916], ["Belum", 10.984458, 11.275708], ["ada", 11.275708, 11.530583], ["yang", 11.530583, 11.664083], ["berhasil", 11.664083, 12.064583], ["membangunnya", 12.064583, 12.780583], ["Tapi", 13.604375, 13.822833], ["suatu", 13.822833, 14.077666], ["hari", 14.077666, 14.235416], ["nanti", 14.235416, 14.757249], ["mungkin", 15.048541, 15.376207], ["kita", 15.376208, 15.546124], ["akan", 15.546125, 15.716], ["menatap", 15.716, 16.031541], ["bintang", 16.031541, 16.286416], ["itu", 16.286416, 16.504874], ["dari", 16.504875, 16.686875], ["dekat", 16.686875, 17.087375], ["Mungkin", 17.901958, 18.302416], ["suatu", 18.302416, 18.557291], ["hari", 18.557291, 18.727166], ["nanti", 18.727166, 19.248999]]}];
+const START=[.7,14.5,43.5,70,91.5,125.5,158.5];
+const KATA=[],KS=[];
+TTS.forEach((o,k)=>{const tk=o.teks.split(' ');KS[k]=[];o.kata.forEach((q,i)=>{const e={w:tk[i],t0:+(START[k]+q[1]).toFixed(3),t1:+(START[k]+q[2]).toFixed(3)};KATA.push(e);KS[k].push(e);});o.start=START[k];});
+const kw=(k,w,n)=>{const m=KS[k].filter(e=>e.w.toLowerCase().replace(/[^a-z0-9]/g,'').startsWith(w));return m[n||0].t0;};
+const DUR=180;
+const MOMEN={judulMasuk:.5,judulKeluar:4.3,angkaMasuk:kw(0,'tujuh')-.5,angkaKeluar:kw(0,'bagaimana')-.1,mingguMasuk:kw(0,'beberapa')-.1};
 /* ============ [1] PALET & FONT ============ */
 const C = h => new THREE.Color(h).convertSRGBToLinear(), V3 = (x,y,z) => new THREE.Vector3(x,y,z), DEG = Math.PI/180;
 const PAL = {teks:'#EEF2FF', aksen:'#B9A8FF', dingin:'#7FA8FF', proxima:'#FF9C6B', emas:'#C99A45', label:'#CFD8FF'};
@@ -99,7 +109,7 @@ const kubah = new THREE.Mesh(new THREE.SphereGeometry(5000,48,24), new THREE.Sha
     c+=vec3(.008,.01,.03)*fbm(d*2.+5.);gl_FragColor=vec4(c*.8,1.);}`}));
 kubah.frustumCulled = false; S.add(kubah);
 
-(function(){ const N=7000, P=new Float32Array(N*3), Co=new Float32Array(N*3), Sz=new Float32Array(N); const r=rng(11);
+let STARS; (function(){ const N=7000, P=new Float32Array(N*3), Co=new Float32Array(N*3), Sz=new Float32Array(N); const r=rng(11);
   const b1=V3(1,0,0).cross(GAL).normalize(), b2=GAL.clone().cross(b1);
   for(let i=0;i<N;i++){ let x,y,z;
     if(i<N*.45){ const a=r()*6.283,h=(r()+r()+r()-1.5)*.22; const v=b1.clone().multiplyScalar(Math.cos(a)).add(b2.clone().multiplyScalar(Math.sin(a))).add(GAL.clone().multiplyScalar(h)).normalize(); x=v.x;y=v.y;z=v.z; }
@@ -110,7 +120,7 @@ kubah.frustumCulled = false; S.add(kubah);
   const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
     vertexShader:'attribute vec3 color;attribute float sz;varying vec3 vC;void main(){vC=color;gl_PointSize=sz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader:'varying vec3 vC;void main(){vec2 d=gl_PointCoord-.5;float a=smoothstep(.5,.0,length(d));gl_FragColor=vec4(vC*a*3.2,1.);}'});
-  const pts=new THREE.Points(g,m); pts.frustumCulled=false; S.add(pts); })();
+  STARS=new THREE.Points(g,m); STARS.frustumCulled=false; S.add(STARS); })();
 
 const sprTex = (() => { const c = kanvas(256,256), x = c.getContext('2d'); const g = x.createRadialGradient(128,128,0,128,128,128);
   g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(.08,'rgba(255,230,200,.95)'); g.addColorStop(.25,'rgba(255,160,110,.35)'); g.addColorStop(1,'rgba(255,120,80,0)');
@@ -187,7 +197,7 @@ for(let i=0;i<8;i++){ const a=i/8*6.283; const t=cyl(.012,.012,.07,mGelap,6); t.
 PROBE.scale.setScalar(1.15); S.add(PROBE);
 const matahari = new THREE.DirectionalLight(0xfff0dc, 3.4); S.add(matahari);
 const isi = new THREE.DirectionalLight(C('#4a74ff'), 1.15); isi.position.set(.3,-.8,.9); S.add(isi);
-S.add(new THREE.HemisphereLight(0x6d86d6, 0x14182e, .38));
+const hemi=new THREE.HemisphereLight(0x6d86d6, 0x14182e, .38); S.add(hemi);
 
 /* ============ [9] KAMERA ============ */
 const probeAt = t => V3(-4 + 1.1*t + .30*t*t, 1.7 + .14*t + .02*t*t, -15 - .23*t*t);
@@ -196,57 +206,392 @@ const camAbs = t => V3(3 - .3*t, 1.2 + .1*t, 2 - .3*t);
 const tgtAbs = t => V3(-2 + .8*t, -10 + .6*t, -60);
 function camRel(t){ const p = probeAt(t), a = (t<9 ? lerp(140,100,E.io(seg(t,3.5,9))) : lerp(100,178,E.io(seg(t,9,14.8))))*DEG, r = lerp(7, 15, E.io(seg(t,3.5,9.5))) + lerp(0,26,E.io(seg(t,9.8,14.8)));
   return p.clone().add(V3(Math.cos(a)*r, lerp(1.4,3.6,E.io(seg(t,3,9))) + lerp(0,5,seg(t,10,15)), Math.sin(a)*r)); }
-function kamera(t){ const k = E.io(seg(t,3.2,6.6)); const p = probeAt(t);
+function kamera1(t){ const k = E.io(seg(t,3.2,6.6)); const p = probeAt(t);
   const pos = camAbs(t).lerp(camRel(t), k); const tg = tgtAbs(t).lerp(p, E.io(seg(t,1.8,5.2)));
   const tg2 = tg.lerp(p.clone().add(ARAH_JALAN.clone().multiplyScalar(50*seg(t,11,15))), E.io(seg(t,10.5,14.5)));
-  cam.position.set(pos.x + nz(t*.5,1)*.05, pos.y + nz(t*.6,2)*.04, pos.z + nz(t*.5,3)*.05); cam.lookAt(tg2); const rg=V3(1,0,0).applyQuaternion(cam.quaternion); const dd=cam.position.distanceTo(tg2); cam.lookAt(tg2.clone().addScaledVector(rg,-dd*.2*E.io(seg(t,3,5.5)))); cam.updateMatrixWorld(); }
+  cam.position.set(pos.x + nz(t*.5,1)*.05, pos.y + nz(t*.6,2)*.04, pos.z + nz(t*.5,3)*.05); cam.near=.1;cam.far=9000;cam.updateProjectionMatrix();cam.lookAt(tg2); const rg=V3(1,0,0).applyQuaternion(cam.quaternion); const dd=cam.position.distanceTo(tg2); cam.lookAt(tg2.clone().addScaledVector(rg,-dd*.2*E.io(seg(t,3,5.5)))); cam.updateMatrixWorld(); }
 
-/* ============ [10] TEKS ============ */
-const proyeksiDunia = (x,y,z) => { const v = V3(x,y,z).project(cam); return [(v.x*.5+.5)*W, (-v.y*.5+.5)*H]; };
-const L_PROX = label({dx:-170, dy:-150, teks:'Proxima Centauri · 4,24 tahun cahaya', warna:PAL.proxima, font:`'${FONT.judul}'`, ukuran:50, tebal:400});
-const L_VOY = label({dx:150, dy:130, teks:'Voyager 1', warna:PAL.label, font:`'${FONT.judul}'`, ukuran:50, tebal:400});
+/* ============ ASET ADEGAN 2-7 ============ */
+const SPRW = (() => { const c=kanvas(256,256), x=c.getContext('2d'); const g=x.createRadialGradient(128,128,0,128,128,128);
+  g.addColorStop(0,'rgba(255,255,255,1)'); g.addColorStop(.1,'rgba(255,255,255,.85)'); g.addColorStop(.3,'rgba(255,255,255,.25)'); g.addColorStop(1,'rgba(255,255,255,0)');
+  x.fillStyle=g; x.fillRect(0,0,256,256); return new THREE.CanvasTexture(c); })();
+const mkSpr = (col, mult) => { const m=new THREE.SpriteMaterial({map:SPRW,color:C(col).multiplyScalar(mult||1),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true});
+  const s=new THREE.Sprite(m); s.visible=false; S.add(s); return s; };
+const bandTex = (col, seed) => { const c=kanvas(512,256), x=c.getContext('2d'); const r=rng(seed||3); const base=new THREE.Color(col);
+  for(let y=0;y<256;y++){ const k=.78+.28*Math.sin(y*.19+Math.sin(y*.05)*3)+(r()-.5)*.08; x.fillStyle=`rgb(${Math.min(255,base.r*255*k)|0},${Math.min(255,base.g*255*k)|0},${Math.min(255,base.b*255*k)|0})`; x.fillRect(0,y,512,1); }
+  const t=new THREE.CanvasTexture(c); return t; };
+
+/* --- Tata Surya (adegan 2) --- */
+const SUNP = V3(PUSAT_B.x, PUSAT_B.y, PUSAT_B.z - 1500);
+const GSOL = new THREE.Group(); GSOL.visible=false; S.add(GSOL);
+const sunM = new THREE.Mesh(new THREE.SphereGeometry(260,48,32), new THREE.MeshBasicMaterial({color:new THREE.Color(4.5,3.2,1.6)})); sunM.position.copy(SUNP); GSOL.add(sunM);
+const sunL = new THREE.PointLight(0xfff0d8, 3.4, 0, 0); sunL.position.copy(SUNP); GSOL.add(sunL);
+const orbitLine = (a) => { const P=[]; for(let i=0;i<=256;i++){ const t=i/256*Math.PI*2; P.push(SUNP.x+Math.cos(t)*a, SUNP.y, SUNP.z+Math.sin(t)*a); }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));
+  const l=new THREE.Line(g,new THREE.LineBasicMaterial({color:C('#7b86d6').multiplyScalar(1.2),transparent:true,opacity:.55})); GSOL.add(l); };
+orbitLine(1500);
+[['merkurius',560,18,'#9a8f86',200,0],['venus',1020,40,'#d9b27a',330,0],['mars',2050,26,'#b5573a',40,0],['jupiter',3100,110,'#d8b08c',150,1],['saturnus',4100,95,'#e3cf9a',250,2],['uranus',5000,65,'#8fd6dc',20,0],['neptunus',5850,62,'#3f66d8',300,0]]
+.forEach(([n,a,r,col,th,ty],i)=>{ const m=new THREE.Mesh(new THREE.SphereGeometry(r,48,32), new THREE.MeshStandardMaterial({color:ty?0xffffff:C(col), map:ty?bandTex(col,i+2):null, roughness:.85, metalness:0}));
+  const ang=th*DEG; m.position.set(SUNP.x+Math.cos(ang)*a, SUNP.y, SUNP.z+Math.sin(ang)*a); GSOL.add(m); orbitLine(a);
+  if(ty===2){ const rg=new THREE.Mesh(new THREE.RingGeometry(r*1.35,r*2.3,96), new THREE.MeshBasicMaterial({color:C('#d8c18a'),side:THREE.DoubleSide,transparent:true,opacity:.7})); rg.rotation.x=-Math.PI/2+.4; rg.position.copy(m.position); GSOL.add(rg); } });
+/* --- skala antarbintang (adegan 2) --- */
+const PROXP = SUNP.clone().add(V3(300000,0,-30000)), KEARAH = PROXP.clone().sub(SUNP), LY = KEARAH.length()/4.24;
+const spSun = mkSpr('#fff1d6',2.2), spProx = mkSpr('#ff9c6b',2.0), spPulse = mkSpr('#9fd0ff',3.0);
+const rulerG = (() => { const P=[SUNP.x,SUNP.y,SUNP.z,PROXP.x,PROXP.y,PROXP.z]; const d=KEARAH.clone().normalize();
+  for(let i=1;i<=4;i++){ const p=SUNP.clone().addScaledVector(d,i*LY); P.push(p.x,p.y-9000,p.z,p.x,p.y+9000,p.z); }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));
+  const l=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:C('#9bb0ff').multiplyScalar(2.2),transparent:true,opacity:.9})); l.visible=false; l.frustumCulled=false; S.add(l); return l; })();
+/* --- galaksi Bima Sakti (adegan 2 akhir) --- */
+const GGAL = new THREE.Group(); GGAL.visible=false; S.add(GGAL);
+(function(){ const N=60000,P=new Float32Array(N*3),Co=new Float32Array(N*3),Sz=new Float32Array(N); const r=rng(21);
+  for(let i=0;i<N;i++){ let x,y,z,col; const k=r();
+    if(k<.2){ const u=Math.pow(r(),1.8)*5200,a=r()*6.283,b=(r()-.5)*2; x=Math.cos(a)*u; z=Math.sin(a)*u; y=b*u*.34; col=[1,.78,.5]; }
+    else { const arm=(r()<.5?0:Math.PI), rad=Math.pow(r(),.62)*30000+1200; const f=rad/30000;
+      const th=arm+Math.log(rad/1200)*2.6+(r()-.5)*(.45+.5*f); x=Math.cos(th)*rad+(r()-.5)*rad*.07; z=Math.sin(th)*rad+(r()-.5)*rad*.07; y=(r()-.5)*(700+rad*.018);
+      col=[1-f*.5,.84-f*.18,.68+f*.32]; }
+    const br=.28+r()*.8; P[i*3]=x;P[i*3+1]=y;P[i*3+2]=z; Co[i*3]=col[0]*br;Co[i*3+1]=col[1]*br;Co[i*3+2]=col[2]*br; Sz[i]=1.3+Math.pow(r(),6)*3.2; }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(P,3)); g.setAttribute('color',new THREE.BufferAttribute(Co,3)); g.setAttribute('sz',new THREE.BufferAttribute(Sz,1));
+  const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+    vertexShader:'attribute vec3 color;attribute float sz;varying vec3 vC;void main(){vC=color;gl_PointSize=sz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+    fragmentShader:'varying vec3 vC;void main(){vec2 d=gl_PointCoord-.5;float a=smoothstep(.5,.0,length(d));gl_FragColor=vec4(vC*a*1.5,1.);}'});
+  const pts=new THREE.Points(g,m); pts.frustumCulled=false; GGAL.add(pts); })();
+const galCore = mkSpr('#ffd9a0',1.4); GGAL.add(galCore); S.remove(galCore); galCore.position.set(0,0,0); galCore.scale.setScalar(16000);
+const galHalo = mkSpr('#7f8cff',.2); GGAL.add(galHalo); S.remove(galHalo); galHalo.scale.setScalar(90000);
+const MARK_ANG = 1.1, MARK_R = 15600, MARK = V3(Math.cos(MARK_ANG)*MARK_R, 0, Math.sin(MARK_ANG)*MARK_R);
+GGAL.rotation.x = .95; GGAL.rotation.z = .15;
+
+/* --- pesawat utama: cakram dengan cincin energi --- */
+const SHIP = new THREE.Group(); SHIP.visible=false; S.add(SHIP);
+const texPanel = (() => { const c=kanvas(1024,256), x=c.getContext('2d'); const r=rng(14); const g=x.createLinearGradient(0,0,0,256); g.addColorStop(0,'#dfe4f0'); g.addColorStop(.5,'#b9c0d2'); g.addColorStop(1,'#8e96ab');
+  x.fillStyle=g; x.fillRect(0,0,1024,256);
+  for(let i=0;i<32;i++){ x.fillStyle='rgba(30,36,60,.35)'; x.fillRect(i*32,0,2,256); }
+  for(let j=0;j<7;j++){ x.fillStyle='rgba(30,36,60,.3)'; x.fillRect(0,20+j*34,1024,2); }
+  for(let i=0;i<260;i++){ x.fillStyle=`rgba(${r()<.5?'255,255,255':'40,46,70'},${.04+r()*.08})`; x.fillRect(r()*1024,r()*256,10+r()*50,6+r()*26); }
+  for(let i=0;i<48;i++){ x.fillStyle='rgba(150,190,255,.9)'; x.fillRect(i*21.3+4,128,6,4); }
+  const t=new THREE.CanvasTexture(c); t.wrapS=THREE.RepeatWrapping; return t; })();
+const hullG = new THREE.LatheGeometry([[0,.36],[.45,.35],[.9,.3],[1.4,.2],[1.72,.08],[1.8,0],[1.72,-.07],[1.3,-.17],[.7,-.24],[0,-.27]].map(p=>new THREE.Vector2(p[0],p[1])),96);
+SHIP.add(new THREE.Mesh(hullG, new THREE.MeshStandardMaterial({map:texPanel,bumpMap:texPanel,bumpScale:.6,metalness:.7,roughness:.34})));
+const domeG = new THREE.SphereGeometry(.58,48,24,0,Math.PI*2,0,Math.PI/2); const dome = new THREE.Mesh(domeG, new THREE.MeshStandardMaterial({color:0x101a3a,metalness:.3,roughness:.08,emissive:0x3a5cff,emissiveIntensity:.55,transparent:true,opacity:.9}));
+dome.scale.y=.55; dome.position.y=.33; SHIP.add(dome);
+const ringMat = new THREE.MeshBasicMaterial({color:C('#9a86ff').multiplyScalar(2.6)}); const ringMat2 = new THREE.MeshBasicMaterial({color:C('#7fa8ff').multiplyScalar(2.2),transparent:true,opacity:.8});
+const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.98,.07,16,160), ringMat); ring1.rotation.x=Math.PI/2; SHIP.add(ring1);
+const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.3,.022,12,160), ringMat2); ring2.rotation.x=Math.PI/2; SHIP.add(ring2);
+const nodes = []; for(let i=0;i<10;i++){ const n=new THREE.Mesh(new THREE.SphereGeometry(.1,12,8), new THREE.MeshBasicMaterial({color:C('#e4dcff').multiplyScalar(4)})); SHIP.add(n); nodes.push(n); }
+const shipLamp = new THREE.PointLight(C('#8b78ff'), 2.2, 9, 1.6); shipLamp.position.set(0,.2,0); SHIP.add(shipLamp);
+const engGlow = new THREE.Sprite(new THREE.SpriteMaterial({map:SPRW,color:C('#7fa8ff').multiplyScalar(2.2),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true})); engGlow.scale.set(2.6,2.6,1); engGlow.position.y=-.45; SHIP.add(engGlow);
+SHIP.scale.setScalar(.9);
+function kapalUpd(t, glow){ const g=(glow===undefined?1:glow); ringMat.color.copy(C('#9a86ff')).multiplyScalar((2.2+.7*Math.sin(t*3))*g); ringMat2.color.copy(C('#7fa8ff')).multiplyScalar(2.2*g);
+  nodes.forEach((n,i)=>{ const a=t*1.4+i/nodes.length*6.283; n.position.set(Math.cos(a)*1.98,0,Math.sin(a)*1.98); n.visible=g>.05; }); shipLamp.intensity=2.2*g; engGlow.material.opacity=Math.min(1,g); }
+
+/* --- gelembung warp --- */
+const BUB = new THREE.Mesh(new THREE.SphereGeometry(4.7,72,48), new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  uniforms:{uT:{value:0},uK:{value:0},uF:{value:0}},
+  vertexShader:'varying vec3 vN;varying vec3 vW;varying vec3 vP;void main(){vN=normalize(mat3(modelMatrix)*normal);vP=position;vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}',
+  fragmentShader:`uniform float uT,uK,uF;varying vec3 vN;varying vec3 vW;varying vec3 vP;${GLSL_NOISE}
+   void main(){vec3 V=normalize(cameraPosition-vW);float f=pow(1.-abs(dot(normalize(vN),V)),2.4);
+    float r=fbm(vP*.9+vec3(uT*.7,uT*.5,0.))*.7+.3;float bands=.5+.5*sin(vP.x*2.6-uT*3.2+fbm(vP*.8)*5.);
+    float fl=1.-uF*step(.5,fract(sin(floor(uT*14.)*91.7)*43758.5));
+    vec3 c=mix(vec3(.25,.4,1.),vec3(.75,.4,1.),bands)*(f*1.9*r+.035)*uK*fl;gl_FragColor=vec4(c,1.);}`}));
+BUB.visible=false; S.add(BUB);
+
+/* --- kisi ruang-waktu --- */
+const GN=141, GM=141, GS=1.35;
+const gridPos=new Float32Array(GN*GM*3), gridCol=new Float32Array(GN*GM*3), gidx=[];
+for(let i=0;i<GN;i++)for(let j=0;j<GM;j++){ const a=i*GM+j; if(i<GN-1) gidx.push(a,a+GM); if(j<GM-1) gidx.push(a,a+1); }
+const gridG=new THREE.BufferGeometry(); gridG.setAttribute('position',new THREE.BufferAttribute(gridPos,3)); gridG.setAttribute('color',new THREE.BufferAttribute(gridCol,3)); gridG.setIndex(gidx);
+const GRID=new THREE.LineSegments(gridG,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})); GRID.frustumCulled=false; GRID.visible=false; S.add(GRID);
+function gridUpd(P){ const hx=(GN-1)/2, hz=(GM-1)/2; let n=0; const gs=GS*P.a;
+  for(let i=0;i<GN;i++)for(let j=0;j<GM;j++){
+    const x=(i-hx)*gs+P.cx, z=(j-hz)*gs+P.cz; let y=0, cr=.2, cg=.3, cb=.85;
+    if(P.D){ const dx=x-P.wx, dz=z-P.wz, w=P.ww; const q=P.D/Math.sqrt(1+(dx*dx+dz*dz)/(w*w)); y-=q; const m=Math.min(1,q/10); cr+=.6*m; cg+=.15*m; cb-=.3*m; }
+    if(P.A){ const dx=x-P.xs, dz=z-P.zs, rs=Math.sqrt(dx*dx+dz*dz)+1e-4, e=(rs-P.R)/P.w, gg=Math.exp(-e*e); const h=-P.A*(dx/rs)*gg; y+=h;
+      if(h<0){ const m=Math.min(1,-h/3); cr-=.1*m; cg+=.35*m; cb+=.25*m; } else { const m=Math.min(1,h/3); cr+=.7*m; cg-=.1*m; cb+=.2*m; } }
+    const dd=Math.hypot(x-P.fx, z-P.fz), fd=Math.max(0,1-(dd/P.fr)*(dd/P.fr)), br=P.op*fd*1.5;
+    gridPos[n]=x; gridPos[n+1]=y; gridPos[n+2]=z; gridCol[n]=Math.max(0,cr)*br; gridCol[n+1]=Math.max(0,cg)*br; gridCol[n+2]=Math.max(0,cb)*br; n+=3; }
+  gridG.attributes.position.needsUpdate=true; gridG.attributes.color.needsUpdate=true; }
+
+/* galaksi-galaksi di kisi (adegan 4) */
+const galTex = (() => { const c=kanvas(128,128), x=c.getContext('2d'); const g=x.createRadialGradient(64,64,0,64,64,60); g.addColorStop(0,'rgba(255,240,210,1)'); g.addColorStop(.18,'rgba(255,225,190,.8)'); g.addColorStop(1,'rgba(150,170,255,0)'); x.fillStyle=g; x.fillRect(0,0,128,128);
+  x.globalCompositeOperation='lighter'; x.translate(64,64); x.rotate(.5); x.scale(1,.42); for(let a=0;a<2;a++){ x.rotate(Math.PI); x.beginPath(); for(let t=0;t<5.5;t+=.1){ const rr=3+t*9; x.lineTo(Math.cos(t)*rr,Math.sin(t)*rr); } x.strokeStyle='rgba(200,215,255,.55)'; x.lineWidth=7; x.stroke(); }
+  return new THREE.CanvasTexture(c); })();
+const GX = []; { const r=rng(31); for(let i=0;i<24;i++){ const a=r()*6.283, rad=(i<2?[52,64][i]:8+Math.sqrt(r())*62); const s=new THREE.Sprite(new THREE.SpriteMaterial({map:galTex,color:C('#ffffff').multiplyScalar(1.3),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true}));
+  s.visible=false; S.add(s); GX.push({s,x:Math.cos(a)*rad,z:Math.sin(a)*rad,sc:2.2+r()*1.6}); } }
+GX[0].x=-34; GX[0].z=32; GX[1].x=44; GX[1].z=-38;
+const ORB = new THREE.Mesh(new THREE.SphereGeometry(2.4,48,32), new THREE.MeshStandardMaterial({color:0xffc77a,emissive:0xff9a30,emissiveIntensity:.9,roughness:.5})); ORB.visible=false; S.add(ORB);
+const FOTON = new THREE.Mesh(new THREE.SphereGeometry(.3,16,12), new THREE.MeshBasicMaterial({color:new THREE.Color(5,5,5)})); FOTON.visible=false; S.add(FOTON);
+const FOTONGLOW = mkSpr('#cfe6ff',3); FOTONGLOW.scale.setScalar(3.6);
+
+/* --- adegan 3: orb cahaya, debu --- */
+const streakTex = (() => { const c=kanvas(256,16), x=c.getContext('2d'); const g=x.createLinearGradient(0,0,256,0); g.addColorStop(0,'rgba(255,255,255,0)'); g.addColorStop(1,'rgba(255,255,255,1)'); x.fillStyle=g; x.fillRect(0,0,256,16); return new THREE.CanvasTexture(c); })();
+const ORBL = new THREE.Mesh(new THREE.SphereGeometry(.55,24,16), new THREE.MeshBasicMaterial({color:new THREE.Color(6,6,6)})); ORBL.visible=false; S.add(ORBL);
+const ORBG = mkSpr('#cfe6ff',3.2); ORBG.scale.setScalar(9);
+const ORBT = new THREE.Mesh(new THREE.PlaneGeometry(90,.9), new THREE.MeshBasicMaterial({map:streakTex,color:C('#d6e8ff').multiplyScalar(3),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide})); ORBT.visible=false; S.add(ORBT);
+const DUST = (() => { const N=1400,P=new Float32Array(N*3); const r=rng(41); for(let i=0;i<N;i++){ P[i*3]=r()*800; P[i*3+1]=(r()-.5)*90; P[i*3+2]=(r()-.5)*120; }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(P,3));
+  const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uCx:{value:0},uK:{value:1}},
+    vertexShader:'uniform float uCx;varying float vA;void main(){vec3 p=position;p.x=uCx+mod(p.x-uCx+400.,800.)-400.;vA=1.-abs(p.x-uCx)/400.;vec4 mv=modelViewMatrix*vec4(p,1.);gl_PointSize=clamp(120./-mv.z,1.5,4.);gl_Position=projectionMatrix*mv;}',
+    fragmentShader:'uniform float uK;varying float vA;void main(){vec2 d=gl_PointCoord-.5;gl_FragColor=vec4(vec3(.55,.65,1.)*smoothstep(.5,0.,length(d))*vA*uK,1.);}'});
+  const p=new THREE.Points(g,m); p.frustumCulled=false; p.visible=false; S.add(p); return p; })();
+
+/* --- adegan 5: garis bintang saat warp --- */
+const STR = (() => { const N=700,P=new Float32Array(N*6),Co=new Float32Array(N*6),R=[]; const r=rng(51);
+  for(let i=0;i<N;i++){ const a=r()*6.283, rd=14+Math.pow(r(),.6)*110; R.push([r()*600,Math.cos(a)*rd*.5,Math.sin(a)*rd,.3+r()*.7]); }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(P,3)); g.setAttribute('color',new THREE.BufferAttribute(Co,3));
+  const l=new THREE.LineSegments(g,new THREE.LineBasicMaterial({vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})); l.frustumCulled=false; l.visible=false; l.userData.R=R; S.add(l); return l; })();
+function streakUpd(t, sx, sy, sz, spd, k){ const R=STR.userData.R, P=STR.geometry.attributes.position.array, Co=STR.geometry.attributes.color.array; const len=2+spd*.55*k;
+  for(let i=0;i<R.length;i++){ const [u,y,z,b]=R[i]; const x=sx+((u-t*spd*.9)%600+600)%600-300; const o=i*6;
+    P[o]=x;P[o+1]=sy+y;P[o+2]=sz+z;P[o+3]=x-len*(.4+b);P[o+4]=sy+y;P[o+5]=sz+z;
+    const f=k*b*(1-Math.abs(x-sx)/300); Co[o]=.6*f;Co[o+1]=.75*f;Co[o+2]=1.2*f;Co[o+3]=0;Co[o+4]=0;Co[o+5]=0; }
+  STR.geometry.attributes.position.needsUpdate=true; STR.geometry.attributes.color.needsUpdate=true; }
+
+/* --- adegan 6: Jupiter, materi eksotis, ledakan radiasi --- */
+const JUP = new THREE.Mesh(new THREE.SphereGeometry(90,64,48), new THREE.MeshStandardMaterial({map:bandTex('#c99a6a',9),roughness:.9,metalness:0})); JUP.position.set(-260,25,-470); JUP.visible=false; S.add(JUP);
+const EXO = (() => { const N=900,P=new Float32Array(N*3),Co=new Float32Array(N*3),meta=[]; const r=rng(61);
+  for(let i=0;i<N;i++){ meta.push([r()*6.283,(r()-.5)*2.2,6.6+r()*1.8,r()*6.283,.4+r()*1.2]); Co[i*3]=.55;Co[i*3+1]=.18;Co[i*3+2]=.75; }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(P,3)); g.setAttribute('color',new THREE.BufferAttribute(Co,3));
+  const p=new THREE.Points(g,new THREE.PointsMaterial({size:.5,map:SPRW,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,opacity:.9})); p.frustumCulled=false; p.visible=false; p.userData.m=meta; S.add(p); return p; })();
+const BURSTS = (() => { const N=1600,P=new Float32Array(N*3),Co=new Float32Array(N*3),V=[]; const r=rng(71);
+  for(let i=0;i<N;i++){ const th=(r()-.5)*1.7, ph=r()*6.283, sp=18+r()*70; V.push([Math.cos(th)*sp, Math.sin(th)*Math.cos(ph)*sp*.9, Math.sin(th)*Math.sin(ph)*sp*.9, r()]); }
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(P,3)); g.setAttribute('color',new THREE.BufferAttribute(Co,3));
+  const p=new THREE.Points(g,new THREE.PointsMaterial({size:1.1,map:SPRW,vertexColors:true,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false})); p.frustumCulled=false; p.visible=false; p.userData.V=V; S.add(p); return p; })();
+const SHOCK = new THREE.Mesh(new THREE.RingGeometry(.92,1,128), new THREE.MeshBasicMaterial({color:C('#ff9a6a').multiplyScalar(3),transparent:true,opacity:0,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false})); SHOCK.visible=false; S.add(SHOCK);
+
+/* --- adegan 7: bintang Proxima hangat + planet --- */
+const STAR7 = new THREE.Mesh(new THREE.SphereGeometry(22,48,32), new THREE.MeshBasicMaterial({color:new THREE.Color(3.2,1.7,.85)})); STAR7.position.set(300,26,-440); STAR7.visible=false; S.add(STAR7);
+const STAR7G = mkSpr('#ff9c5a',1.1); STAR7G.position.copy(STAR7.position); STAR7G.scale.setScalar(900);
+const PLAN7 = new THREE.Mesh(new THREE.SphereGeometry(30,48,32), new THREE.MeshStandardMaterial({color:C('#3d302b'),roughness:.95,metalness:0})); PLAN7.position.set(140,10,-300); PLAN7.visible=false; S.add(PLAN7);
+const PLAN7A = new THREE.Mesh(new THREE.SphereGeometry(31.4,48,32), new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,side:THREE.BackSide,uniforms:{uP:{value:PLAN7.position.clone()}},
+  vertexShader:'varying vec3 vNW;varying vec3 vW;void main(){vNW=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.);vW=w.xyz;gl_Position=projectionMatrix*viewMatrix*w;}',
+  fragmentShader:'varying vec3 vNW;varying vec3 vW;void main(){vec3 V=normalize(cameraPosition-vW);float f=clamp(-dot(normalize(vNW),V)/.3,0.,1.);gl_FragColor=vec4(vec3(1.,.55,.3)*pow(f,2.)*1.4,1.);}'})); PLAN7A.position.copy(PLAN7.position); PLAN7A.visible=false; S.add(PLAN7A);
+const key7 = new THREE.DirectionalLight(C('#ffb078'), 0); S.add(key7);
+/* ============ KAMERA, OVERLAY, ADEGAN ============ */
 let subY = H*.88;
+function catmull(a,b,c,d,k){ return b.map((_,i)=>.5*(2*b[i]+(c[i]-a[i])*k+(2*a[i]-5*b[i]+4*c[i]-d[i])*k*k+(3*b[i]-a[i]-3*c[i]+d[i])*k*k*k)); }
+function trk(t,K){ const n=K.length; let i=0; while(i<n-2&&t>K[i+1][0]) i++; const k=E.s(clamp((t-K[i][0])/(K[i+1][0]-K[i][0]))); const g=(j,x)=>K[clamp(j,0,n-1)][x];
+  return [catmull(g(i-1,1),g(i,1),g(i+1,1),g(i+2,1),k), catmull(g(i-1,2),g(i,2),g(i+1,2),g(i+2,2),k)]; }
+const lgl = (a,b,k) => Math.exp(Math.log(a)+(Math.log(b)-Math.log(a))*k);
+function setCam(pos, tg, shake){ const sh=shake||0; cam.position.set(pos.x+nz(TT*.9,1)*sh, pos.y+nz(TT*1.1,2)*sh, pos.z+nz(TT*.8,3)*sh);
+  const d=cam.position.distanceTo(tg); cam.near=Math.max(.1,d*.002); cam.far=Math.max(9000,d*80); cam.updateProjectionMatrix(); cam.lookAt(tg); cam.updateMatrixWorld(); }
+let TT = 0;
+const pj = v => { const w=v.clone().project(cam); return [(w.x*.5+.5)*W,(-w.y*.5+.5)*H]; };
+const vOf = a => V3(a[0],a[1],a[2]);
 
-/* ============ [11] SCENE ============ */
-function gambar(t){
-  UB.uT.value = t; bumi.rotation.y = t*.012;
-  const p = probeAt(t); PROBE.position.copy(p);
-  const dir = probeDir(t); PROBE.rotation.set(0, Math.atan2(-dir.z, dir.x), Math.asin(dir.y)); PROBE.rotateX(t*.045);
-  PROBE.updateMatrixWorld();
-  kamera(t);
-  matahari.position.copy(ARAH_MATAHARI).multiplyScalar(300); matahari.target.position.set(0,0,0);
+/* overlay teks layar */
+const OV=[]; function ov(html, css, a, b, fi, fo){ const e=document.createElement('div'); e.className='ov'; e.style.cssText=css; e.innerHTML=html; $('#stage').appendChild(e); OV.push({e,a,b,fi:fi||.7,fo:fo||.6}); return e; }
+function ovUpd(t){ OV.forEach(o=>{ const k=seg(t,o.a,o.a+o.fi)*(1-seg(t,o.b-o.fo,o.b)); o.e.style.opacity=k.toFixed(3); o.e.style.visibility=k>.002?'visible':'hidden'; }); }
+const LBL=[]; function lab(teks, warna, dx, dy, a, b, pos, ukuran){ const l=label({dx,dy,teks,warna,font:`'${FONT.judul}'`,ukuran:ukuran||50,tebal:400}); LBL.push({l,a,b,pos}); return l; }
+function lblUpd(t){ LBL.forEach(o=>{ const p=(t>=o.a-.2&&t<=o.b+.2)?o.pos():null; if(p) o.l.atur(t,o.a,o.b,p[0],p[1]); else o.l.atur(t,-9,-8,0,0); }); }
+
+/* ---- teks layar per adegan ---- */
+ov('<small>ILUSTRASI · TIDAK SESUAI SKALA</small>','right:140px;bottom:260px;font:500 24px Onest;letter-spacing:.18em;color:#9fa9d8',22.4,27.4);
+ov('<small>1 tahun cahaya</small><b>≈ 9,46 triliun km</b>','left:150px;top:190px',30.2,36.2);
+ov('<small>BIMA SAKTI</small><b>±100.000 tahun cahaya</b>','left:150px;top:190px',37.0,42.9);
+ov('<small>RELATIVITAS KHUSUS · EINSTEIN (1905)</small><b>Batas kecepatan alam semesta</b>','left:150px;top:160px',43.9,49.4);
+ov('<small>KECEPATAN CAHAYA</small><b>299.792 km/detik</b>','left:150px;top:160px',50.4,58);
+ov('<small>BERPACU DENGAN CAHAYA</small><b>perlombaan yang pasti kalah</b>','left:150px;top:160px',64.6,69.1);
+ov('<small>RUANG-WAKTU BISA MELENGKUNG</small>','left:150px;top:170px',73.6,77.2);
+ov('<small>ALAM SEMESTA MENGEMBANG SEJAK BIG BANG</small>','left:150px;top:170px',77.2,83.2);
+ov('<small>GALAKSI JAUH · MENJAUH LEBIH CEPAT DARI CAHAYA</small>','left:150px;top:240px',79.8,83.4);
+ov('<small>BATAS KECEPATAN BERLAKU UNTUK</small><b>benda di dalam ruang</b>','left:150px;top:160px',85.0,88.2);
+ov('<small>BUKAN UNTUK</small><b>ruangnya sendiri</b>','left:150px;top:160px',88.4,91.0,.6,.4);
+ov('<small>MIGUEL ALCUBIERRE · FISIKAWAN</small><b>Alcubierre Drive (1994)</b>','left:150px;top:160px',91.6,97.8);
+ov('<small>PENUMPANG DI DALAM GELEMBUNG</small><b>tanpa percepatan terasa</b>','left:150px;top:160px',113.6,117.6);
+ov('<small>ENERGI NEGATIF?</small><b>belum pernah ditemukan</b>','left:150px;top:160px',129.6,134.6);
+ov('<small>HAMBATAN</small><b>belum bisa dikendalikan</b>','left:150px;top:160px',148.8,152.4);
+ov('<small>SAAT BERHENTI</small><b>ledakan radiasi</b>','left:150px;top:160px',152.6,156.4);
+ov('<small>RISET LANJUTAN</small><b>NASA &amp; para fisikawan</b>','left:150px;top:160px',161.0,166.4);
+ov('<small>USULAN TEORI TERBARU</small><b>tanpa energi negatif?</b>','left:150px;top:160px',166.8,171.4);
+ov('<b class="akh">mungkin suatu hari nanti?</b>','left:0;right:0;top:300px;text-align:center',176.2,179.6,1.2,.5);
+/* perbandingan waktu tempuh (adegan 5) */
+const CMP = ov('<div class="row"><small>ROKET SEPERTI VOYAGER 1</small><div class="trk"><i id="cA"></i></div><b id="tA">±75.000 tahun</b></div><div class="row"><small>MESIN WARP · CONTOH 100× KECEPATAN CAHAYA</small><div class="trk"><i id="cB" class="vi"></i></div><b id="tB">±15 hari</b></div><em>perjalanan ke Proxima Centauri (4,24 tahun cahaya)</em>','left:1010px;top:130px;width:780px',117.4,124.4);
+/* gauge energi (adegan 6) */
+const GAU = ov('<small>ENERGI YANG DIBUTUHKAN</small><div class="trk"><i id="gF" class="am"></i></div><b id="gT" style="font-size:52px"></b>','left:150px;top:150px;width:980px',135.0,147.6);
+/* grafik energi (adegan 3) */
+const GRC = document.createElement('canvas'); GRC.width=700; GRC.height=470; GRC.style.cssText='position:absolute;left:1120px;top:120px;z-index:6;opacity:0'; $('#stage').appendChild(GRC); const GRX=GRC.getContext('2d');
+const SPD = ov('<small>KECEPATAN PESAWAT</small><b id="spN">0%</b>','left:1120px;top:600px',53.6,66.6);
+function grafikUpd(t){ const a=seg(t,53.7,54.6)*(1-seg(t,66.2,66.9)); GRC.style.opacity=a.toFixed(3); if(a<.01) return;
+  const b=beta3(t), g=1/Math.sqrt(1-b*b), W0=700,H0=470, x0=70,y0=410,x1=660,y1=40; GRX.clearRect(0,0,W0,H0);
+  GRX.font='500 22px Onest'; GRX.fillStyle='#c7cfea'; GRX.fillText('energi yang dibutuhkan',x0,y1-8); GRX.textAlign='right'; GRX.fillText('kecepatan (% cahaya)',x1,H0-6); GRX.textAlign='left';
+  GRX.strokeStyle='rgba(180,195,255,.55)'; GRX.lineWidth=2; GRX.beginPath(); GRX.moveTo(x0,y1); GRX.lineTo(x0,y0); GRX.lineTo(x1,y0); GRX.stroke();
+  GRX.setLineDash([6,8]); GRX.strokeStyle='rgba(255,170,120,.8)'; GRX.beginPath(); GRX.moveTo(x1-8,y1); GRX.lineTo(x1-8,y0); GRX.stroke(); GRX.setLineDash([]);
+  GRX.fillStyle='rgba(255,170,120,.95)'; GRX.fillText('100%',x1-52,y0+30);
+  const X=bb=>x0+(x1-8-x0)*bb, Y=gg=>y0-(y0-y1)*Math.min(1,(gg-1)/9);
+  GRX.strokeStyle='#b9a8ff'; GRX.lineWidth=5; GRX.shadowColor='#8f7bff'; GRX.shadowBlur=14; GRX.beginPath(); let first=true;
+  for(let bb=0;bb<=Math.max(.001,Math.min(b,.9995));bb+=.002){ const gg=1/Math.sqrt(1-bb*bb); const px=X(bb),py=Y(gg); if(first){GRX.moveTo(px,py);first=false;} else GRX.lineTo(px,py); } GRX.stroke(); GRX.shadowBlur=0;
+  const px=X(Math.min(b,.9995)), py=Y(g); GRX.fillStyle='#fff'; GRX.beginPath(); GRX.arc(px,py,9,0,6.283); GRX.fill();
+  if(g>10){ GRX.font='400 70px "Instrument Serif"'; GRX.fillStyle='#ffd9b0'; GRX.fillText('→ ∞',px-150,y1+60); }
+  const pct=b*100; $('#spN').textContent=(pct<99?pct.toFixed(0):pct<99.9?pct.toFixed(1):pct.toFixed(2)).replace('.',',')+'% cahaya'; }
+
+/* ---- skenario kecepatan adegan 3 (dihitung sekali) ---- */
+const BETA_K=[[43,.3],[49.5,.35],[54,.62],[56.6,.9],[60.6,.99],[62.8,.999],[69.6,.9995]];
+function beta3(t){ let i=0; while(i<BETA_K.length-2&&t>BETA_K[i+1][0]) i++; const a=BETA_K[i],b=BETA_K[i+1]; return lerp(a[1],b[1],E.s(clamp((t-a[0])/(b[0]-a[0])))); }
+const C3=60, X3=[0]; for(let i=1;i<=1400;i++){ const tt=43+(i-1)*.02; X3.push(X3[i-1]+beta3(tt)*C3*.02); }
+const xs3 = t => { const f=clamp((t-43)/.02,0,1399), i=Math.floor(f); return lerp(X3[i],X3[i+1],f-i); };
+const XL0 = xs3(49.5)+3.5, xl3 = t => XL0 + C3*(t-49.5);
+/* adegan 5: lintasan pesawat */
+const V5=t=>85*E.io(seg(t,104.9,108.6)); const X5=[0]; for(let i=1;i<=1800;i++){ const tt=91+(i-1)*.02; X5.push(X5[i-1]+V5(tt)*.02); }
+const xs5 = t => { const f=clamp((t-91)/.02,0,1799), i=Math.floor(f); return lerp(X5[i],X5[i+1],f-i); };
+
+/* ---- label 3D ---- */
+let CTX = {};
+lab('Tata Surya', PAL.label, 130, -110, 22.8, 27.2, () => pj(SUNP));
+lab('Proxima Centauri', PAL.proxima, -60, -130, 27.4, 36.3, () => pj(PROXP));
+lab('4,24 tahun cahaya', PAL.label, 0, -110, 28.4, 36.3, () => pj(SUNP.clone().addScaledVector(KEARAH,.5)));
+[1,2,3,4].forEach(i => lab(String(i), PAL.label, 0, 86, 30.4+i*.35, 36.3, () => pj(SUNP.clone().addScaledVector(KEARAH.clone().normalize(),i*LY).add(V3(0,-9000,0))), 38));
+lab('Bima Sakti', PAL.label, 80, -130, 37.2, 42.9, () => pj(GGAL.localToWorld(V3(-23000,0,-18000))));
+lab('Tata Surya · kita di sini', PAL.proxima, -170, -120, 38.4, 42.9, () => pj(GGAL.localToWorld(MARK.clone())));
+lab('Voyager 1', PAL.label, 150, 130, kw(0,'voyager')-.1, kw(0,'proxima')+.4, () => pj(PROBE.position));
+lab('Proxima Centauri · 4,24 tahun cahaya', PAL.proxima, -170, -150, kw(0,'proxima')+.3, 13, () => pj(PROX.position));
+lab('pesawat', PAL.label, 0, -90, 44.4, 69, () => pj(SHIP.position.clone().add(V3(0,3,0))), 44);
+lab('cahaya', '#cfe6ff', 0, -80, 50.2, 66, () => pj(ORBL.position.clone().add(V3(0,1.5,0))), 44);
+lab('menjauh > c', '#ffd9b0', 0, -80, 80.0, 83.4, () => pj(GX[0].s.position.clone().add(V3(0,3,0))), 40);
+lab('menjauh > c', '#ffd9b0', 0, -80, 80.0, 83.4, () => pj(GX[1].s.position.clone().add(V3(0,3,0))), 40);
+lab('pesawat', PAL.label, -30, 90, 85.2, 90.8, () => pj(SHIP.position.clone().add(V3(0,-1.5,0))), 40);
+lab('foton', '#cfe6ff', 20, -80, 85.2, 89.4, () => pj(FOTON.position.clone().add(V3(0,.8,0))), 40);
+lab('ruang menyusut', PAL.dingin, 60, -110, 100.9, 106.5, () => pj(SHIP.position.clone().add(V3(8.5,-3.5,0))), 52);
+lab('ruang mengembang', '#e6a0ff', -60, -110, 102.7, 108, () => pj(SHIP.position.clone().add(V3(-8.5,3.2,0))), 52);
+lab('gelembung warp', PAL.label, 80, -130, 99.0, 103.5, () => pj(SHIP.position.clone().add(V3(0,4.6,0))), 46);
+lab('energi negatif?', '#e6a0ff', -100, -130, 129.8, 134.6, () => pj(SHIP.position.clone().add(V3(0,4.2,0))), 54);
+lab('materi eksotis', '#c79bff', 100, 120, 131.0, 134.8, () => pj(SHIP.position.clone().add(V3(6,-1,0))), 46);
+lab('≈ massa Jupiter', '#ffd9b0', 0, -150, 142.0, 146.5, () => pj(JUP.position.clone().add(V3(0,100,0))), 54);
+
+/* ---- tampilan ---- */
+const DIPS=[13.9,36.5,43.0,69.45,125.0,157.0], SC=[0,13.9,43.0,69.45,91,125.0,157.0,180];
+let PP={ex:1.05,bl:.7,vig:.5,hangat:.15,sat:1.08,ry:0,sx:0,sy:0}, sunNow=ARAH_MATAHARI.clone();
+function hideAll(){ [PROBE,bumi,atmos,GSOL,spSun,spProx,spPulse,rulerG,GGAL,SHIP,BUB,GRID,ORB,FOTON,FOTONGLOW,ORBL,ORBG,ORBT,DUST,STR,JUP,EXO,BURSTS,SHOCK,STAR7,STAR7G,PLAN7,PLAN7A,PROX].forEach(o=>o.visible=false); GX.forEach(g=>g.s.visible=false); }
+function luminer(dir,mi,mf,hs){ matahari.position.copy(dir).multiplyScalar(300); matahari.target.position.set(0,0,0); matahari.intensity=mi; isi.intensity=mf; hemi.intensity=hs; }
+
+/* ===== ADEGAN 1 ===== */
+function s1(t){ PROBE.visible=bumi.visible=atmos.visible=PROX.visible=true; UB.uT.value=t; bumi.rotation.y=t*.012;
+  const p=probeAt(t); PROBE.position.copy(p); const dir=probeDir(t); PROBE.rotation.set(0,Math.atan2(-dir.z,dir.x),Math.asin(dir.y)); PROBE.rotateX(t*.045); PROBE.updateMatrixWorld();
+  kamera1(t); luminer(ARAH_MATAHARI,3.4,1.15,.38); sunNow=ARAH_MATAHARI.clone();
+  PP={ex:1.05,bl:.7,vig:.5,hangat:.15,sat:1.08,ry:0,sx:0,sy:0};
+  const tj=$('#tJudul'); tj.style.top='130px'; const aJ=seg(t,MOMEN.judulMasuk,MOMEN.judulMasuk+.6)*(1-seg(t,MOMEN.judulKeluar,MOMEN.judulKeluar+.6));
+  Object.assign($('#vJudul').style,{left:'160px',width:'1600px',top:'20px',height:'330px',opacity:aJ});
+  const aA=seg(t,MOMEN.angkaMasuk,MOMEN.angkaMasuk+.5)*(1-seg(t,MOMEN.angkaKeluar,MOMEN.angkaKeluar+.5)); const ta=$('#tAngka'); ta.style.top='250px'; ta.style.opacity=aA;
+  $('#nA').textContent=Math.round(75000*E.out(seg(t,MOMEN.angkaMasuk,kw(0,'tahun')+.2))).toLocaleString('id-ID');
+  Object.assign($('#vAngka').style,{left:'0px',width:'1100px',top:'150px',height:'520px',opacity:aA});
+  const tm=$('#tMinggu'); tm.style.top='330px'; tm.style.opacity=seg(t,MOMEN.mingguMasuk,MOMEN.mingguMasuk+.6)*(1-seg(t,13.0,13.6)); }
+
+/* ===== ADEGAN 2 ===== */
+const EC = PUSAT_B.clone(), Mid2 = SUNP.clone().addScaledVector(KEARAH,.5);
+function s2(t){ const u1=E.io(seg(t,14,23.2)), u2=E.io(seg(t,26.2,35.8));
+  if(t<36.5){ bumi.visible=atmos.visible=t<27; GSOL.visible=true; spSun.visible=spProx.visible=true; rulerG.visible=t>27.2; spPulse.visible=t>28.6&&t<35.4;
+    const es=lerp(1,.45,E.io(seg(t,19.6,23))); bumi.scale.setScalar(es); atmos.scale.setScalar(es); bumi.rotation.y=t*.012; UB.uT.value=t;
+    const sd=ARAH_MATAHARI.clone().lerp(V3(0,0,-1),sstep(15,22,t)).normalize(); UB.uSun.value.copy(sd); sunNow=sd;
+    let tg, dist, d3; const dA=V3(.02,.14,1).normalize(), dB=V3(0,.64,.77).normalize();
+    if(t<26.2){ tg=EC.clone().add(V3(10,80,0)).lerp(SUNP,u1); dist=lgl(380,17000,u1); d3=dA.clone().lerp(dB,u1).normalize(); }
+    else { tg=SUNP.clone().lerp(Mid2,u2); dist=lgl(17000,640000,u2); d3=dB.clone(); }
+    setCam(tg.clone().addScaledVector(d3,dist), tg, .05+dist*.0004);
+    const d=dist; spSun.position.copy(SUNP); spSun.scale.setScalar(Math.max(1,d*.05)); spSun.material.opacity=sstep(9000,60000,d);
+    spProx.position.copy(PROXP); spProx.scale.setScalar(Math.max(1,d*.035)); spProx.material.opacity=sstep(60000,200000,d);
+    GSOL.visible=d<120000; sunM.scale.setScalar(Math.max(.001,sstep(18.2,19.6,t))); UB.uSun.value.copy(sd);
+    const pu=E.io(seg(t,28.6,35.2)); spPulse.position.copy(SUNP).addScaledVector(KEARAH,pu); spPulse.scale.setScalar(d*.03);
+    luminer(ARAH_MATAHARI,0,0,.1); PP={ex:1.05,bl:.7,vig:.5,hangat:.1,sat:1.05,ry:0,sx:0,sy:0}; }
+  else { GGAL.visible=true; GGAL.rotation.y=(t-36.5)*.02; GGAL.updateMatrixWorld(true);
+    const u=E.io(seg(t,36.8,43)); const dist=lerp(150000,108000,u), ang=lerp(.0,.5,u);
+    const tg=V3(0,0,0); const pos=V3(Math.sin(ang)*dist*.22, dist*.58, dist*.8); setCam(pos,tg,0);
+    galCore.visible=galHalo.visible=true; GGAL.add(galCore,galHalo);
+    luminer(ARAH_MATAHARI,0,0,.1); PP={ex:1.15,bl:.9,vig:.5,hangat:.2,sat:1.1,ry:0,sx:0,sy:0}; sunNow=ARAH_MATAHARI.clone();
+    const p1=pj(GGAL.localToWorld(V3(-30000,0,0))), p2=pj(GGAL.localToWorld(V3(30000,0,0))); CTX.line=[p1,p2]; } }
+const LINE = document.createElement('div'); LINE.style.cssText='position:absolute;height:3px;background:linear-gradient(90deg,rgba(185,168,255,0),#b9a8ff 12%,#b9a8ff 88%,rgba(185,168,255,0));z-index:6;transform-origin:0 50%;box-shadow:0 0 12px #8f7bff;opacity:0'; $('#stage').appendChild(LINE);
+function lineUpd(t){ const o=seg(t,40.0,40.9)*(1-seg(t,42.3,42.9)); if(!CTX.line||o<.01||t<37){ LINE.style.opacity=0; return; }
+  const [a,b]=CTX.line; const dx=b[0]-a[0], dy=b[1]-a[1]; LINE.style.left=a[0]+'px'; LINE.style.top=a[1]+'px'; LINE.style.width=Math.hypot(dx,dy)+'px'; LINE.style.transform=`rotate(${Math.atan2(dy,dx)}rad)`; LINE.style.opacity=o.toFixed(3); }
+
+/* ===== ADEGAN 3 ===== */
+function s3(t){ SHIP.visible=true; DUST.visible=true; const xs=xs3(t); SHIP.position.set(xs,0,0); SHIP.rotation.set(0,0,-.1); SHIP.rotation.y=t*.2;
+  const b=beta3(t); kapalUpd(t,.5+.5*b); const orb=t>=49.5; let cx=xs+14, dist=44;
+  if(orb){ const xl=xl3(t); ORBL.visible=ORBG.visible=ORBT.visible=true; ORBL.position.set(xl,3.2,0); ORBG.position.copy(ORBL.position); ORBT.position.set(xl-45,3.2,0); const ap=sstep(49.5,50.4,t); ORBL.scale.setScalar(ap); ORBG.scale.setScalar(9*ap);
+    cx=(xs+xl)/2; dist=Math.max(44,(xl-xs)*.95+30); } else { cx=xs+8; }
+  DUST.visible=true; DUST.material.uniforms.uCx.value=cx;
+  setCam(V3(cx,5+dist*.04,dist),V3(cx,1.4+dist*.13,0),.04); const ks=Math.pow(Math.max(1,dist/44),.85); SHIP.scale.setScalar(.9*ks); if(orb){ ORBG.scale.multiplyScalar(Math.pow(Math.max(1,dist/44),.55)); ORBL.scale.multiplyScalar(ks); } luminer(V3(.4,.7,.6).normalize(),3.4,.8,.35);
+  PP={ex:1.05,bl:.8,vig:.55,hangat:.05,sat:1.05,ry:0,sx:0,sy:0}; SHIP.updateMatrixWorld(); sunNow=V3(.4,.7,-.6).normalize(); }
+
+/* ===== ADEGAN 4 ===== */
+function cam4(t){ const a=(-50+80*E.io(seg(t,69.5,91)))*DEG, R=46+16*E.io(seg(t,77,84))-26*E.io(seg(t,84.5,91)), y=lerp(26,12,E.io(seg(t,69.5,91)));
+  return [V3(Math.cos(a)*R,y,Math.sin(a)*R), V3(0,lerp(-2,1.5,E.io(seg(t,84.5,91))),0)]; }
+const A_EXP = t => 1+.9*E.io(seg(t,77.4,84));
+function s4(t){ GRID.visible=true; const a=A_EXP(t);
+  const D=12*E.io(seg(t,73.4,75.6))*(1-E.io(seg(t,76.2,77.4)));
+  gridUpd({a,cx:0,cz:0,fx:0,fz:0,fr:95*a,op:sstep(69.6,71.4,t),D,wx:0,wz:0,ww:7,A:0});
+  const os=sstep(72.6,73.6,t)*(1-sstep(76.2,77.2,t)); ORB.visible=os>.01; ORB.scale.setScalar(Math.max(.01,os)); ORB.position.set(0,-D+2.4*os,0);
+  GX.forEach(g=>{ g.s.visible=t>76.2; const k=sstep(76.2,77.6,t); g.s.position.set(g.x*a,1.4,g.z*a); g.s.scale.setScalar(g.sc*k); g.s.material.opacity=k; });
+  const sk=sstep(84.6,85.6,t); const sx=lerp(-14,0,E.io(seg(t,84.8,91))); SHIP.visible=sk>.01; SHIP.position.set(sx,2.2,0); SHIP.scale.setScalar(.9*sk); SHIP.rotation.set(0,t*.2,-.08); kapalUpd(t,.8);
+  const fp=seg(t,85.0,88.8); FOTON.visible=FOTONGLOW.visible=fp>0&&fp<1; FOTON.position.set(lerp(-30,34,E.io(fp)*0+fp),2.2,-3.6); FOTONGLOW.position.copy(FOTON.position);
+  const [p,tg]=cam4(t); setCam(p,tg,.03); luminer(V3(.3,.8,.5).normalize(),2.0,.4,.3);
+  PP={ex:1.05,bl:.85,vig:.55,hangat:.05,sat:1.05,ry:0,sx:0,sy:0}; SHIP.updateMatrixWorld(); sunNow=V3(.3,.8,-.5).normalize(); }
+
+/* ===== ADEGAN 5 ===== */
+const K5=[[91,[13,5.5,6],[0,1,0]],[97,[4,6,14.5],[0,1,0]],[100,[-14,13,25],[1,0,0]],[104.9,[-22,15,26],[3,0,0]],[107.5,[-13,6,10],[5,1,0]],[109.5,[3.6,1.2,7.4],[0,1.2,0]],[113.5,[2.5,1.5,7.4],[0,1.2,0]],[117,[-14,6,24],[6,0,0]],[123.8,[-34,15,42],[12,0,0]],[125,[-36,16,44],[12,0,0]]];
+function s5(t){ const xs=xs5(t), sp=V5(t); GRID.visible=true; SHIP.visible=true; BUB.visible=t>98.6; const sy=2.2; SHIP.position.set(xs,sy,0); SHIP.scale.setScalar(.9); SHIP.rotation.set(0,t*.2,-.08*sstep(104,108,t)); kapalUpd(t,1);
+  const Aamp=4.0*E.io(seg(t,99.8,104)), gsA=GS*1.9, cx=Math.round(xs/gsA)*gsA;
+  gridUpd({a:1.9,cx,cz:0,fx:xs,fz:0,fr:92,op:1,D:0,A:Aamp,xs,zs:0,R:6.3,w:3.0});
+  BUB.position.set(xs,sy,0); BUB.material.uniforms.uK.value=E.io(seg(t,98.6,100.2))*(1-sstep(124,124.9,t)); BUB.material.uniforms.uT.value=t; BUB.material.uniforms.uF.value=0;
+  const sk=E.io(seg(t,105.2,108.2))*(1-sstep(123.8,124.8,t)); STR.visible=sk>.01; if(STR.visible) streakUpd(t,xs,sy,0,Math.max(10,sp),sk);
+  const tr=trk(t,K5), S0=V3(xs,sy,0); let pos=S0.clone().add(vOf(tr[0])), tg=S0.clone().add(vOf(tr[1]));
+  if(t<96){ const [p4,t4]=cam4(91), k=E.io(seg(t,91,96)); pos=p4.clone().lerp(pos,k); tg=t4.clone().lerp(tg,k); }
+  setCam(pos,tg,.03+.06*sk); luminer(V3(.3,.8,.5).normalize(),2.4,.6,.3);
+  PP={ex:1.08,bl:.9+.3*sk,vig:.55,hangat:.05,sat:1.08,ry:0,sx:0,sy:0}; SHIP.updateMatrixWorld(); sunNow=V3(.3,.8,-.5).normalize();
+  const rA=E.out(seg(t,117.8,120.2)), rB=E.out(seg(t,120.6,121.8)); $('#cA').style.width=(rA*100).toFixed(1)+'%'; $('#cB').style.width=Math.max(.8,rB*1.1).toFixed(1)+'%'; $('#tA').style.opacity=rA>.5?1:0; $('#tB').style.opacity=rB>.5?1:0; }
+
+/* ===== ADEGAN 6 ===== */
+const K6=[[125,[8,1.2,9],[0,0,0]],[128,[10,2,8],[0,0,0]],[134.5,[-2,3,14],[0,0,0]],[138,[0,12,40],[0,0,0]],[140.5,[35,5,70],[-60,10,-80]],[144.5,[40,6,75],[-110,14,-150]],[148.4,[16,3,28],[-30,6,-30]],[149.2,[8,1.5,10],[0,0,0]],[152,[9,2,10],[0,0,0]],[155,[14,3,22],[10,0,0]],[157,[20,5,32],[14,0,0]]];
+function s6(t){ SHIP.visible=true; SHIP.position.set(0,0,0); SHIP.rotation.set(0,t*.1,-.05); SHIP.scale.setScalar(.9);
+  const col=1-E.io(seg(t,152.3,153.3)); kapalUpd(t,.45*col); BUB.visible=col>.02; const wob=seg(t,148.8,152.4);
+  BUB.scale.setScalar(Math.max(.05,col*(1+.06*Math.sin(t*9)*wob)));
+  BUB.material.uniforms.uK.value=.55*col; BUB.material.uniforms.uT.value=t; BUB.material.uniforms.uF.value=Math.max(seg(t,125.6,128),wob)*.8;
+  JUP.visible=t>138.5&&t<148.6; JUP.rotation.y=t*.03;
+  const ek=seg(t,128.6,129.8)*(1-seg(t,147,148.4)); EXO.visible=ek>.01; EXO.material.opacity=.9*ek; { const m=EXO.userData.m, P=EXO.geometry.attributes.position.array;
+    m.forEach((q,i)=>{ const a=q[0]+t*q[4]*.5, r=q[2]; P[i*3]=Math.cos(a)*r*.55; P[i*3+1]=q[1]*3.5; P[i*3+2]=Math.sin(a)*r; }); EXO.geometry.attributes.position.needsUpdate=true; }
+  const t0=153.3, bk=seg(t,t0,156.4); BURSTS.visible=SHOCK.visible=t>=t0&&t<156.6;
+  if(BURSTS.visible){ const V=BURSTS.userData.V, P=BURSTS.geometry.attributes.position.array, Co=BURSTS.geometry.attributes.color.array, dt=t-t0;
+    for(let i=0;i<V.length;i++){ const v=V[i], f=Math.max(0,1-bk*(.9+v[3]*.3)); P[i*3]=v[0]*dt; P[i*3+1]=v[1]*dt; P[i*3+2]=v[2]*dt; Co[i*3]=1.6*f;Co[i*3+1]=.7*f;Co[i*3+2]=.35*f; }
+    BURSTS.geometry.attributes.position.needsUpdate=true; BURSTS.geometry.attributes.color.needsUpdate=true;
+    SHOCK.rotation.y=Math.PI/2; SHOCK.scale.setScalar(1+dt*55); SHOCK.material.opacity=.8*(1-bk)*(1-bk); SHOCK.position.set(0,0,0); }
+  const tr=trk(t,K6); const sh=.03+.1*wob+.5*(seg(t,153.3,153.9)*(1-seg(t,153.9,156)));
+  setCam(vOf(tr[0]),vOf(tr[1]),sh); luminer(V3(-.7,.35,.5).normalize(),2.3,.5,.12);
+  PP={ex:.9,bl:.8,vig:.75,hangat:.0,sat:.9,ry:0,sx:0,sy:0}; SHIP.updateMatrixWorld(); sunNow=V3(-.7,.35,-.5).normalize();
+  const gk=E.out(seg(t,135.3,139.2)), gs=E.io(seg(t,140.2,144.6)); const fill=t<140?gk*120:lerp(120,22,gs); $('#gF').style.width=Math.min(100,fill).toFixed(1)+'%'; $('#gF').style.opacity=1;
+  $('#gT').textContent=t<139.6?(gk>.85?'▶ melampaui massa alam semesta teramati':''):(t<145.4?'≈ setara massa planet Jupiter':'tetap mustahil untuk sekarang'); }
+
+/* ===== ADEGAN 7 ===== */
+const K7=[[157,[-9,2.5,13],[8,1.5,-12]],[166,[-8,2.0,11],[10,2,-16]],[172,[-8.5,1.6,9.5],[14,3,-20]],[177,[-11,2.2,12],[16,4,-26]],[180,[-13,3,15],[18,5,-30]]];
+function s7(t){ SHIP.visible=STAR7.visible=STAR7G.visible=PLAN7.visible=PLAN7A.visible=true; const xs=.35*(t-157); SHIP.position.set(xs,Math.sin(t*.5)*.15,0); SHIP.rotation.set(0,t*.15,-.06); SHIP.scale.setScalar(.9); kapalUpd(t,1);
+  const tr=trk(t,K7); setCam(vOf(tr[0]),vOf(tr[1]),.025);
+  const dk=STAR7.position.clone().sub(SHIP.position).normalize(); key7.position.copy(dk).multiplyScalar(300); key7.target.position.set(0,0,0); key7.intensity=3.4; luminer(V3(0,1,0),0,.55,.32); matahari.intensity=0;
+  hemi.color.set(0x8a6a58); sunNow=STAR7.position.clone().sub(cam.position).normalize();
+  const fw=V3(); cam.getWorldDirection(fw); PP={ex:.95,bl:.75,vig:.55,hangat:.3,sat:1.08,ry:0,sx:0,sy:0};
+  STAR7G.scale.setScalar(210+8*Math.sin(t*1.3)); SHIP.updateMatrixWorld(); }
+/* ============ GAMBAR + SCENE ============ */
+function gambar(t){ TT=t; hideAll(); hemi.color.set(0x6d86d6);
+  const k=Math.max(0,SC.findIndex((v,i)=>i<7&&t>=v&&t<SC[i+1])); [s1,s2,s3,s4,s5,s6,s7][k](t);
+  if(k!==0){ ['#tJudul','#tAngka','#tMinggu','#vJudul','#vAngka'].forEach(s=>$(s).style.opacity=0); }
+  kubah.position.copy(cam.position); STARS.position.copy(cam.position);
+  PROX.position.copy(cam.position).addScaledVector(ARAH_JALAN,3600).add(V3(0,160,0)); PROX.visible=(k===0);
   REN.setRenderTarget(RT); REN.render(S, cam);
   pSalin.uniforms.t.value = RT.texture; lewat(pSalin, R2);
   pTerang.uniforms.t.value = R2.texture; pTerang.uniforms.th.value = 1.0; lewat(pTerang, B4a); blur2(B4a, B4b, 1.2); blur2(B4a, B4b, 2.4);
   pSalin.uniforms.t.value = B4a.texture; lewat(pSalin, B8a); blur2(B8a, B8b, 1.6); blur2(B8a, B8b, 3.2);
-  const [sx, sy] = proyeksiDunia(...ARAH_MATAHARI.clone().multiplyScalar(4000).add(cam.position).toArray()), arahK = V3(); cam.getWorldDirection(arahK);
-  const ry = .4*sstep(.3,.8,arahK.dot(ARAH_MATAHARI));
-  if (ry>0){ pTerang.uniforms.t.value = R2.texture; pTerang.uniforms.th.value = .55; lewat(pTerang, RSIN); pSinar.uniforms.t.value = RSIN.texture; pSinar.uniforms.sp.value.set(sx/W, 1-sy/H); lewat(pSinar, RRAY); }
+  const sp=pj(cam.position.clone().addScaledVector(sunNow,4000)), arahK=V3(); cam.getWorldDirection(arahK);
+  const ry=(k===6)?PP.ry:0;
+  if (ry>0){ pTerang.uniforms.t.value = R2.texture; pTerang.uniforms.th.value = .55; lewat(pTerang, RSIN); pSinar.uniforms.t.value = RSIN.texture; pSinar.uniforms.sp.value.set(sp[0]/W, 1-sp[1]/H); lewat(pSinar, RRAY); }
   pSalin.uniforms.t.value = R2.texture; lewat(pSalin, RTS); blur2(RTS, RTSb, 1.5); blur2(RTS, RTSb, 2.5);
   const U = AKHIR.uniforms;
   Object.assign(U.tS, {value: RT.texture}); U.tB1.value = B4a.texture; U.tB2.value = B8a.texture; U.tR.value = RRAY.texture; U.tT.value = RTS.texture;
-  U.ry.value = ry; U.fok.value = .5; U.tilt.value = 0; U.ex.value = 1.05; U.bl.value = .7; U.vig.value = .5; U.hangat.value = .15; U.sat.value = 1.08;
-  U.gelap.value = 1 - sstep(0,.5,t)*(1-sstep(MOMEN.DUR-.5, MOMEN.DUR, t));
+  U.ry.value = ry; U.fok.value = .5; U.tilt.value = 0; U.ex.value = PP.ex; U.bl.value = PP.bl; U.vig.value = PP.vig; U.hangat.value = PP.hangat; U.sat.value = PP.sat;
+  let g=1-sstep(0,.5,t); DIPS.forEach(d=>{ g=Math.max(g,1-Math.abs(t-d)/.55); }); g=Math.max(g,sstep(179,180,t)); U.gelap.value = clamp(g);
   lewat(AKHIR, null);
-
-  const tj = $('#tJudul'); tj.style.top = '130px';
-  const aJ = seg(t,MOMEN.judulMasuk,MOMEN.judulMasuk+.6)*(1-seg(t,MOMEN.judulKeluar,MOMEN.judulKeluar+.6));
-  Object.assign($('#vJudul').style,{left:'160px',width:'1600px',top:'20px',height:'330px',opacity:aJ});
-  const aA = seg(t,MOMEN.angkaMasuk,MOMEN.angkaMasuk+.5)*(1-seg(t,MOMEN.angkaKeluar,MOMEN.angkaKeluar+.5));
-  const ta = $('#tAngka'); ta.style.top = '250px'; ta.style.opacity = aA;
-  const n = Math.round(75000*E.out(seg(t,MOMEN.angkaMasuk,kt('tahun')+.2))); $('#nA').textContent = n.toLocaleString('id-ID');
-  Object.assign($('#vAngka').style,{left:'0px',width:'1100px',top:'150px',height:'520px',opacity:aA});
-  const tm = $('#tMinggu'); tm.style.top = '330px'; tm.style.opacity = seg(t,MOMEN.mingguMasuk,MOMEN.mingguMasuk+.6)*(1-seg(t,MOMEN.DUR-.7,MOMEN.DUR-.2));
-  const [px,py] = proyeksiDunia(...PROX.position.toArray()); L_PROX.atur(t, MOMEN.label+.3, MOMEN.DUR-.8, px, py);
-  const [vx,vy] = proyeksiDunia(p.x, p.y, p.z); L_VOY.atur(t, kt('voyager')-.1, kt('proxima')+.4, vx, vy);
-  Object.assign($('#vSub').style,{left:'260px',width:'1400px',top:(subY-180)+'px',height:'330px',opacity:t>.6&&t<14.4?.9:0});
+  ovUpd(t); lblUpd(t); grafikUpd(t); lineUpd(t);
+  Object.assign($('#vSub').style,{left:'260px',width:'1400px',top:(subY-180)+'px',height:'330px',opacity:t>.6&&t<179?.85:0});
 }
 
 const SCENE = {
-  dur: MOMEN.DUR, kata: KATA,
-  sub: {gaya:'polos', maks:4, font:`800 52px '${FONT.sub}'`, warna:PAL.teks, aksen:PAL.aksen, kunci:['voyager','satu,','tujuh','puluh','lima','ribu','tahun','proxima','centauri.','minggu?'], y:()=>({x:W/2,y:subY})},
-  audio: {vo:[], sfx:[], music:null},
-  muat: () => Promise.all([document.fonts.load(`400 100px '${FONT.judul}'`), document.fonts.load(`800 60px '${FONT.sub}'`)]),
+  dur: DUR, kata: KATA,
+  sub: {gaya:'polos', maks:4, font:`800 52px '${FONT.sub}'`, warna:PAL.teks, aksen:PAL.aksen,
+    kunci:['voyager','satu,','tujuh','puluh','lima','ribu','tahun','proxima','centauri.','minggu?','einstein,','cahaya,','cahaya.','terhingga.','celah','melengkung','mengembang.','alcubierre','gelembung','menyusut,','percepatan','minggu,','negatif,','eksotis,','jupiter.','radiasi','mustahil','nanti?'],
+    y:()=>({x:W/2,y:subY})},
+  audio: {"vo": [{"src": "assets/audio/vo-01.mp3", "at": 0.7, "teks": "Pesawat tercepat yang pernah meninggalkan Tata Surya, Voyager Satu, butuh sekitar tujuh puluh lima ribu tahun menuju Proxima Centauri. Bagaimana kalau perjalanan itu hanya beberapa minggu?"}, {"src": "assets/audio/vo-02.mp3", "at": 14.5, "teks": "Untuk memahami masalahnya, lihat dulu betapa luasnya alam semesta. Dari Bumi, kita mundur melewati Matahari dan planet-planet. Lalu melewati batas Tata Surya, menuju bintang terdekat. Jaraknya empat koma dua empat tahun cahaya. Satu tahun cahaya adalah jarak yang ditempuh cahaya dalam setahun, sekitar sembilan koma empat enam triliun kilometer. Dan galaksi Bima Sakti, rumah kita, lebarnya sekitar seratus ribu tahun cahaya."}, {"src": "assets/audio/vo-03.mp3", "at": 43.5, "teks": "Masalahnya ada pada batas kecepatan alam semesta. Menurut Einstein, tidak ada benda bermassa yang bisa mencapai kecepatan cahaya, sekitar tiga ratus ribu kilometer per detik. Semakin cepat sebuah pesawat melaju, semakin besar energi yang dibutuhkan untuk mempercepatnya lagi. Untuk mencapai kecepatan cahaya, energinya menjadi tak terhingga. Jadi, berpacu dengan cahaya adalah perlombaan yang pasti kalah."}, {"src": "assets/audio/vo-04.mp3", "at": 70, "teks": "Tapi ada celah dalam aturan itu. Ruang dan waktu sendiri bisa melengkung dan mengembang. Buktinya, alam semesta terus mengembang sejak Big Bang, dan galaksi yang sangat jauh menjauh dari kita lebih cepat daripada cahaya. Tidak ada aturan yang dilanggar, sebab batas kecepatan cahaya berlaku untuk benda di dalam ruang, bukan untuk ruangnya sendiri."}, {"src": "assets/audio/vo-05.mp3", "at": 91.5, "teks": "Tahun seribu sembilan ratus sembilan puluh empat, fisikawan Miguel Alcubierre mengusulkan ide berani. Bayangkan sebuah pesawat di dalam gelembung warp. Ruang di depan gelembung menyusut, sementara ruang di belakangnya mengembang. Gelembung itu meluncur seperti peselancar di atas gelombang ruang-waktu. Pesawatnya sendiri diam di dalam gelembung, jadi aturan Einstein tetap aman. Dan para penumpang tidak merasakan percepatan sama sekali. Kalau gelembungnya cukup cepat, perjalanan ke Proxima Centauri bisa ditempuh dalam hitungan minggu, bukan puluhan ribu tahun."}, {"src": "assets/audio/vo-06.mp3", "at": 125.5, "teks": "Sayangnya, ada hambatan besar. Gelembung warp membutuhkan energi negatif, atau materi eksotis, yang belum pernah ditemukan dalam jumlah berarti. Perhitungan awal menyebut energinya melampaui seluruh massa alam semesta teramati. Setelah disempurnakan, kebutuhannya turun menjadi setara massa planet raksasa seperti Jupiter. Tetap saja, mustahil untuk sekarang. Belum lagi, kita belum tahu cara mengendalikan gelembung itu, dan saat berhenti, ia bisa melepaskan ledakan radiasi berbahaya."}, {"src": "assets/audio/vo-07.mp3", "at": 158.5, "teks": "Namun penelitian terus berjalan. NASA dan para fisikawan masih menelaah ide ini, dan usulan teori terbaru mencoba memangkas kebutuhan energinya, bahkan tanpa energi negatif. Belum ada yang berhasil membangunnya. Tapi suatu hari nanti, mungkin kita akan menatap bintang itu dari dekat. Mungkin suatu hari nanti?"}], "sfx": [{"src": "assets/audio/sfx-boom.wav", "at": 0.3, "vol": 0.5}, {"src": "assets/audio/sfx-whoosh.wav", "at": 0.6, "vol": 0.3}, {"src": "assets/audio/sfx-whoosh.wav", "at": 13.4, "vol": 0.45}, {"src": "assets/audio/sfx-whoosh-long.wav", "at": 19.0, "vol": 0.3}, {"src": "assets/audio/sfx-whoosh.wav", "at": 23.0, "vol": 0.3}, {"src": "assets/audio/sfx-shimmer.wav", "at": 28.6, "vol": 0.3}, {"src": "assets/audio/sfx-whoosh.wav", "at": 36.0, "vol": 0.45}, {"src": "assets/audio/sfx-shimmer.wav", "at": 37.0, "vol": 0.28}, {"src": "assets/audio/sfx-whoosh.wav", "at": 42.4, "vol": 0.45}, {"src": "assets/audio/sfx-hum26.wav", "at": 43.5, "vol": 0.22}, {"src": "assets/audio/sfx-zap.wav", "at": 49.5, "vol": 0.45}, {"src": "assets/audio/sfx-riser.wav", "at": 53.8, "vol": 0.38}, {"src": "assets/audio/sfx-boom.wav", "at": 62.8, "vol": 0.5}, {"src": "assets/audio/sfx-whoosh.wav", "at": 68.9, "vol": 0.45}, {"src": "assets/audio/sfx-boom.wav", "at": 73.6, "vol": 0.3}, {"src": "assets/audio/sfx-shimmer.wav", "at": 76.0, "vol": 0.28}, {"src": "assets/audio/sfx-zap.wav", "at": 85.0, "vol": 0.3}, {"src": "assets/audio/sfx-shimmer.wav", "at": 98.7, "vol": 0.4}, {"src": "assets/audio/sfx-whoosh-long.wav", "at": 104.4, "vol": 0.7}, {"src": "assets/audio/sfx-warphum.wav", "at": 105.0, "vol": 0.3}, {"src": "assets/audio/sfx-whoosh.wav", "at": 124.4, "vol": 0.5}, {"src": "assets/audio/sfx-heart.wav", "at": 125.5, "vol": 0.42}, {"src": "assets/audio/sfx-shimmer.wav", "at": 129.0, "vol": 0.2}, {"src": "assets/audio/sfx-zap.wav", "at": 149.0, "vol": 0.28}, {"src": "assets/audio/sfx-zap.wav", "at": 150.4, "vol": 0.28}, {"src": "assets/audio/sfx-zap.wav", "at": 151.7, "vol": 0.3}, {"src": "assets/audio/sfx-whoosh.wav", "at": 152.3, "vol": 0.35}, {"src": "assets/audio/sfx-burst.wav", "at": 153.3, "vol": 0.8}, {"src": "assets/audio/sfx-whoosh.wav", "at": 156.3, "vol": 0.4}, {"src": "assets/audio/sfx-bell.wav", "at": 172.1, "vol": 0.3}, {"src": "assets/audio/sfx-bell-hi.wav", "at": 176.4, "vol": 0.4}], "music": {"src": "assets/audio/music.wav", "vol": 0.5}},
+  muat: () => Promise.all([document.fonts.load(`400 100px '${FONT.judul}'`), document.fonts.load(`800 60px '${FONT.sub}'`), document.fonts.load(`500 24px 'Onest'`)]),
   build(tl){ grainOn(.05); wIn(tl,$('#tJudul'),MOMEN.judulMasuk,{st:.08,b:14,d:.9}); wOut(tl,$('#tJudul'),MOMEN.judulKeluar); },
   frame(t){ gambar(t); }
 };
